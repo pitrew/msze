@@ -1,0 +1,7 @@
+parameters:
+#    oip_msze.example.class: Oip\MszeBundle\Example
+
+services:
+#    oip_msze.example:
+#        class: %oip_msze.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
