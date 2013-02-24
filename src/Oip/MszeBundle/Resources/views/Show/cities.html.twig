@@ -1,0 +1,20 @@
+{% extends "::base_all.html.twig" %}
+
+{% block body %}
+
+{{ pattern }}
+
+<a href="{{ path('edit_city') }}">
++ Dodaj...
+</a>
+
+<ul>
+
+{% for city in cities %}
+    <li>{{ city.name }} - {{ city.district }} <a href="{{ path('show_city', {'id': city.id }) }}">go</a> </li>
+{% endfor %}
+
+
+</ul>
+
+{%endblock%}

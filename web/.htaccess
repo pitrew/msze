@@ -8,3 +8,11 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^(.*)$ app.php [QSA,L]
 </IfModule>
+
+
+#<IfModule mod_deflate.c>
+#    AddOutputFilterByType DEFLATE application/json
+#</IfModule>
+
+#php_value memory_limit 200M
+# Change 16M with whatever value

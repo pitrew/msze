@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Msze{% endblock %}</title>
+         <link href="{{ asset('css/jquery-ui-1.10.1.custom.css') }}" rel="stylesheet"/>
+         <link href="{{ asset('bundles/oipmsze/css/select2.css') }}" rel="stylesheet"/>
+         <link href="{{ asset('bundles/oipmsze/css/oip_loading.css') }}" rel="stylesheet"/>
+         <link href="{{ asset('bundles/oipmsze/css/msze.css') }}" rel="stylesheet"/>
+        {% block stylesheets %}{% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('icon.png') }}" />
+    </head>
+    <body>
+        <script type="text/javascript">
+        var RecaptchaOptions = {
+            theme : 'clean'
+        };
+        </script>
+        <div class="main_content">
+            {% block body %}{% endblock %}
+        </div>
+        {% block lastBlock %}{% endblock %}
+            <script type="text/javascript" src="{{ asset('js/jquery-1.9.1.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('js/jquery-ui-1.10.1.custom.js') }}"></script>
+            
+            <script type="text/javascript" src="{{ asset('bundles/oipmsze/js/jquery.timer.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('bundles/oipmsze/js/oip_timer.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('bundles/oipmsze/js/oip_loading.js') }}"></script>
+            {#<script type="text/javascript" src="{{ asset('bundles/oipmsze/js/oip_timer_full.js') }}"></script>#}
+                        
+            <script type="text/javascript" src="{{ asset('bundles/oipmsze/js/ejs_production.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('bundles/oipmsze/js/sprintf.min.js') }}"></script>
+            
+            <script type="text/javascript" src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+            <script type="text/javascript" src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+            
+            <script type="text/javascript" src="{{ asset('bundles/oipmsze/js/select2.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('bundles/oipmsze/js/oip_common.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('bundles/oipmsze/js/mszeajax.js') }}"></script>
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

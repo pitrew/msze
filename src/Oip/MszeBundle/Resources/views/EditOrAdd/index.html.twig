@@ -1,0 +1,1513 @@
+{% extends "::base_all.html.twig" %}
+
+
+{% block stylesheets %}
+<link href="{{ asset('bundles/oipmsze/css/city.css') }}" rel="stylesheet"/>
+<link href="{{ asset('bundles/oipmsze/css/mass.css') }}" rel="stylesheet"/>
+{% endblock %}
+
+{% block body %}
+
+<div class="main_add_header">
+    <a class="main_add_header_logo" href="{{ path('oip_msze_homepage') }}" title="Powrót do strony głównej"></a>
+    <div class="main_add_header_action">Dodaj/Zmień</div>
+</div>
+
+
+<table class="main_add_division_table">
+    <tr>
+        <td class="main_add_division_table_left_td">
+            <div class="block_city">
+            <div class="block_city_form">
+                <table class="block_city_form_table">
+                    <tr>
+                        <td class="block_city_form_td_left">Nazwa miejscowości:<br/>
+                            <input type="text" placeholder="Nazwa miejscowości" class="block_city_name"
+                                   title="Wpisz nazwę miejscowości do wyszukania lub dodania."/></td>
+                        <td><div class="block_city_add"></div></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><div class="block_city_more"></div></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="block_city_selected hidden">
+                <div class="block_city_selected_name"></div>
+                <div class="block_city_selected_name_edit hidden" title="Kliknij aby zmienić nazwę tej miejscowości.">Edytuj nazwę</div>
+                {#<input type="text" class="block_city_selected_name_edit_text hidden"/>
+                <div class="block_city_selected_name_edit_save hidden">Zapisz nazwę</div>#}
+
+                <div class="block_city_selected_change pointer" title="Kliknij aby wybrać inną miejscowość. Niezapisane zmiany zostaną anulowane.">Wybierz inną miejscowość</div>
+            </div>
+            </div>
+
+
+
+            <div class="block_district hidden">
+            <div class="block_district_form hidden">
+                <table class="block_district_form_table">
+                    <tr>
+                        <td class="block_district_form_td_left">
+                            Nazwa dzielnicy:<br/>
+                            <input type="text" placeholder="Nazwa nowej dzielnicy" class="block_district_name"
+                                   title="Wpisz nazwę dzielnicy do dodania."/></td>
+                        <td class="block_district_list_element block_district_none_element">                
+                            <span class="sim_d_name common_border" title="Kliknij jeżeli nie wiesz w jakiej dzielnicy jest kościół, nie należy do żadnej lub miejscowość nie jest podzielona na dzielnice.">Brak dzielnicy lub nie wiem jaka</span>
+                            <span class="block_default_district_id hidden district_id">-100</span>
+                        </td>
+                        <td><div class="block_district_add"></div></td>
+                    </tr>
+                    <tr class="block_district_spacer"><td colspan="4"></td></tr>
+                    <tr>
+                        <td colspan="4"><span class="block_district_use">Dzielnice już dodane do tej miejscowości:</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"><div class="block_district_more">Brak</div></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="block_district_selected hidden">
+                <div class="block_district_selected_name"></div>
+                <div class="block_district_selected_name_edit hidden" title="Kliknij aby zmienić nazwę tej dzielnicy.">Edytuj nazwę</div>
+                {#<input type="text" class="block_district_selected_name_edit_text hidden"/>
+                <div class="block_district_selected_name_edit_save hidden">Zapisz nazwę</div>#}
+                <div class="block_district_selected_change pointer" title="Kliknij aby wybrać inną dzielnicę. Niezapisane zmiany zostaną anulowane.">Wybierz inną dzielnicę</div>
+            </div>
+            </div>
+
+
+            <div class="block_church hidden">
+            <div class="block_church_form hidden">
+                <table class="block_church_form_table">
+                    <tr>
+                        <td class="block_church_form_td_left">
+                            Nazwa parafii:<br/>
+                            <input type="text" placeholder="Nazwa nowej parafii" class="block_church_name"
+                                   title="Wpisz nazwę parafii do dodania."/></td>
+                        <td><div class="block_church_add"></div></td>
+                        <td><span class="block_church_use hidden">lub użyj isniejącego kościoła:</span></td>
+                    </tr>
+                    <tr><td colspan="3"></td></tr>
+                    <tr>
+                        <td colspan="3"><div class="block_church_more"></div></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="block_church_selected hidden">
+                <div class="block_church_selected_name"></div>
+                <div class="block_church_selected_name_edit hidden" title="Kliknij aby zmienić nazwę tej parafii.">Edytuj nazwę</div>
+                <input type="text" class="block_church_selected_name_edit_text hidden"/>
+                <div class="block_church_selected_name_edit_save hidden">Zapisz nazwę</div>
+
+                <div class="block_church_district_select_another pointer">Przypisz inną dzielnicę</div>
+                <div class="block_church_selected_change pointer" title="Kliknij aby wybrać inną parafię. Niezapisane zmiany zostaną anulowane.">Wybierz inną parafię</div>
+            </div>
+            </div>
+
+            <div class="block_mass hidden">
+            <div class="block_mass_form hidden">
+                <table>
+                    <tr>
+                        <td class="block_church_details_title_mid">WWW:</td>
+                        <td class="block_church_www_td">
+                            <input type="text" placeholder="www" class="block_church_www"/>
+                            <button>>> Otwórz</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="block_church_details_title_mid">Adres:</td>
+                        <td class="block_church_address_td">
+                            <input type="text" placeholder="Adres" class="block_church_address"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="block_church_details_title_top">Opis:</td>
+                        <td><textarea placeholder="Opis" class="block_church_description" placeholder="Opis"></textarea></td>
+                        {#<td><input type="text" placeholder="Nazwa kościoła" class="block_church_name"/></td>
+                        <td><div class="block_church_add"></div></td>
+                        <td><span class="block_church_use hidden">lub użyj isniejącego kościoła:</span></td>#}
+                    </tr>
+                </table>
+            </div>
+            </div>
+    </td>
+    <td class="map">
+
+            {#
+            <div id="oip_captcha">
+            {{ form|raw }}
+            </div>
+            #}
+
+            <div id="map-canvas"></div>
+
+    </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <div class="block_mass_more"></div>
+        </td>
+    </tr>
+</table>
+
+
+<div id="gps_map" class="gps_map">
+    <span class="action_no hidden">Wskaż pozycję na mapie. Kliknij lub przeciągnij.</span>
+    <span class="action_ok">Czy położenie kościoła na mapie jest poprawne?</span>
+    <br/>
+    <span class="pos_ok">TAK</span>
+    <div class="pos_fill"></div>
+    <span class="pos_no">NIE</span>
+</div>
+
+<div id="cancel_all" class="hidden pointer">
+    Cofnij zmiany
+</div>
+
+<div id="save_all" class="hidden pointer">
+    <div class="save_ok">
+        Zapisz zmiany
+        <div class="save_all_info hidden">Kliknij aby zapisać wprowadzone zmiany.</div>
+    </div>
+    <div class="save_wait hidden">
+        Proszę czekać
+    </div>
+</div>
+
+
+<script id="city_template" type="text/template">
+     <% var cnt = 0, brk = false %>
+    <% for (var key in data) { %>
+        <div class="block_city_list_element">
+            <span class="sim_c_name common_border" title="Kliknij aby wybrać"><%= data[key][1] %></span>
+            <span class="hidden city_id"><%= data[key][0] %></span>
+        </div>
+        <% 
+            if (cnt >= max) { brk = true; break; }
+            cnt = cnt + 1
+        %>
+    <% } %>
+    <% if (brk == true) { %>
+        <div class="render_more block_mass_button">Więcej...</div>
+    <% } %>
+</script>
+
+
+<script id="city_template_x" type="text/template"> 
+    <div class="block_city_list block_list">
+        <% for(var x = 0; x < data.length && x < max_city_search; x++) { %>
+            <div class="block_city_list_element">
+                <span class="sim_c_name common_border" title="Kliknij aby wybrać">
+                    <%= $.oip.escape(data[x].name) %>
+                </span>
+                <span class="hidden city_id"><%= data[x].id %></span>
+            </div>
+         <% } %>
+         <% if (data.length > max_city_search) { %>
+            <li>Oraz <%= (data.length - max_city_search) %> innych</li>
+         <% } %>
+    </div>
+</script>
+
+<script id="district_template" type="text/template"> 
+    <div class="block_district_list block_list">
+        <% for (var x = 1; x < data.length; x++) { %>
+            <div class="block_district_list_element">
+                <span class="im_dc_name common_border" title="Kliknij aby wybrać">
+                    <%= $.oip.escape(data[x].name) %>
+                </span>
+                <span class="hidden district_id"><%= data[x].id %></span>
+            </div>
+        <% } %>
+    </div>
+</script>
+
+<script id="district_choose_template" type="text/template"> 
+    <div class="block_district_choose_list block_list">
+        <% for (var x = 1; x < data.length; x++) { %>
+            <div class="block_district_choose_list_element">
+                <span class="sim_dc_name common_border" title="Kliknij aby zmienić na tą dzielnicę">
+                    <%= $.oip.escape(data[x].name) %>
+                </span>
+                <span class="hidden district_id"><%= data[x].id %></span>
+            </div>
+        <% } %>
+    </div>
+</script>
+
+<script id="church_template" type="text/template"> 
+    <div class="block_church_list block_list">
+        <% for (var x = 0; x < data.length; x++) { %>
+            <div class="block_church_list_element">
+                <span class="common_border" title="Kliknij aby wybrać">
+                    <%= $.oip.escape(data[x].name) %>
+                </span>
+                <span class="hidden church_id"><%= data[x].id %></span>
+            </div>
+         <% } %>
+    </div>
+</script>
+
+<script id="mass_template" type="text/template"> 
+
+<table class="block_mass_main_table">
+    <tr>
+        <td class="block_mass_sun">
+            <div class="block_mass_day_title">Niedziela</div>
+            <div class="block_mass_batch_sun">
+                <input placeholder="np.: 8:00, 9:00..." type="text" class="block_mass_batch_sun_txt"></input>
+                <span class="block_mass_button block_mass_batch_sun_ok">Dodaj</span>
+            </div>
+            <span class="block_mass_button block_mass_button_new_sun">+ Dodaj</span>
+            
+            <table class="block_mass_inner_table">
+                <% for (var x = 0; x < sdata.length; x++) { %>
+                <tr><td><div class="block_mass_line"></div></td></tr>
+                <tr><td>
+                        <div class="block_mass_entry <% if (sdata[x].id < 0) { %>block_mass_new<% } else { %> <% if (sdata[x].mod) { %>block_mass_edit<% } %> <% if (sdata[x].del) { %>block_mass_del<% } } %>">
+                            <div class="block_mass_time">
+                                <span class="block_mass_hour"><%= sdata[x].hours %></span>
+                                :
+                                <span class="block_mass_min"><%= sdata[x].minutes %></span>
+                            </div>
+                            <div class="block_mass_desc"><%= $.oip.escape(sdata[x].details) %></div>
+                            <span class="hidden mass_id">
+                                <%= sdata[x].id %>
+                            </span>
+                            <% if (sdata[x].mod) { %>
+                                <span class="mass_mod" />
+                            <% } %>
+                        </div>
+                </td></tr>
+                <% } %>
+            </table>
+        </td>
+        <td class="block_mass_separator"></td>
+        <td class="block_mass_other">
+            <div class="block_mass_day_title">Dni powszednie</div>
+            <div class="block_mass_batch_other">
+                <input placeholder="np.: 8:00, 9:00..." type="text" class="block_mass_batch_other_txt" ></input>
+                <span class="block_mass_button block_mass_batch_other_ok">Zapisz</span>
+            </div>
+            <span class="block_mass_button block_mass_button_new_other">+ Dodaj</span>
+            
+            <table class="block_mass_inner_table">
+                <% for (var x = 0; x < wdata.length; x++) { %>
+                <tr><td><div class="block_mass_line"></div></td></tr>
+                <tr><td>
+                        <div class="block_mass_entry <% if (wdata[x].id < 0) { %>block_mass_new<% } else { %> <% if (wdata[x].mod) { %>block_mass_edit<% } %> <% if (wdata[x].del) { %>block_mass_del<% } } %>">
+                            <div class="block_mass_time">
+                                <span class="block_mass_hour"><%= wdata[x].hours %></span>
+                                :
+                                <span class="block_mass_min"><%= wdata[x].minutes %></span>
+                            </div>
+                            <div class="block_mass_days">
+                                <% if (wdata[x].day_mon) { %>pn <span class="bm_d_mon hidden"></span><% } %>
+                                <% if (wdata[x].day_tue) { %>wt <span class="bm_d_tue hidden"></span><% } %>
+                                <% if (wdata[x].day_wed) { %>śr <span class="bm_d_wed hidden"></span><% } %>
+                                <% if (wdata[x].day_thu) { %>czw <span class="bm_d_thu hidden"></span><% } %>
+                                <% if (wdata[x].day_fri) { %>pt <span class="bm_d_fri hidden"></span><% } %>
+                                <% if (wdata[x].day_sat) { %>so<span class="bm_d_sat hidden"></span><% } %>
+                            </div>
+                            <div class="block_mass_desc"><%= $.oip.escape(wdata[x].details) %></div>
+                            <span class="hidden mass_id">
+                                <%= wdata[x].id %>
+                            </span>
+                            <% if (wdata[x].mod) { %>
+                                <span class="mass_mod" />
+                            <% } %>
+                        </div>
+                </td></tr>
+                <% } %>
+            </table>
+        </td>
+    </tr>
+</table>
+    
+</script>
+
+{% endblock %}
+
+{% block lastBlock %}
+
+<div class="back_wall"></div>
+<div class="block_mass_edit_win block_mass_edit_sun hidden">
+    <h3>Msza</h3>
+    <p>Niedziela</p>
+    <p>
+    <div class="block_mass_edit_box_div">
+    <input type="text" class="block_mass_edit_box block_mass_edit_hour" name="hour" value="12" maxlength="2"></input>
+    :
+    <input type="text" class="block_mass_edit_box block_mass_edit_minute" name="minute" value="00" maxlength="2"></input>
+    </div>
+    </p>
+    <p>
+        <div class="block_mass_edit_textarea_div">
+            <textarea name="details" class="block_mass_edit_textarea" placeholder="Szczegóły"></textarea>
+        </div>
+    </p>
+    <p>
+        <span class="show_el show_add show_del block_mass_edit_button block_mass_edit_sun_button_cancel">Anuluj</span>
+        <span class="show_el show_add block_mass_edit_button block_mass_edit_sun_button_delete">Usuń</span>
+        <span class="show_el show_add block_mass_edit_button block_mass_edit_sun_button_save">Zapisz</span>
+        <span class="show_el show_del block_mass_edit_button block_mass_edit_sun_button_undelete">Cofnij usunięcie</span>
+        <br/>
+        <span class="show_el show_mod block_mass_edit_button block_mass_edit_sun_button_undo">Cofnij zmiany</span>
+    </p>
+    {% for i in 1..24 %}
+        <div class="block_mass_edit_el block_mass_edit_hour_el block_mass_edit_hour_{{i}}">{% if i < 10 %}0{% endif %}{{i}}</div>
+    {% endfor %}
+        
+    {% for i in 0..11 %}
+        <div class="block_mass_edit_el block_mass_edit_min_el block_mass_edit_min_{{i}}">{% if i*5 < 10 %}0{% endif %}{{i*5}}</div>
+    {% endfor %}
+        
+    <span class="hidden mass_id">-1</span>
+</div>
+
+<div class="block_mass_edit_win block_mass_edit_other hidden">
+    <h3>Msza</h3>
+    <p>
+    <table class="block_mass_edit_other_days_table">
+        <tr><td>pn</td><td>wt</td><td>śr</td><td>czw</td><td>pt</td><td>so</td></tr>
+        <tr class="block_mass_edit_other_days_table_tr">
+            <td><input type="checkbox" class="chb_change" name="day_mon" value="0"></input></td>
+            <td><input type="checkbox" class="chb_change" name="day_tue" value="1"></input></td>
+            <td><input type="checkbox" class="chb_change" name="day_wed" value="2"></input></td>
+            <td><input type="checkbox" class="chb_change" name="day_thu" value="3"></input></td>
+            <td><input type="checkbox" class="chb_change" name="day_fri" value="4"></input></td>
+            <td><input type="checkbox" class="chb_change" name="day_sat" value="5"></input></td>
+        </tr>
+    </table>
+    </p>
+    
+    <p>
+    <div class="block_mass_edit_box_div">
+    <input type="text" class="block_mass_edit_box block_mass_edit_hour" name="hour" value="12" maxlength="2"></input>
+    :
+    <input type="text" class="block_mass_edit_box block_mass_edit_minute" name="minute" value="00" maxlength="2"></input>
+    </div>
+    </p>
+    <p>
+        <div class="block_mass_edit_textarea_div">
+            <textarea name="details" class="block_mass_edit_textarea" placeholder="Szczegóły"></textarea>
+        </div>
+    </p>
+    <p>
+        <span class="show_el show_add show_del block_mass_edit_button block_mass_edit_other_button_cancel">Anuluj</span>
+        <span class="show_el show_add block_mass_edit_button_ok block_mass_edit_button block_mass_edit_other_button_delete">Usuń</span>
+        <span class="show_el show_add block_mass_edit_button_ok block_mass_edit_button block_mass_edit_other_button_save">Zapisz</span>
+        <span class="show_el show_del block_mass_edit_button block_mass_edit_other_button_undelete">Cofnij usunięcie</span>
+        <br/>
+        <span class="show_el show_mod block_mass_edit_button block_mass_edit_other_button_undo">Cofnij zmiany</span>
+    </p>
+    {% for i in 1..24 %}
+        <div class="block_mass_edit_el block_mass_edit_hour_el block_mass_edit_hour_{{i}}">{% if i < 10 %}0{% endif %}{{i}}</div>
+    {% endfor %}
+        
+    {% for i in 0..11 %}
+        <div class="block_mass_edit_el block_mass_edit_min_el block_mass_edit_min_{{i}}">{% if i*5 < 10 %}0{% endif %}{{i*5}}</div>
+    {% endfor %}
+        
+    <span class="hidden mass_id">-1</span>
+</div>
+
+<div class="block_mass_edit_win block_name_edit_win hidden">
+    <h3>Zmiana nazwy</h3>
+    <p>
+        <div>Poprzednia</div>
+        <div class="block_name_edit_old_name"></div>
+        <br/>
+        <div>Nowa</div>
+        <input type="text" class="block_name_edit_box" name="new_name" value=""></input>
+    </p>
+    
+    <p>
+        <span class="show_el block_mass_edit_button block_name_edit_button_cancel">Anuluj</span>
+        <span class="show_el block_mass_edit_button block_name_edit_button_save">Zapisz</span>
+    </p>
+    <span class="hidden object_type">-1</span>
+</div>
+
+
+<div class="block_district_choose_win hidden">
+    <h3>Wybierz nową dzielnicę dla "<span class="block_district_choose_church_name"></span>"</h3>
+    <div class="choose_font_small">Aktualnie: <span class="block_district_choose_cur_district">Brak przypisanej dzielnicy</span></div>        
+    <div class="spacer_10"></div>
+    <div class="block_district_none_element div_center">
+        <span class="block_district_choose_none sim_d_name common_border">Brak dzielnicy lub nie wiem jaka</span>
+    </div>
+    <span class="block_district_choose_default_district_id hidden">-100</span>
+    <div class="block_district_choose_content"></div>
+    <span class="hidden church_id">-1</span>
+    <span class="block_window_close">Zamknij</span>
+</div>
+
+{% endblock %}
+
+
+{% block javascripts %}
+<script type="text/javascript"
+    src="https://maps.googleapis.com/maps/api/js?sensor=false">
+</script>
+<script type="text/javascript" src="{{ asset('bundles/oipmsze/js/edit_or_add_manager.js') }}" ></script>
+<script type="text/javascript">    
+
+    var map;
+    var marker;
+    
+    function splitStringAndAdd(str, sunday)
+    {
+       var spl = str.split(' ').join(',').split(';').join(',').split(',');
+       var hor = [];
+       for (var _sp in spl)
+       {
+           if (spl[_sp] != '') {
+               var hm = spl[_sp].split(':');
+               if (hm.length >= 2) {
+                   var h = parseInt(hm[0], 10),
+                       m = parseInt(hm[1], 10);
+                   if (h >= 0 && h <= 24 && m >=0 && m <= 59) {
+                       var id = $.oip.manager.getNewMassId();
+                       $.oip.manager.markMassForChange(id, _generate_mass_object(id, h, m < 10 ? '0' + m : m, sunday));
+                   }
+               } else {
+                   var val = parseInt(spl[_sp], 10)
+                   if (val >= 0 && val <= 2359) 
+                   {
+                       var h = parseInt(val / 100),
+                           m = parseInt(val % 100);
+                       if (h >= 0 && h <= 24 && m >=0 && m <= 59) {
+                            var id = $.oip.manager.getNewMassId();
+                            $.oip.manager.markMassForChange(id, _generate_mass_object(id, h, m < 10 ? '0' + m : m, sunday));
+                       }
+                   }
+               }
+               
+           }
+       }
+      
+       return hor;
+    }
+    
+    function initEdits()
+    {
+        $('.main_content').on('click', '.block_mass_sun .block_mass_button_new_sun', function() {
+          showEditWindowSun(undefined);
+        });
+        
+        $('.main_content').on('click', '.block_mass_sun .block_mass_batch_sun_ok', function() {
+            var txt = $('.block_mass_batch_sun_txt').val();
+            splitStringAndAdd(txt, true);
+        });
+        
+        $('.main_content').on('click', '.block_mass_other .block_mass_batch_other_ok', function() {
+            var txt = $('.block_mass_batch_other_txt').val();
+            splitStringAndAdd(txt, false);
+        });
+        
+        $('.main_content').on('click', '.block_mass_sun .block_mass_entry', function() {
+          var data = {};
+          data['hours'] = $(this).find('.block_mass_hour').html();
+          data['minutes'] = $(this).find('.block_mass_min').html();
+          data['desc'] = $.trim($(this).find('.block_mass_desc').text());
+          data['id'] = $.trim($(this).find('.mass_id').html());
+          data['mod'] = ($(this).find('.mass_mod').length > 0);
+            
+          showEditWindowSun(data);
+        });
+
+        $('.main_content').on('click', '.block_mass_other .block_mass_button_new_other', function() {
+          showEditWindowOther(undefined);
+        });
+        
+        $('.main_content').on('click', '.block_mass_other .block_mass_entry', function() {
+          var data = {};
+          data['hours'] = $(this).find('.block_mass_hour').html();
+          data['minutes'] = $(this).find('.block_mass_min').html();
+          data['desc'] = $.trim($(this).find('.block_mass_desc').text());  
+          
+          data['dmon'] = $(this).find('.bm_d_mon').length > 0;
+          data['dtue'] = $(this).find('.bm_d_tue').length > 0;
+          data['dwed'] = $(this).find('.bm_d_wed').length > 0;
+          data['dthu'] = $(this).find('.bm_d_thu').length > 0;
+          data['dfri'] = $(this).find('.bm_d_fri').length > 0;
+          data['dsat'] = $(this).find('.bm_d_sat').length > 0;
+          
+          data['id'] = $.trim($(this).find('.mass_id').html());
+          data['mod'] = ($(this).find('.mass_mod').length > 0);
+          
+          showEditWindowOther(data);
+        });
+        
+        $('.block_mass_edit_box').keydown(function(event) {
+            if (event.which == 13) { //enter
+                var win = $(this).closest('.block_mass_edit_win');
+                var mid = $.trim(win.find('.mass_id').html());            
+                $.oip.manager.markMassForChange(parseInt(mid, 10), _get_mass_object_from_entry(win));
+
+                win.fadeOut('fast', function() {
+                    hideWall();
+                });
+                event.preventDefault();
+            } else if (event.which == 27) {
+                $(this).closest('.block_mass_edit_win, .block_district_choose_win').fadeOut('fast', function() {
+                    hideWall();
+                });  
+            }
+        });
+        
+        //XXXXXXXXXX
+        
+        $('.block_name_edit_box').keydown(function() {
+            if (event.which == 13) { //enter
+                var win = $(this).closest('.block_mass_edit_win');
+                win.find('.block_name_edit_button_save').click();
+                event.preventDefault();
+            } else if (event.which == 27) {
+                var win = $(this).closest('.block_mass_edit_win');
+                win.find('.block_name_edit_button_cancel').click();
+            }
+        });
+        
+        $("input[type=text].block_mass_edit_box").click(function() {
+            $(this).select();
+         });
+
+        $('.block_mass_edit_sun_button_cancel, .block_mass_edit_other_button_cancel, .block_name_edit_button_cancel, .block_window_close').click(function() {
+            $(this).closest('.block_mass_edit_win, .block_district_choose_win').fadeOut('fast', function() {
+              hideWall();
+            });
+        });
+
+        $('.block_mass_edit_sun_button_delete, .block_mass_edit_other_button_delete').click(function() {
+            var win = $(this).closest('.block_mass_edit_win');
+            var mid = $.trim(win.find('.mass_id').html());
+            $.oip.manager.markMassForDeletion(parseInt(mid, 10));
+            
+            win.fadeOut('fast', function() {
+              hideWall();
+            });
+        });
+        $('.block_mass_edit_sun_button_undo, .block_mass_edit_other_button_undo').click(function() {
+            var win = $(this).closest('.block_mass_edit_win');
+            var mid = $.trim(win.find('.mass_id').html());
+            $.oip.manager.unmarkMassForChange(parseInt(mid, 10));
+            
+            win.fadeOut('fast', function() {
+              hideWall();
+            });
+        });
+        
+        $('.block_mass_edit_sun_button_undelete, .block_mass_edit_other_button_undelete').click(function() {
+            var win = $(this).closest('.block_mass_edit_win');
+            var mid = $.trim(win.find('.mass_id').html());
+            $.oip.manager.unmarkMassForDeletion(parseInt(mid, 10));
+            
+            win.fadeOut('fast', function() {
+              hideWall();
+            });
+        });
+        $('.block_mass_edit_sun_button_save, .block_mass_edit_other_button_save').click(function() {
+            var win = $(this).closest('.block_mass_edit_win');
+            var mid = $.trim(win.find('.mass_id').html());            
+            $.oip.manager.markMassForChange(parseInt(mid, 10), _get_mass_object_from_entry(win));
+            
+            win.fadeOut('fast', function() {
+              hideWall();
+            });
+        });
+        
+        $('.block_name_edit_button_save').click(function() {
+            var win = $(this).closest('.block_mass_edit_win'),
+                objType = $.trim(win.find('.object_type').html()),
+                val = win.find('.block_name_edit_box').val();
+                
+            switch(objType)
+            {
+                case 'city':
+                    $.oip.manager.setCityName(val);
+                    break;
+                case 'district':
+                    $.oip.manager.setDistrictName(val);
+                    break;
+                case 'church':
+                    $.oip.manager.setChurchName(val);
+                    break;
+                default:
+                    break;
+            }
+            win.fadeOut('fast', function() {
+              hideWall();
+            });
+        });
+
+        $('.block_mass_edit_hour').focusout(hideHours);
+        $('.block_mass_edit_hour').focus(showHours);
+        $('.block_mass_edit_hour').click(showHours);
+        $('.block_mass_edit_hour_el').click(function() {
+          var val = $(this).html();
+          $(this).closest('.block_mass_edit_win').find('.block_mass_edit_hour').val(val);
+          hideHours();
+        });
+
+        $('.block_mass_edit_minute').focusout(hideMin);
+        $('.block_mass_edit_minute').focus(showMin);
+        $('.block_mass_edit_minute').click(showMin);
+        $('.block_mass_edit_min_el').click(function() {
+          var val = $(this).html();
+          $(this).closest('.block_mass_edit_win').find('.block_mass_edit_minute').val(val);
+          hideMin();
+        });
+    }
+
+    function showEditWindowSun(data)
+    {
+        showWall();
+        var wind = $('.block_mass_edit_sun');
+        if (data == undefined)
+        {
+            wind.find('.block_mass_edit_hour').val('12');
+            wind.find('.block_mass_edit_minute').val('00');
+            wind.find('.block_mass_edit_textarea').val('');
+            wind.find('.mass_id').html($.oip.manager.getNewMassId());            
+            wind.find('.show_el').hide(0, function(){
+                wind.find('.block_mass_edit_other_days_table, .block_mass_edit_box_div, .block_mass_edit_textarea_div').prop('readonly', false).oipLoading('hide');
+                wind.find('.show_add').show();
+            });
+        }
+        else
+        {
+            wind.find('.block_mass_edit_hour').val(data.hours);
+            wind.find('.block_mass_edit_minute').val(data.minutes);
+            wind.find('.block_mass_edit_textarea').val(data.desc);
+            wind.find('.mass_id').html(data.id);            
+            
+            wind.find('.show_el').hide(0, function(){
+                if ($.oip.manager.isMarkedForDeletion(data.id)) {
+                    wind.find('.show_del').show();
+                    wind.find('.block_mass_edit_other_days_table, .block_mass_edit_box_div, .block_mass_edit_textarea_div').prop('readonly',true).oipLoading('show', true);
+                    
+                } else {
+                    wind.find('.block_mass_edit_other_days_table, .block_mass_edit_box_div, .block_mass_edit_textarea_div').prop('readonly', false).oipLoading('hide');
+                    wind.find('.show_add').show();   
+                    if (data.mod) {
+                        wind.find('.show_mod').show();   
+                    }
+                }
+            });
+        }
+
+        wind.fadeIn('fast', function() {
+            wind.find('.block_mass_edit_box').first().focus().select();
+        });
+    }
+    function showEditWindowOther(data)
+    {
+        showWall();
+        var wind = $('.block_mass_edit_other');
+        if (data == undefined)
+        {
+            wind.find('.block_mass_edit_hour').val('12');
+            wind.find('.block_mass_edit_minute').val('00');
+            wind.find('.block_mass_edit_textarea').val('');
+            wind.find('input[name^=day]').prop('checked', true);
+            wind.find('.mass_id').html($.oip.manager.getNewMassId());            
+            wind.find('.show_el').hide(0, function(){
+                wind.find('.block_mass_edit_other_days_table, .block_mass_edit_box_div, .block_mass_edit_textarea_div').prop('readonly', false).oipLoading('hide');
+                wind.find('.show_add').show();
+            });
+        }
+        else
+        {
+            wind.find('.block_mass_edit_hour').val(data.hours);
+            wind.find('.block_mass_edit_minute').val(data.minutes);
+            wind.find('.block_mass_edit_textarea').val(data.desc);
+            wind.find('.mass_id').html(data.id);
+
+            if (data.dmon != true) { wind.find('input[name=day_mon]').prop('checked', false); } else {  wind.find('input[name=day_mon]').prop('checked', true); }
+            if (data.dtue != true) { wind.find('input[name=day_tue]').prop('checked', false); } else {  wind.find('input[name=day_tue]').prop('checked', true); }
+            if (data.dwed != true) { wind.find('input[name=day_wed]').prop('checked', false); } else {  wind.find('input[name=day_wed]').prop('checked', true); }
+            if (data.dthu != true) { wind.find('input[name=day_thu]').prop('checked', false); } else {  wind.find('input[name=day_thu]').prop('checked', true); }
+            if (data.dfri != true) { wind.find('input[name=day_fri]').prop('checked', false); } else {  wind.find('input[name=day_fri]').prop('checked', true); }
+            if (data.dsat != true) { wind.find('input[name=day_sat]').prop('checked', false); } else {  wind.find('input[name=day_sat]').prop('checked', true); }
+            
+            wind.find('.show_el').hide(0, function(){
+                if ($.oip.manager.isMarkedForDeletion(data.id)) {
+                    wind.find('.show_del').show();
+                    wind.find('.block_mass_edit_other_days_table, .block_mass_edit_box_div, .block_mass_edit_textarea_div').prop('readonly',true).oipLoading('show', true);
+                } else {
+                    wind.find('.block_mass_edit_other_days_table, .block_mass_edit_box_div, .block_mass_edit_textarea_div').prop('readonly', false).oipLoading('hide');
+                    wind.find('.show_add').show(); 
+                    if (data.mod) {
+                        wind.find('.show_mod').show();   
+                    }
+                }
+            });
+        }
+        wind.fadeIn('fast', function() {
+            wind.find('.block_mass_edit_box').first().focus().select();
+        });
+    }
+    
+    //types: 'city', 'district', 'church'
+    function showEditWindowName(oldName, objType)
+    {
+        showWall();
+        var wind = $('.block_name_edit_win');
+        wind.find('.block_name_edit_old_name').html($.oip.escape(oldName));
+        wind.find('.block_name_edit_box').val($.oip.escape(oldName));
+        wind.find('.object_type').html($.trim(objType));
+        wind.find('.show_el').show();
+        
+        wind.fadeIn('fast', function() {
+            wind.find('.block_name_edit_box').focus().select();
+        });
+    }
+    
+    function showDistrictChooseWindow(churchId, churchName, curDistrict)
+    {
+        showWall();
+        var wind = $('.block_district_choose_win');
+        wind.find('.block_district_choose_church_name').html($.oip.escape(churchName));
+        wind.find('.block_district_choose_cur_district').html($.oip.escape(curDistrict));
+        wind.find('.church_id').html($.trim(churchId));
+        wind.find('.show_el').show();
+        
+        wind.fadeIn('fast');
+    }
+    
+    function showHours() {
+        $('.block_mass_edit_hour_el').fadeIn();
+    }
+    function hideHours() {
+        $('.block_mass_edit_hour_el').fadeOut();
+    }
+
+    function showMin() {
+        $('.block_mass_edit_min_el').fadeIn();
+    }
+    function hideMin() {
+        $('.block_mass_edit_min_el').fadeOut();
+    }
+
+    function organiazeHours() {
+        var count = 24,
+            cur = 0,
+            step = 2*Math.PI/count,
+            cheight = $('.block_mass_edit_win').height()/2,
+            cwidth = $('.block_mass_edit_win').width()/2,
+            xheight = (40+$('.block_mass_edit_win').height())/2,
+            xwidth = (40+$('.block_mass_edit_win').width())/2,
+            cx, cy;
+
+        for (var i = 1; i <= count; i++)
+        {
+          cx = cwidth + Math.sin(cur) * xwidth;
+          cy = cheight + Math.cos(cur) * xheight;
+          $('.block_mass_edit_hour_' + i).css('left', (cx - 12) + 'px');
+          $('.block_mass_edit_hour_' + i).css('top', (cy - 11) + 'px');
+          cur = cur + step;
+        }
+    }
+
+    function organiazeMinutes() {
+        var count = 12,
+            cur = 0,
+            step = 2*Math.PI/count,
+            cheight = $('.block_mass_edit_win').height()/2,
+            cwidth = $('.block_mass_edit_win').width()/2,
+            xheight = (40+$('.block_mass_edit_win').height())/2,
+            xwidth = (40+$('.block_mass_edit_win').width())/2,
+            cx, cy;
+
+        for (var i = 0; i < count; i++)
+        {
+          cx = cwidth + Math.sin(cur) * xwidth;
+          cy = cheight - Math.cos(cur) * xheight;
+          $('.block_mass_edit_min_' + i).css('left', (cx - 12) + 'px');
+          $('.block_mass_edit_min_' + i).css('top', (cy - 11) + 'px');
+          cur = cur + step;
+        }
+    }
+
+    function hideWall()
+    {
+        $('body').css('overflow', 'auto');
+        $('.back_wall').fadeOut('fast');
+    }
+
+    function showWall()
+    {
+        $('body').css('overflow', 'hidden');
+        $('.back_wall').css('width', $(window).width())
+                       .css('height', $(window).height())
+                       .fadeIn('fast');
+    }
+    
+    function _generate_mass_object(id, hour, minute, sunday)
+    {
+        var ret = {};
+        ret['hours'] = hour;
+        ret['minutes'] = minute;
+        ret['details'] = '';
+        ret['id'] = id;
+        
+        if (sunday === true)
+        {
+            ret['day_mon'] = false;
+            ret['day_tue'] = false;
+            ret['day_wed'] = false;
+            ret['day_thu'] = false;
+            ret['day_fri'] = false;
+            ret['day_sat'] = false;
+            ret['day_sun'] = true;
+        }
+        else
+        {
+            ret['day_mon'] = true;
+            ret['day_tue'] = true;
+            ret['day_wed'] = true;
+            ret['day_thu'] = true;
+            ret['day_fri'] = true;
+            ret['day_sat'] = true;
+            ret['day_sun'] = false;
+        }
+        return ret;
+    }
+    
+    function _get_mass_object_from_entry(elem)
+    {
+        var ret = {};
+        ret['hours'] = elem.find('input[name="hour"]').val();
+        ret['minutes'] = elem.find('input[name="minute"]').val();
+        ret['details'] = elem.find('textarea[name="details"]').val();
+        ret['id'] = $.trim(elem.find('.mass_id').html());
+        
+        if (elem.hasClass('block_mass_edit_sun'))
+        {
+            ret['day_mon'] = false;
+            ret['day_tue'] = false;
+            ret['day_wed'] = false;
+            ret['day_thu'] = false;
+            ret['day_fri'] = false;
+            ret['day_sat'] = false;
+            ret['day_sun'] = true;
+        }
+        else
+        {
+            ret['day_mon'] = elem.find('input[name="day_mon"]').is(':checked');
+            ret['day_tue'] = elem.find('input[name="day_tue"]').is(':checked');
+            ret['day_wed'] = elem.find('input[name="day_wed"]').is(':checked');
+            ret['day_thu'] = elem.find('input[name="day_thu"]').is(':checked');
+            ret['day_fri'] = elem.find('input[name="day_fri"]').is(':checked');
+            ret['day_sat'] = elem.find('input[name="day_sat"]').is(':checked');
+            ret['day_sun'] = false;
+        }
+        return ret;
+    }
+    
+    function setupMarker(pos, zoom, dont_center)
+    {   
+        if (map == undefined)
+        {
+            return;
+        }
+        if (pos == null) {
+            if (marker != null)
+            {
+                marker.setMap(null);
+                marker = null;
+                map.setCenter(new google.maps.LatLng(52.038977,18.962402));
+                map.setZoom(5);
+            }
+        } else {
+            if (marker == null) {
+                marker = new google.maps.Marker({
+                    map: map,
+                    position: pos,
+                    draggable:true
+                  }); 
+                  google.maps.event.addListener(marker, "dragend", function(event) { 
+                    $.oip.manager.setupPosition(event.latLng.lat(), event.latLng.lng());
+                    hideGpsConfirm();
+                  }); 
+            } else {
+                marker.setPosition(pos);
+            }
+
+            if (dont_center == undefined || dont_center == true)
+            {
+                map.setCenter(marker.getPosition());           
+            }
+            if (zoom != undefined)
+            {
+                map.setZoom(zoom);
+            }
+        }
+    }
+   
+    function goToAddress(address, zoom, gps)
+    {
+        if (map == undefined)
+        {
+            return;
+        }
+        if (gps != undefined)
+        {
+            setupMarker(new google.maps.LatLng(gps.lat, gps.lng), zoom);
+        }
+        else
+        {
+            if (address == undefined)
+            {
+                setupMarker(null);
+            }
+            else
+            {
+                geocoder = new google.maps.Geocoder();
+                geocoder.geocode({ 'address': address }, function(results, status) {
+                  if (status == google.maps.GeocoderStatus.OK) {
+                        setupMarker(results[0].geometry.location, zoom);
+                  }
+                });
+            }
+        }
+    }
+    
+    function showGpsConfirm() {
+        $('#gps_map').fadeIn('fast');
+    }
+    
+    function hideGpsConfirm() {
+        $('#gps_map').fadeOut('fast');
+    }
+    
+$(document).ready(function() {
+    initEdits();
+    organiazeHours();
+    organiazeMinutes();
+    
+    var max_city_search = 20;
+    
+    function render_more()
+    {
+        max_city_search += 20;
+        render_cities();
+    }
+    
+    function render_cities()
+    {
+        var data = $('.block_city_name').data('tmp_data');
+        var found = new EJS({text: $('#city_template').html()}).render({data: data, max: max_city_search});
+
+        if (data.length == 0) {
+            $('.block_city_use').hide();
+        } else {
+            $('.block_city_use').show();
+        }
+        $('.block_city_more').html(found);
+        $('.main_add_division_table_left_td').oipLoading('hide');
+    }
+    
+    function search_fun()
+    {
+        
+        $('.main_add_division_table_left_td').oipLoading('show');
+        $.oip.ajax.getCities($('.block_city_name').val(), function(data) {
+                $('.block_city_name').data('tmp_data', data);
+                
+                //found_data = data;
+                render_cities();
+        });
+    }
+    
+    var tim = new oip_timer(search_fun);
+    
+    $(window).resize(function() {
+        $('.back_wall:visible').css('width', $(window).width())
+           .css('height', $(window).height());
+    });
+    
+    $('body').on('click', '.block_church_www_td button', function() {
+        var url = $('.block_church_www_td .block_church_www').val();
+        if (url.indexOf('http://') === -1) {
+            url = 'http://' + url;
+        }
+        window.open(url);
+    });
+    
+    $('#save_all').mouseenter(function() {
+        $(this).find('.save_all_info').stop().fadeIn();
+    }).mouseleave(function() {
+        $(this).find('.save_all_info').stop().fadeOut();
+    });
+    
+    
+    //city search
+    $('.block_city_name').keyup(function() {
+        max_city_search = 20;
+        if ($(this).val() == '')
+        {
+            tim.stop();
+            $('.block_city_add').html('');
+            $('.block_city_use').hide();
+            $('.block_city_more').html('');
+            $('.main_add_division_table_left_td').oipLoading('hide');
+        }
+        else
+        {
+            $('.block_city_add').html('<span class="block_city_new common_border" title="Kliknij aby dodać tę miejscowość.">' + $.oip.escape($('.block_city_name').val()) + '</span>');
+            tim.stop();
+            tim.setup(500);
+        }
+    });
+    
+    //CITY
+    $('.block_city_form').on('click', '.block_city_new', function() {
+        $.oip.manager.setupCityId(-1, true, $.trim($('.block_city_name').val()));
+    });
+    
+    $('.block_city_form').on('click', '.block_city_list_element', function() {
+        $.oip.manager.setupCityId($.trim($(this).find('.city_id').html()));
+    });
+    
+    $('.block_city_form').on('click', '.render_more', function() {
+        render_more();
+    });
+    
+    
+    $('.block_city_selected_change').click(function() {
+        $.oip.manager.setupCityId(-1);
+        $.oip.manager.setupDistrictId(-1);
+        $.oip.manager.setupChurchId(-1);
+    });
+    
+    $('.block_city_selected_name_edit').click(function() {
+        showEditWindowName($.oip.manager.getCityName(), 'city');
+    });
+    $('.block_district_selected_name_edit').click(function() {
+        showEditWindowName($.oip.manager.getDistrictName(), 'district');
+    });
+        $('.block_church_selected_name_edit').click(function() {
+        showEditWindowName($.oip.manager.getChurchName(), 'church');
+    });
+    
+    $('.block_city').on('click', '.city_name_back', function() {
+        $.oip.manager.resetCityName();
+    });    
+    
+    //district
+    $('.block_district_name').keyup(function() {
+        if ($(this).val() == '')
+        {
+            $('.block_district_add').html('');
+            //$('.block_district_use').hide();
+        }
+        else
+        {
+            $('.block_district_add').html('<span class="block_district_new common_border" title="Kliknij aby dodać tą dzielnicę.">' + $.oip.escape($('.block_district_name').val()) + '</span>');
+            //$('.block_district_use').show();
+        }
+    });
+    
+    //district
+    $('.block_district_form').on('click', '.block_district_new', function() {
+        $.oip.manager.setupDistrictId(-1, true, $.trim($('.block_district_name').val()));
+    });
+    
+    $('.block_district_form').on('click', '.block_district_list_element', function() {
+        $.oip.manager.setupDistrictId($.trim($(this).find('.district_id').html()));
+    });
+    
+    $('.block_district_selected_change').click(function() {
+        $.oip.manager.setupDistrictId(-1);
+    });
+    
+    $('.block_district').on('click', '.district_name_back', function() {
+        $.oip.manager.resetDistrictName();
+    });
+    
+    $('.block_district_choose_content').on('click', '.sim_dc_name', function() {
+        $.oip.manager.setDistrictNewId($.trim($(this).closest('.block_district_choose_list_element').find('.district_id').html()));
+        
+        $(this).closest('.block_mass_edit_win, .block_district_choose_win').fadeOut('fast', function() {
+            hideWall();
+        });
+    });
+    
+    $('.block_district_choose_none').click(function() {
+        $.oip.manager.setDistrictNewId($.trim($(this).closest('.block_district_choose_win').find('.block_district_choose_default_district_id').html()));
+        
+        $(this).closest('.block_mass_edit_win, .block_district_choose_win').fadeOut('fast', function() {
+            hideWall();
+        });
+    });
+    
+     //church
+    $('.block_church_name').keyup(function() {
+        if ($(this).val() == '')
+        {
+            $('.block_church_add').html('');
+            $('.block_church_use').hide();
+        }
+        else
+        {
+            $('.block_church_add').html('<span class="block_church_new common_border" title="Kliknij aby dodać tę parafię.">' + $.oip.escape($('.block_church_name').val()) + '</span>');
+        }
+    });
+    
+    //chruch
+    $('.block_church_form').on('click', '.block_church_new', function() {
+        $.oip.manager.setupChurchId(-1, true, $.trim($('.block_church_name').val()));
+    });
+    
+    $('.block_church_form').on('click', '.block_church_list_element', function() {
+        $.oip.manager.setupChurchId($.trim($(this).find('.church_id').html()));
+    });
+    
+    $('.block_church_selected_change').click(function() {
+         $.oip.manager.setupChurchId(-1);
+    });
+    
+    $('.block_church').on('click', '.church_name_back', function() {
+        $.oip.manager.resetChurchName();
+    });
+   
+   $('.block_church_district_select_another').click(function() {
+       showDistrictChooseWindow($.oip.manager.getCityId(), $.oip.manager.getChurchName(), $.oip.manager.getDistrictName());
+    });
+    
+
+    
+    var _local_zoom = 16;
+    function _local_addr()
+    {
+        goToAddress($.oip.manager.getGoogleSearch(), _local_zoom, $.oip.manager.getGoogleGPSPos());   
+    }
+    
+    function _local_goToAddress(zoom)
+    {
+        if ($.oip.manager.addressTimer == undefined) {
+                $.oip.manager.addressTimer = new oip_timer(_local_addr);
+        } else {
+            $.oip.manager.addressTimer.stop();
+        }
+        if (zoom != undefined) {
+            _local_zoom = zoom;
+        } else {
+            _local_zoom = 16;
+        }
+        $.oip.manager.addressTimer.setup(500);
+    }
+    
+    $('.block_church_address').keyup(function() {
+        $.oip.manager.setChurchAddress($(this).val());
+        _local_goToAddress(16);
+        //if ($.oip.manager.getGoogleGPSPos() == undefined) {
+            showGpsConfirm();
+        //}
+    });
+    
+    $('.pos_ok').click(function() {
+        if (marker != null)
+        {
+            var pos = marker.getPosition();
+            $.oip.manager.setupPosition(pos.lat(), pos.lng());
+            hideGpsConfirm();    
+        }
+    });
+    
+    $('.block_church_description').keyup(function() {
+        $.oip.manager.setChurchDescription($(this).val());
+    });
+    
+    $('.block_church_www').keyup(function() {
+        $.oip.manager.setChurchWWW($(this).val());
+    });
+    
+    $('.pos_no').mouseenter(function() {
+        var par = $(this).closest('.gps_map'),
+            ac_ok = par.find('.action_ok'),
+            ac_no = par.find('.action_no');
+        //ac_ok.stop();
+        //ac_no.stop();
+        ac_ok.fadeOut('fast', function() {
+            ac_no.fadeIn('fast');
+        });
+    }).mouseleave(function() {
+         var par = $(this).closest('.gps_map'),
+            ac_ok = par.find('.action_ok'),
+            ac_no = par.find('.action_no');
+        ac_ok.stop();
+        ac_no.stop();
+        ac_no.fadeOut('fast', function() {
+            ac_ok.fadeIn('fast');
+        });
+    });
+          
+    $('#save_all').click(function() {
+        
+        var re_c = $('#recaptcha_challenge_field').val();
+        var re_r = $('#recaptcha_response_field').val();
+        $.oip.manager.Save(re_c, re_r);
+    });
+    
+    $('#cancel_all').click(function() {
+        $.oip.manager.Reset();
+    });
+    
+    function initialize() {
+        try
+        {
+            var mapOptions = {
+              center: new google.maps.LatLng(52.245461,21.007233),
+              zoom: 8,
+              mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            var map = new google.maps.Map(document.getElementById("map-canvas"),
+                mapOptions);
+
+            google.maps.event.addListener(map, 'click', function(event) {
+                  hideGpsConfirm(); 
+                  $.oip.manager.setupPosition(event.latLng.lat(), event.latLng.lng());
+                  setupMarker(event.latLng, null, false); //remove center
+                  $.oip.manager.showHideSave();
+            });
+
+            return map;
+        }
+        catch(e)
+        {
+            
+        }
+        return undefined;
+    }
+    map = initialize();    
+    
+    
+    $( document ).tooltip({
+      position: {
+        my: "center bottom-20",
+        at: "center top",
+        using: function( position, feedback ) {
+          $( this ).css( position );
+          $( "<div>" )
+            .addClass( "arrow" )
+            .addClass( feedback.vertical )
+            .addClass( feedback.horizontal )
+            .appendTo( this );
+        }
+      }
+    });
+    
+    $.oip.manager = new $.oip.managerDef({{ city_id }}, {{ district_id }}, {{ church_id }},                 
+        {
+          fun_city_select: function(name) {
+                $('.block_city_selected_name').html('<span class="subname">Miejscowość:</span> ' + name);
+                $('.block_city_form').hide();
+                $('.block_city_selected').show();
+                _local_goToAddress(11);
+            }, //city select
+          fun_city_unselect: function() {    
+                $('.block_city_selected').hide();
+                $('.block_city_form').show();
+                _local_goToAddress(16);
+            }, //city unselect
+          fun_city_show_edit: function() {
+              $('.block_city_selected_name_edit').show();
+          },
+          fun_city_hide_edit: function() {
+              $('.block_city_selected_name_edit').hide();
+          },
+          
+          fun_district_default_set: function(id) {
+                $('.block_default_district_id').html(id);    
+          },
+
+          fun_district_fill: function(data) {
+                $('.block_default_district_id').html(data[0].id);    
+                $('.block_district_choose_default_district_id').html(data[0].id);
+                if (data.length > 0)
+                {
+                    var found = new EJS({text: $('#district_template').html()}).render({data: data});
+                    $('.block_district_more').html(found);
+                    
+                    var choose = new EJS({text: $('#district_choose_template').html()}).render({data: data});
+                    $('.block_district_choose_content').html(choose);
+                }
+                else
+                {
+                    $('.block_district_more').html('Brak');
+                }
+                
+                
+                
+                
+            }, //dist fill
+          fun_district_show: function() {
+                $('.block_district_form').show();
+                $('.block_district').show();
+            }, //dist show
+          fun_district_hide: function() {
+                $('.block_district').hide();
+            }, //dist hide
+          fun_district_select: function(name) {
+                if (name == '') {
+                  $('.block_district_selected_name').html('<span class="subname">Dzielnica:</span> Bez dzielnicy lub nie wiem jaka');
+                } else {
+                  $('.block_district_selected_name').html('<span class="subname">Dzielnica:</span> ' + name);
+                }
+                $('.block_district_form').hide();
+                $('.block_district_selected').show();
+                //_local_goToAddress(15);
+            }, //dist select
+          fun_district_unselect: function() {
+                $('.block_district_selected').hide();
+                $('.block_district_form').show();
+                //_local_goToAddress(11);
+            }, //dist unselect
+          fun_district_clear: function() {
+                $('.block_district_more').html('');
+            },
+          fun_district_show_edit: function() {
+              $('.block_district_selected_name_edit').show();
+          },
+          fun_district_hide_edit: function() {
+              $('.block_district_selected_name_edit').hide();
+          },  
+            
+            
+            
+
+          fun_church_fill: function(data) {
+                var found = new EJS({text: $('#church_template').html()}).render({data: data});
+                $('.block_church_more').html(found);
+            }, //dist fill
+          fun_church_show: function() {
+              $('.block_church_form').show();
+              $('.block_church').show();
+          }, //church show
+          fun_church_hide: function() {
+              $('.block_church').hide();
+          }, //church hide
+          fun_church_select: function(name, data) {
+              $('.block_church_selected_name').html('<span class="subname">Parafia:</span> ' + name);
+              if (data != undefined)
+              {
+                  $('.block_church_description').val(data.description);
+                  $('.block_church_address').val(data.address);
+                  $('.block_church_www').val(data.www);
+                  if (data.latitude != undefined && data.longitude != undefined) {
+                    $.oip.manager.addressTimer.stop();
+                    if (map != undefined) {
+                        setupMarker(new google.maps.LatLng(data.latitude, data.longitude), 17);
+                    }
+                  } else if (data.address != undefined && data.address != '') {
+                      $.oip.manager.addressTimer.stop();
+                      _local_goToAddress(16);
+                  }
+              }
+              $('.block_church_form').hide();
+              $('.block_church_selected').show();
+          }, //church select
+          fun_church_unselect: function() {
+            $('.block_church_selected').hide();
+            $('.block_church_form').show();
+            $('.block_church_description').val('');
+            $('.block_church_www').val('');
+            $('.block_church_address').val('');
+            _local_goToAddress(11);
+          }, //church unselect
+          fun_church_clear: function() {
+            $('.block_church_address').val('');
+            $('.block_church_description').val('');
+            $('.block_church_www').val('');
+            $('.block_church_more').html('');
+          },
+          fun_church_show_edit: function() {
+              $('.block_church_selected_name_edit').show();
+          },
+          fun_church_hide_edit: function() {
+              $('.block_church_selected_name_edit').hide();
+          },
+          
+          fun_mass_fill: function(smasses, wmasses) {
+              var found = new EJS({text: $('#mass_template').html()}).render({sdata: smasses, wdata: wmasses});
+              $('.block_mass_more').html(found);
+            }, //dist fill
+          fun_mass_show: function() {
+              $('.block_mass_form').show();
+              $('.block_mass').show();
+          }, //church show
+          fun_mass_hide: function() {
+              $('.block_mass').hide();
+          }, //church hide
+          fun_mass_clear: function() {
+            $('.block_mass_more').html('');
+          },
+          
+          
+          fun_hide_save: function(_after_fun) {
+            var save_all = $('#save_all'),
+                cancel_all = $('#cancel_all');
+            //save_all.stop();
+            //cancel_all.stop()
+            
+            cancel_all.fadeOut('fast', function() {
+                save_all.slideUp('fast', function() {
+                    if (_after_fun != undefined)
+                    {
+                        _after_fun();
+                    }
+                });
+                
+            })
+          },
+          fun_show_save: function(_after_fun) {
+                var save_all = $('#save_all'),
+                    cancel_all = $('#cancel_all');
+               // save_all.stop();
+               // cancel_all.stop();
+                
+                save_all.slideDown('fast', function() {
+                  cancel_all.fadeIn('fast', function() {
+                    if (_after_fun != undefined)
+                    {
+                        _after_fun();
+                    }
+                  });
+                });
+          },
+          fun_wait_save: function() {
+              var save_all = $('#save_all'),
+                  cancel_all = $('#cancel_all');
+                  
+              save_all.find('.save_ok').hide();
+              save_all.find('.save_wait').show();
+              cancel_all.hide();
+          },
+          fun_unwait_save: function(hiding) {
+              var save_all = $('#save_all'),
+                  cancel_all = $('#cancel_all');
+              
+              if (hiding ==! true)
+              {
+                cancel_all.show();
+              }
+              save_all.find('.save_wait').hide();
+              save_all.find('.save_ok').show();              
+          },
+        }
+    );   
+
+//city ~ 11
+//address ~ 16
+
+    
+});
+</script>
+{% endblock %}

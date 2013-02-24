@@ -1,0 +1,223 @@
+{# {% extends "::base_all.html.twig" %} #}
+{% block stylesheets %}
+<style type="text/css">
+.ch_district
+{
+    -moz-border-radius: 40px / 10px 25px;
+    -webkit-border-radius: 40px / 10px 25px;
+    border-radius: 40px / 10px 25px;
+    /*background-color: #e3ffe3;*/
+    border: 1px solid #75ff75;
+    margin: 0px;
+    padding-bottom: 1px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    width: 280px;
+}
+
+div.ch_district:nth-of-type(2n+1) { background-color: #f2f2ab; }
+div.ch_district:nth-of-type(2n) { background-color: #dede9d; }
+
+.ch_district_name {
+	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	box-shadow:inset 0px 1px 0px 0px #ffffff;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #b9ffab), color-stop(1, #93de8c) );
+	background:-moz-linear-gradient( center top, #b9ffab 5%, #93de8c 100% );
+	background-color:#b9ffab;
+        -moz-border-radius: 40px / 10px 25px;
+        -webkit-border-radius: 40px / 10px 25px;
+        border-radius: 40px / 10px 25px;
+	border:1px solid #dcdcdc;
+	display:inline-block;
+	color:#202020;
+	font-family:arial;
+	font-size:11px;
+	font-weight:bold;
+	padding:4px 10px;
+	text-decoration:none;
+        display: inline-block;
+        width: 260px;
+        overflow: hidden;
+}
+.ch_churches li
+{
+    list-style-type: none;
+    /*background-color: green;*/
+    text-align: left;
+}
+.ch_address
+{
+    font-size: 10px;
+    color: #555;
+    padding-left: 5px;
+}
+.ch_mdesc
+{
+    font-size: 10px;
+    color: #b22;
+    padding-left: 10px;
+}
+#churches_destination
+{
+    overflow: hidden;
+}
+#churches_destination:hover
+{
+    overflow: auto;
+}
+
+.ch_churches
+{
+    padding: 1px 17px;
+}
+
+#churches_destination a,
+#churches_destination a:link,
+#churches_destination a:visited,
+#churches_destination a:hover
+{
+    color: #5c6104;
+}
+
+.ch_church_elem_place
+{
+    display: block;
+}
+
+.ch_church_elem:hover .ch_church_elem_place
+{
+    display: none;
+}
+
+.ch_church_elem_add
+{
+    font-size: 10px;
+    display: none;
+}
+
+.ch_church_elem:hover .ch_church_elem_add
+{
+    display: block;
+}
+
+
+.ch_church_elem
+{
+    padding: 2px 20px 0px 5px;
+    cursor: pointer;
+}
+
+.ch_church_elem:hover
+{
+    padding: 2px 5px 1px 5px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.4) url({{ asset('bundles/oipmsze/images/go.png') }}) center right no-repeat;
+}
+
+</style>
+{% endblock %}
+
+
+{% block body %}
+<div id="churches_destination"></div>
+
+<script id="churches_template" type="text/template">
+    <% for (var dkey in data) { %>
+    <div class="ch_district">
+        <div class="ch_district_name">
+                <% var dst = Routing.generate('edit_or_add', 
+                                {city_id: {{city_id}}, 
+                                 district_id: dkey}); %>
+                <% if (data[dkey]['name'] == '') { %>
+                    Bez dzielnicy 
+                    <br/>
+                    (<a href=<%= dst %>>+ Dodaj parafię</a>)
+                <% } else { %>
+                    <%= data[dkey]['name'] %>
+                    <br/>
+                    (<a href=<%= dst %>>+ Dodaj parafię/Edytuj dzielnicę</a>)
+                <% } %>
+                <span class="d_id hidden"><%= dkey %></span>
+        </div>
+        <ul class="ch_churches">
+                <% for (var ckey in data[dkey]['churches']) { %>
+                    <% var dstAll = Routing.generate('edit_or_add', 
+                                {city_id: {{city_id}}, 
+                                 district_id: dkey,
+                                 church_id: ckey}); %>
+                    <li class="ch_church_elem">
+                            <span class="ch_name"><%= data[dkey]['churches'][ckey]['name'] %></span>
+                        <% if (data[dkey]['churches'][ckey]['address'] != '') { %>
+                            <br/>
+                            <span class="ch_address"><%= data[dkey]['churches'][ckey]['address'] %></span> 
+                        <% } %>
+                        <% if ( data[dkey]['churches'][ckey]['mdesc'] != undefined &&
+                                data[dkey]['churches'][ckey]['mdesc'] != '') { %>
+                            <br/>
+                            <span class="ch_mdesc"><%= data[dkey]['churches'][ckey]['mdesc'] %></span> 
+                        <% } %>
+                        <br/>
+                        <a class="ch_church_elem_place">&nbsp;</a>
+                        <span class="ch_church_elem_add"><a href=<%= dstAll %>>(+ Dodaj/Zmień msze lub parafię)</a></span>
+                        <span class="ch_id hidden"><%= ckey %></span>
+                        <span class="ch_desc hidden"><%= data[dkey]['churches'][ckey]['desc'] %></span>
+                        <span class="ch_lat hidden"><%= data[dkey]['churches'][ckey]['lat'] %></span>
+                        <span class="ch_lng hidden"><%= data[dkey]['churches'][ckey]['lng'] %></span>
+                        <span class="ch_www hidden"><%= data[dkey]['churches'][ckey]['www'] %></span> 
+                        {# <a href="{{ path('show_church', {'city_id': church.city.id, 'id': church.id }) }}">go</a> #}
+                    </li>
+                <% } %>
+         </ul>
+    </div>
+    <% } %>
+</script>
+
+
+{%endblock%}
+
+{% block javascripts %}
+
+<script type="text/javascript">    
+var churchDistrict = {{ result|json_encode|raw }};
+
+function churches_render(filter)
+{
+    filter = filter.toLowerCase();
+    var filteredData = jQuery.extend(true, {}, churchDistrict);
+    if (filter != '')
+    {
+        for (var key in filteredData)
+        {
+            if (!filteredData[key]['name'].toLowerCase().contains(filter))
+            {
+                var fdata = filteredData[key]['churches'];
+                for (var ckey in fdata)
+                {
+                    if (!fdata[ckey]['name'].toLowerCase().contains(filter) && 
+                        !fdata[ckey]['address'].toLowerCase().contains(filter)) {
+                        delete fdata[ckey];
+                    }
+                }
+                if ($.isEmptyObject(fdata)) {
+                    delete filteredData[key];
+                }
+            }
+        }
+    }
+    var rendered = new EJS({text: $('#churches_template').html()}).render({data: filteredData});
+    $('#churches_destination').html(rendered);   
+}
+
+function resizeView()
+{
+    var minVal = 400, diff = 260;
+    if ($(document).height() - diff < minVal) {
+        $('#churches_destination').height(minVal);
+    } else {
+        $('#churches_destination').height($(document).height() - diff - 2);
+    }   
+}
+
+</script>
+{% endblock %}

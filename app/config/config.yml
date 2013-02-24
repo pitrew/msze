@@ -1,6 +1,7 @@
 imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
+    - { resource: params.php }
 
 framework:
     #esi:             ~
@@ -58,3 +59,8 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+
+genemu_form:
+    recaptcha:
+        public_key:  6Lehmd0SAAAAAArc4LsrgolSi8b9O8rLt_OEnHxh
+        private_key: 6Lehmd0SAAAAAMCJasaKSOzSB_ZQkEfLFgpXQ4tO
