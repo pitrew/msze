@@ -1,3 +1,3 @@
 oip_msze_homepage:
     pattern:  /
-    defaults: { _controller: OipMszeBundle:Default:index, name: 'xxx' }
+    defaults: { _controller: OipMszeBundle:Default:index }
