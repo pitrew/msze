@@ -1,0 +1,30 @@
+/* 
+    Document   : msze_new.css
+    Created on : 2014-11-12, 12:16:35
+    Author     : pitre
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+.nFullMap { min-height: 250px; }
+@media all and (min-height: 350px) {
+    .nFullMap { min-height: 390px; }
+}
+@media all and (min-height: 500px) {
+    .nFullMap { min-height: 540px; }
+}
+@media all and (min-height: 700px) {
+    .nFullMap { min-height: 680px; }
+}
+
+.paginationButtonTh { width: 35px; }
+.paginationCounterTh { text-align: center; padding-top: 9px; font-weight: bold; }
+.paginationButtonThL { left: 0px; }
+.paginationButtonThR { right: 0px }
+
+.listCityDetails { cursor: pointer; }
+.isDistrict { background-color: #bbb; }
+.hourBold { font-weight: bold; }
+.dayName { font-size: 85%; }
+.hoursNav { font-size: 90%; }
+.hourClickable { cursor: pointer; }

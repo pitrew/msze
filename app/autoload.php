@@ -9,6 +9,9 @@ if (!function_exists('intl_get_error_code')) {
     require_once __DIR__.'/../vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs/functions.php';
 
     $loader->add('', __DIR__.'/../vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs');
+    
+    
+    //$loader->add('JMS', __DIR__.'/../vendor/jms/serializer/src');
 }
 
 AnnotationRegistry::registerLoader(array($loader, 'loadClass'));

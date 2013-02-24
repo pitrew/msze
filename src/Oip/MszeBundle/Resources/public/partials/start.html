@@ -1,0 +1,27 @@
+<!-- Container #1 (see wireframe) -->
+<md-toolbar flex layout="row" layout-align="start center" 
+            class="md-medium-tall" md-scroll-shrink="true" ui-view="toolbar">
+</md-toolbar>
+
+<div flex layout="row">
+
+    <md-sidenav md-is-locked-open="true" class="md-whiteframe-z2 oip-sidebar"
+                ui-view="navigation">
+    </md-sidenav>
+
+    <md-content flex id="content" ui-view="content" ng-if="showDetails">
+    </md-content>
+
+    <md-content flex id="mapContent" ng-controller="mapController">
+    
+        <div ng-if="error">
+            [[error.msg]]
+            <br/>
+            [[error.details]]
+        </div>
+        <div id="full-map"></div>
+
+    </md-content>
+</div>
+
+

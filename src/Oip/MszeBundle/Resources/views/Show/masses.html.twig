@@ -1,0 +1,14 @@
+{% extends "::base_all.html.twig" %}
+
+{% block body %}
+
+<ul>
+
+{% for mass in masses %}
+    <li>{{ mass.startTime|date('H:i') }} </li>
+{% endfor %}
+
+
+</ul>
+
+{% endblock %}

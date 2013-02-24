@@ -1,0 +1,454 @@
+{% extends "::base_new.html.twig" %}
+
+{% block stylesheets %}
+<link href="{{ asset('bundles/oipmsze/css/msze.css') }}" rel="stylesheet"/>
+{% endblock %}
+
+{% block body %}
+
+<!-- Cities list  -->
+<script type="text/ng-template" id="citiesList.tmpl">
+    <div class="table-responsive" id="allCities" ng-if="vm.curr.view == vm.VIEW_CITIES_LIST">
+        <table class="table table-condensed table-striped table-hover">
+            <thead>
+                <tr>
+                    <th class="paginationButtonTh">
+                        <button ng-disabled="vm.curr.pg.page == 0" ng-click="vm.curr.pg.page = vm.curr.pg.page - 1" class="btn btn-default">
+                            &lt;
+                        </button>
+                    </th>
+                    <th class="paginationCounterTh" ng-if="vm.curr.pg.nop() > 0">
+                        {[{vm.curr.pg.page+1}]}/{[{vm.curr.pg.nop()}]}
+                    </th>
+                    <th class="paginationCounterTh" ng-if="vm.curr.pg.nop() == 0">
+                        0/0
+                    </th>
+                    <th class="paginationButtonTh">
+                        <button ng-disabled="vm.curr.pg.page >= vm.curr.listFiltered.length/vm.curr.pg.size - 1" ng-click="vm.curr.pg.page=vm.curr.pg.page+1" class="btn btn-default">
+                            &gt;
+                        </button>
+                    </th>
+                </tr>
+            </thead>
+            <tr ng-repeat="city in vm.curr.listFiltered = (vm.curr.list | filter:vm.curr.search:vm.ignoreDiacritics) | startFrom:vm.curr.pg.page*vm.curr.pg.size | limitTo:vm.curr.pg.size">
+                <td colspan="3" class="listCityDetails" ng-click="vm.cityClicked(city)">
+                    {[{city.name}]}
+                </td>
+            </tr>
+            <tr ng-if="vm.curr.listFiltered.length == 0"><td colspan="3">
+                    Brak wyników
+            </td></tr>
+        </table>
+    </div>   
+</script>
+
+<!-- Hours and churches menu/list  -->
+<script type="text/ng-template" id="hoursAndChurchesMenu.tmpl">
+    <button ng-click="vm.back()" ng-if="vm.curr.view == vm.VIEW_CITY_DET" class="btn btn-default btn-sm">&#215;&nbsp;<span>{[{vm.state.cityName}]}</span></button>
+    <ul class="nav nav-tabs nav-justified" ng-if="vm.curr.view == vm.VIEW_CITY_DET">
+        <li role="presentation" ng-class="vm.curr.churchesHours ? 'active' : ''"><a href="" ng-click="vm.curr.churchesHours = true">Godziny</a></li>
+        <li role="presentation" ng-class="vm.curr.churchesHours ? '' : 'active'"><a href="" ng-click="vm.curr.churchesHours = false">Kościoły</a></li>
+    </ul>
+</script>
+
+<!-- Hours list  -->
+<script type="text/ng-template" id="hoursList.tmpl">
+    <div class="container-fluid" id="cityHours" ng-if="vm.curr.view == vm.VIEW_CITY_DET">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <ul class="nav nav-pills hoursNav">
+                    <li ng-repeat="a in [0,1,2,3,4,5,6]" role="presentation" ng-class="vm.curr.day == a ? 'active' : ''">
+                        <a href="" ng-click="vm.curr.day = a">{[{vm.curr.staticDays[a]}]}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row" ng-if="vm.state.show.churchesByHour == false">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-repeat="houList in vm.churchManager.staticHours" ng-if="vm.state.show.churchesHoursDays == $index">
+                <span ng-if="houList.length > 0">
+                    <span ng-repeat="hou in houList">
+                        <span class="hourBold hourClickable" ng-click="vm.hourClicked(vm.state.city.id, vm.state.show.churchesHoursDays, hou.st)">{[{hou.st | formatHour}]}</span><span ng-if="$index < houList.length-1">,</span>
+                    </span>
+                </span>
+                <span ng-if="hou.length == 0">
+                    Brak danych
+                </span>
+            </div>
+        </div>
+
+        <div class="row" ng-if="vm.state.show.churchesByHour == true">
+            <div class="row">
+            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 paginationButtonThL">
+                <button ng-disabled="vm.churchManager.currentPage == 0" ng-click="vm.churchManager.currentPage=vm.churchManager.currentPage-1" class="btn btn-default">
+                    &lt;
+                </button>
+            </div>
+            <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 paginationCounterTh" ng-if="vm.churchManager.numberOfPages() > 0">
+                {[{vm.churchManager.currentPage+1}]}/{[{vm.churchManager.numberOfPages()}]}
+            </div>
+            <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 paginationCounterTh" ng-if="vm.churchManager.numberOfPages() == 0">
+                0/0
+            </div>
+            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 paginationButtonThR">
+                <button ng-disabled="vm.churchManager.currentPage >= vm.churchManager.listFiltered.length/vm.churchManager.pageSize - 1" ng-click="vm.churchManager.currentPage=vm.churchManager.currentPage+1" class="btn btn-default">
+                    &gt;
+                </button>
+            </div>
+        </div>
+        </div>
+    </div>
+</script>
+
+<!-- Churches list  -->
+<script type="text/ng-template" id="churchesList.tmpl">
+    <div class="container-fluid" id="cityChurches" ng-if="vm.state.show.churches && !vm.state.show.churchesHours">
+        <div class="row">
+            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 paginationButtonThL">
+                <button ng-disabled="vm.churchManager.currentPage == 0" ng-click="vm.churchManager.currentPage=vm.churchManager.currentPage-1" class="btn btn-default">
+                    &lt;
+                </button>
+            </div>
+            <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 paginationCounterTh" ng-if="vm.churchManager.numberOfPages() > 0">
+                {[{vm.churchManager.currentPage+1}]}/{[{vm.churchManager.numberOfPages()}]}
+            </div>
+            <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 paginationCounterTh" ng-if="vm.churchManager.numberOfPages() == 0">
+                0/0
+            </div>
+            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 paginationButtonThR">
+                <button ng-disabled="vm.churchManager.currentPage >= vm.churchManager.listFiltered.length/vm.churchManager.pageSize - 1" ng-click="vm.churchManager.currentPage=vm.churchManager.currentPage+1" class="btn btn-default">
+                    &gt;
+                </button>
+            </div>
+        </div>
+        <table class="table table-condensed table-striped table-hover">
+            <tr>
+                <td>
+                    <input type="text" class="form-control" placeholder="Szukaj kosciola" ng-model="vm.churchManager.search">    
+                </td>
+            </tr>
+            <tr ng-repeat="churchMix in vm.churchManager.listFiltered = (vm.churchManager.list | filter:vm.churchManager.search:vm.ignoreDiacritics) | startFrom:vm.churchManager.currentPage*vm.churchManager.pageSize | limitTo:vm.churchManager.pageSize">
+                <td ng-if="churchMix.isd" class="isDistrict">        
+                        <span ng-if="churchMix.dname == ''">Bez dzielnicy</span>
+                        <span ng-if="churchMix.dname != ''">{[{churchMix.dname}]}</span>
+                </td>
+                <td ng-if="!churchMix.isd" class="listCityDetails" ng-click="vm.churchClicked(churchMix.church)">        
+                        {[{churchMix.church.name}]}
+                </td>
+            </tr>
+            <tr ng-if="vm.churchManager.listFiltered.length == 0">
+                <td>
+                    Brak wyników
+                </td>
+            </tr>
+        </table>
+    </div>
+</script>
+
+<!-- Masses list  -->
+<script type="text/ng-template" id="massesList.tmpl">
+    <button ng-click="vm.state.showCities()" ng-if="vm.state.show.masses" class="btn btn-default btn-sm">&#215;&nbsp;{[{vm.state.cityName}]}</button>
+    <button ng-click="vm.state.showChurches()" ng-if="vm.state.show.masses" class="btn btn-default btn-sm">&#215;&nbsp;{[{vm.state.church.name}]}</button>
+    <div class="table-responsive" id="churchMasses" ng-if="vm.state.show.masses">
+        <table class="table table-condensed table-striped table-hover">
+            <tr ng-repeat="mas in vm.state.church._exHours">
+                <td>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 dayName">
+                                {[{mas.n}]}:
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <span ng-if="mas.l.length > 0">
+                                    <span ng-repeat="hou in mas.l">
+                                        <span class="hourBold">{[{hou.s | formatHour}]}</span><span ng-if="hou.d != ''" class="dayName">({[{hou.d}]})</span><span ng-if="$index < mas.l.length-1">,</span>
+                                    </span>
+                                </span>
+                                <span ng-if="mas.l.length == 0">
+                                    Brak danych
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</script>
+        
+<div ng-controller="mszeMainCtrl">
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Msze</a>
+          </div>
+
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <!--
+              <ul class="nav navbar-nav">
+              <li class="active"><a href="#">Mapa</a></li>
+              <li><a href="#">Lista</a></li>
+            </ul>
+            -->
+            <form class="navbar-form navbar-left" role="search">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Szukaj miasta" ng-model="vm.curr.search">
+              </div>
+              <!--<button type="submit" class="btn btn-default">Szukaj</button>-->
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="#">Dodaj / edytuj</a></li>
+            </ul>
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+      </nav>
+        
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                <div ng-include src="'citiesList.tmpl'"></div>
+                <div ng-include src="'hoursAndChurchesMenu.tmpl'"></div>
+                <div ng-include src="'hoursList.tmpl'"></div>
+                <div ng-include src="'churchesList.tmpl'"></div>
+                <div ng-include src="'massesList.tmpl'"></div>                
+            </div>
+            <div id="full-map" class="nFullMap col-xs-12 col-sm-8 col-md-8 col-lg-9"></div>
+        </div>            
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+
+
+</script>
+{% endblock %}
+
+{% block body1 %}
+<center>
+<div class="main_add_new">
+    <a href="{{ path('edit_or_add') }}" class="main_add_button">
+    + Dodaj miejscowość lub parafię
+    </a>
+</div>
+<div class="main_search">
+    <label for="cityName">Szukaj miejscowości:</label> <input type="text" name="cityName" placeholder="Nazwa miejscowości"/>
+    <div class="main_search_result">
+        
+    </div>
+</div>
+
+        <div class="geonames">Nazwy miejscowości pochodzą z portalu <a href="http://www.geonames.org">www.geonames.org</a> | <span id="cookies">Informacja o cookies</span></div>
+
+</center>
+
+<div class="hidden cookies" title="Kliknij aby zamknąć">
+    <p>Nasza strona stotsuje "cookies" (tzw. ciasteczka), czyli pliki, zawierające 
+    dane informatyczne, w postaci plików tekstowych, które serwer zapisuje na 
+    urządzeniu końcowym użytkownika danego Serwisu internetowego, 
+    tak by odczytać je ponownie przy każdorazowym połączeniu się z Serwisem, z tego urządzenia końcowego.</p>
+
+<p>Pliki cookies nie są wykorzystywane do identyfikacji czy ustalania tożsamości
+poszczególnych użytkowników. Co ważne, pliki cookies nie niszczą systemu 
+na danym urządzeniu końcowym, ani nie wpływają na sposób działania 
+urządzenia końcowego. Pliki cookies nie powodują zmian konfiguracyjnych 
+w urządzeniach końcowych użytkowników oraz nie mają żadnego wpływu na działanie 
+oprogramowania zainstalowanego na tych urządzeniach.</p>
+ 
+<p>Pliki cookies mogą być wykorzystywane w celu:</p>
+<ul>
+<li>dostosowania zawartości stron internetowych Serwisu do preferencji użytkownika 
+    oraz optymalizacji korzystania ze stron internetowych</li>
+<li>tworzenia statystyk, które pomagają zrozumieć, w jaki sposób użytkownicy 
+    Serwisu korzystają ze stron internetowych, co umożliwia ulepszanie ich struktury i zawartości</li>
+<li>utrzymania sesji użytkownika</li>
+</ul>
+<p>W ramach Serwisów stosowane są trzy zasadnicze rodzaje plików cookies: "sesyjne", "stałe" oraz "zewnętrzne".</p>
+<p>Cookies "sesyjne" są plikami tymczasowymi, które przechowywane są w urządzeniu 
+    końcowym użytkownika do czasu wyłączenia oprogramowania (przeglądarki internetowej)</p>
+<p>"Stałe" pliki cookies przechowywane są w urządzeniu końcowym Użytkownika przez 
+    czas określony w parametrach plików cookies lub do czasu ich usunięcia
+    przez użytkownika i służą do zapamiętania wybranych przez użytkownika 
+    Serwisu ustawień i personalizacji interfejsu użytkownika.</p>
+<p>"Zewnętrzne" pliki cookies (tzw. third parties cookies) umożliwiają 
+    zbieranie informacji o sposobie korzystania z Serwisów</p>
+
+<p>Pliki cookies zamieszczane w urządzeniu końcowym Użytkownika Serwisu i 
+wykorzystywane mogą być również przez współpracujących z operatorem Serwisu reklamodawców oraz partnerów.</p>
+
+<br/>
+<p>Zarządzanie plikami cookies:</p>
+
+<p>Dostępne przeglądarki internetowe w ustawieniach początkowych 
+    akceptują pliki cookies. Każdy użytkownik może jednak sprzeciwić
+    się umieszczaniu plików cookies na jego urządzeniu końcowym.
+    Co do zasady, by zmienić te ustawienia, należy skorzystać z opcji 
+    wyłączenia mechanizmu plików cookies w danej przeglądarce internetowej, 
+    zarówno na komputerach, smartfonach, jak i innych urządzeniach. 
+    Ustawienia te mogą zostać zmienione w szczególności w taki sposób, 
+    aby blokować automatyczną obsługę plików cookies w ustawieniach
+    przeglądarki internetowej bądź informować o ich każdorazowym zamieszczeniu 
+    w urządzeniu użytkownika Serwisu. Szczegółowe informacje o możliwości i 
+    sposobach obsługi plików cookies dostępne są w ustawieniach oprogramowania 
+    (przeglądarki internetowej). Warto jednak wspomnieć, że usunięcie plików 
+    cookies może doprowadzić do utraty możliwości korzystania z istotnych funkcjonalności Serwisu.</p>
+<p>Więcej informacji na temat cookies dostępnych jest pod adresem 
+    <a href="http://www.aboutcookies.org/">http://www.aboutcookies.org/</a> 
+    oraz <a href="http://wszystkoociasteczkach.pl">http://wszystkoociasteczkach.pl</a></p>
+
+</div>
+
+
+<script id="main_city_template" type="text/template">
+     <% var cnt = 0, brk = false %>
+    <% for (var key in data) { %>
+        <div class="block_city_list_element">
+            <span class="common_border"><%= $.oip.escape(data[key][1]) %></span>
+            <span class="hidden city_id"><%= data[key][0] %></span>
+        </div>
+        <% 
+            if (cnt >= max) { brk = true; break; }
+            cnt = cnt + 1
+        %>
+    <% } %>
+    <% if (brk == true) { %>
+        <div class="render_more main_add_button">Więcej...</div>
+    <% } %>
+</script>
+
+<script id="main_city_template_empty" type="text/template">
+    <span>Nie znaleziono miejscowości o takiej nazwie. Użyj przycisku na górze strony aby dodać tę miejscowość.</span>
+</script>
+
+{% endblock %}
+
+{% block javascripts1 %}
+<script type="text/javascript">
+    var allCities = {% render url('show_cities', {'_format': 'json', 'small': true }) %};
+    var showMax = 100;
+    
+    function render_more()
+    {
+        showMax += 100;
+        //save pos
+        render_cities($('input[name=cityName]').val());
+        //scroll
+    }
+    
+    function render_cities(filter) {
+        $('.main_search_result').oipLoading('show');
+        
+        filter = filter.toLowerCase();
+        var filteredData = jQuery.extend(true, {}, allCities);
+        
+        if (filter != '') {
+            for (var key in filteredData)
+            {
+                if (!filteredData[key][1].toLowerCase().contains(filter))
+                {
+                    delete filteredData[key];
+                }       
+            }
+        }
+        
+        var rendered = undefined;
+        if ($.isEmptyObject(filteredData)) {
+            rendered = new EJS({text: $('#main_city_template_empty').html()}).render({});
+        } else {
+            rendered = new EJS({text: $('#main_city_template').html()}).render({data: filteredData, max: showMax});
+        }
+        $('.main_search_result').html(rendered).oipLoading('hide');
+    }
+    
+    function resizeView()
+    {
+        var minVal = 440, diff = 210;
+        if ($(window).height() - diff < minVal) {
+            $('.main_search_result').height(minVal);
+        } else {
+            $('.main_search_result').height($(window).height() - diff);
+        }   
+    }
+    
+    function setCookie(c_name,value,exdays)
+    {
+        var exdate=new Date();
+        exdate.setDate(exdate.getDate() + exdays);
+        var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
+        document.cookie=c_name + "=" + c_value;
+    }
+    
+    function getCookie(c_name)
+    {
+        var c_value = document.cookie;
+        var c_start = c_value.indexOf(" " + c_name + "=");
+        if (c_start == -1)
+          {
+          c_start = c_value.indexOf(c_name + "=");
+          }
+        if (c_start == -1)
+          {
+          c_value = null;
+          }
+        else
+          {
+          c_start = c_value.indexOf("=", c_start) + 1;
+          var c_end = c_value.indexOf(";", c_start);
+          if (c_end == -1)
+          {
+        c_end = c_value.length;
+        }
+        c_value = unescape(c_value.substring(c_start,c_end));
+        }
+        return c_value;
+    }
+    
+    $(document).ready(function() {    
+        resizeView();
+        $(window).resize(function() {
+            resizeView();
+        });
+        
+        render_cities($('input[name=cityName]').val());
+        $('input[name=cityName]').keyup(function() {
+            showMax = 100;
+            render_cities($(this).val());
+        });
+        
+        $('.main_search_result').on('click', '.block_city_list_element', function() {
+            var city_id = $(this).find('.city_id').html();
+            city_id = parseInt($.trim(city_id));
+            location.href = Routing.generate('show_city', {id: city_id });
+        });
+        
+        $('.main_search_result').on('click', '.render_more', function() {
+            render_more();
+        });
+        
+        if (getCookie('first_time') == null)
+        {
+            $('.cookies').show();
+        }
+        
+        $('.cookies').click(function() {
+            setCookie('first_time', true, 60);
+            $(this).hide();
+        });
+        
+        $('#cookies').click(function() {
+            $('.cookies').show();
+        });
+    });
+</script>
+{% endblock %}

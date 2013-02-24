@@ -1,0 +1,13 @@
+<md-input-container class="oip-search">
+    <label>Search</label>
+    <input ng-model="model.search" ng-change="api.city.filter(model.search)"">
+</md-input-container>
+<md-content scrolly="api.city.showMore()">
+    <md-list>
+        <md-list-item class="md-1-line" ng-repeat="city in model.view.cities">
+          <div class="md-list-item-text" layout="column" ng-click="api.city.open(city)">
+            <p>[[ city.name ]]</p>
+          </div>
+        </md-list-item>
+    </md-list>
+</md-content>

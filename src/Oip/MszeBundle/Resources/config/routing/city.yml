@@ -1,0 +1,30 @@
+city:
+    pattern:  /
+    defaults: { _controller: "OipMszeBundle:City:index" }
+
+city_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "OipMszeBundle:City:show" }
+
+city_new:
+    pattern:  /new
+    defaults: { _controller: "OipMszeBundle:City:new" }
+
+city_create:
+    pattern:  /create
+    defaults: { _controller: "OipMszeBundle:City:create" }
+    requirements: { _method: post }
+
+city_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "OipMszeBundle:City:edit" }
+
+city_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "OipMszeBundle:City:update" }
+    requirements: { _method: post }
+
+city_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "OipMszeBundle:City:delete" }
+    requirements: { _method: post }

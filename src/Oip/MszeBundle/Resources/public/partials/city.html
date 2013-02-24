@@ -1,0 +1,14 @@
+<md-button md-no-ink class="md-primary">[[model.view.city.name]]</md-button>
+<md-input-container class="oip-search">
+    <label>Search</label>
+    <input ng-model="model.search" ng-change="api.church.filter(model.search)">
+</md-input-container>
+<md-content scrolly="api.church.showMore()">
+    <md-list>
+        <md-list-item class="md-1-line" ng-repeat="item in model.view.churches">
+          <div class="md-list-item-text" layout="column">
+            <p>[[ item.name ]]</p>
+          </div>
+        </md-list-item>
+    </md-list>
+</md-content>

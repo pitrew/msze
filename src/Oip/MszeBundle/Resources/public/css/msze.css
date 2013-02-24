@@ -1,0 +1,27 @@
+/* 
+    Document   : msze
+    Created on : 2016-01-30, 20:11:01
+    Author     : pitre
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+md-toolbar.md-medium-tall {
+    height: 45px;
+    min-height: 45px;
+    max-height: 45px;
+}
+
+md-sidenav.oip-sidebar {
+    max-width: 300px;
+    min-width: 200px;
+}
+
+#full-map {
+    height: 100%;
+}
+
+.oip-search .md-errors-spacer {
+    min-height: 0px;
+    height: 0px;
+}

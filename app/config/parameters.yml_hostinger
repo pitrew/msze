@@ -1,0 +1,16 @@
+parameters:
+    database_driver: pdo_mysql
+    #database_host: mysql.serversfree.com
+    database_host: mysql.hostinger.co.uk
+    database_port: null
+    #database_name: u598475631_msze
+    database_name: u189818259_msze
+    #database_user: u598475631_msze
+    database_user: u189818259_msze
+    database_password: pass
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    locale: pl
+    secret: fe1029751a35868acef44dab1c1cee2f7
