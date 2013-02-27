@@ -5,9 +5,15 @@
 
     <hr>
     
-    <ul>
-{% for hour in hours %}
-            <li>{{hour.startTime|date('H:i')}}</li>
-{% endfor %}
+{% set i = 0 %}
+{% for hour_tab in hours %}
+    <h3>{{ days[i] }}</h3>
+    <ul>        
+            {% for hour in hour_tab %}
+                <li>{{hour.startTime|date('H:i')}}</li>
+            {% endfor %}
     </ul>
+{% set i = i + 1 %}
+{% endfor %}
+
 </ul>

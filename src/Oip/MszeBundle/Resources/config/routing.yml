@@ -3,12 +3,17 @@ oip_msze_homepage:
     defaults: { _controller: OipMszeBundle:Default:index }
     
 show_cities:
-    pattern: /show/cities
-    defaults: { _controller: OipMszeBundle:Show:cities }
-    
+    pattern: /show/cities.{_format}
+    defaults: { _controller: OipMszeBundle:Show:cities, _format: html }
+    requirements:
+      _format: html|json
+      
 show_city:
-    pattern: /show/city/{id}
-    defaults: { _controller: OipMszeBundle:Show:city, id: -1 }
+    pattern: /show/city/{id}.{_format}
+    defaults: { _controller: OipMszeBundle:Show:city, id: -1, _format: html }
+    requirements:
+      _format: html|json
+      id: \d+
     
 show_churches:
     pattern: /show/churches/{city_id}

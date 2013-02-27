@@ -4,10 +4,11 @@ namespace Oip\MszeBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Oip\MszeBundle\Entity\City;
+use JMS\Serializer\SerializerBuilder;
 
 class ShowController extends Controller
 {
-    public function citiesAction()
+    public function citiesAction($_format)
     {
         $pattern = '';
         if ($this->getRequest()->query->has('s'))
@@ -18,14 +19,29 @@ class ShowController extends Controller
         $repo = $this->getDoctrine()->getRepository('OipMszeBundle:City');
         $cities = $repo->findByAny($pattern);
         
-        return $this->render('OipMszeBundle:Show:cities.html.twig', array('cities' => $cities, 'pattern' => $pattern ));
+        if ($_format == 'json')
+        {
+            return $serializer->serialize(array('id' => 1), 'json');
+        }
+        else
+        {
+            return $this->render('OipMszeBundle:Show:cities.html.twig', array('cities' => $cities, 'pattern' => $pattern ));
+        }
     }
     
     public function cityAction($id)
     {
         $repo = $this->getDoctrine()->getRepository('OipMszeBundle:City');
         $city = $repo->find($id);
-        $hours = $repo->findAllHours($id, 0, 0, 0, 0, 0, 0, 0);
+        $days = array('Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela');
+        $hours = array();
+        $hours[1] = $repo->findAllHours($id, 'mon');
+        $hours[2] = $repo->findAllHours($id, 'tue');
+        $hours[3] = $repo->findAllHours($id, 'wed');
+        $hours[4] = $repo->findAllHours($id, 'thu');
+        $hours[5] = $repo->findAllHours($id, 'fri');
+        $hours[6] = $repo->findAllHours($id, 'sat');
+        $hours[7] = $repo->findAllHours($id, 'sun');
         
         if ($city != null)
         {
@@ -36,7 +52,7 @@ class ShowController extends Controller
             return $this->forward('OipMszeBundle:Show:cities');
         }
         
-        return $this->render('OipMszeBundle:Show:city.html.twig', array('city' => $city, 'hours' => $hours ));
+        return $this->render('OipMszeBundle:Show:city.html.twig', array('city' => $city, 'hours' => $hours, 'days' => $days ));
     }
     
     public function churchesAction($city_id)
