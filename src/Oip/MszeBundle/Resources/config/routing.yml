@@ -6,13 +6,13 @@ show_cities:
     pattern: /show/cities.{_format}
     defaults: { _controller: OipMszeBundle:Show:cities, _format: html }
     requirements:
-      _format: html|json
+      _format: html|json|xml
       
 show_city:
     pattern: /show/city/{id}.{_format}
     defaults: { _controller: OipMszeBundle:Show:city, id: -1, _format: html }
     requirements:
-      _format: html|json
+      _format: html|json|xml
       id: \d+
     
 show_churches:

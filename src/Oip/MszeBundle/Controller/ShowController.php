@@ -18,7 +18,7 @@ class ShowController extends Controller
         $repo = $this->getDoctrine()->getRepository('OipMszeBundle:City');
         $cities = $repo->findByAny($pattern);
         
-        if ($_format == 'json')
+        if ($_format == 'json' || $_format == 'xml')
         {
             $serializer = $this->container->get('serializer');
             return new Response($serializer->serialize($cities, $_format));
