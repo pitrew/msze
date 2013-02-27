@@ -3,8 +3,7 @@
 namespace Oip\MszeBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Oip\MszeBundle\Entity\City;
-use JMS\Serializer\SerializerBuilder;
+use Symfony\Component\HttpFoundation\Response;
 
 class ShowController extends Controller
 {
@@ -21,7 +20,8 @@ class ShowController extends Controller
         
         if ($_format == 'json')
         {
-            return $serializer->serialize(array('id' => 1), 'json');
+            $serializer = $this->container->get('serializer');
+            return new Response($serializer->serialize($cities, $_format));
         }
         else
         {
