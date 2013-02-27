@@ -3,5 +3,11 @@
 
 {% render url('show_churches', {'city_id': city.id }) %}
 
-
+    <hr>
+    
+    <ul>
+{% for hour in hours %}
+            <li>{{hour.startTime|date('H:i')}}</li>
+{% endfor %}
+    </ul>
 </ul>

@@ -25,6 +25,8 @@ class ShowController extends Controller
     {
         $repo = $this->getDoctrine()->getRepository('OipMszeBundle:City');
         $city = $repo->find($id);
+        $hours = $repo->findAllHours($id, 0, 0, 0, 0, 0, 0, 0);
+        
         if ($city != null)
         {
             //$city->getChurches(); //load them for now only
@@ -34,7 +36,7 @@ class ShowController extends Controller
             return $this->forward('OipMszeBundle:Show:cities');
         }
         
-        return $this->render('OipMszeBundle:Show:city.html.twig', array('city' => $city ));
+        return $this->render('OipMszeBundle:Show:city.html.twig', array('city' => $city, 'hours' => $hours ));
     }
     
     public function churchesAction($city_id)

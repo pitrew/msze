@@ -19,4 +19,23 @@ class CityRepository extends EntityRepository
                 ->setParameter('pattern', '%' . $pattern . '%')
                 ->getResult();
     }
+    
+    public function findAllHours($city_id, $d_mon, $d_tue, $d_wed, $d_thu, $d_fri, $d_sat, $d_sun)
+    {
+        return $this->getEntityManager()
+                ->createQuery('select m from OipMszeBundle:Mass m, OipMszeBundle:Church c where m.church = c.id and c.city = :city_id '
+                        . ' and (m.day_mon = :d_mon or m.day_tue = :d_tue or m.day_wed = :d_wed '
+                        . ' or m.day_thu = :d_thu or m.day_fri = :d_fri or m.day_sat = :d_sat or m.day_sun = :d_sun)'
+                        . ' group by m.start_time')
+                ->setParameters(array('city_id' => $city_id, 
+                    'd_mon' => $d_mon,
+                    'd_tue' => $d_tue,               
+                    'd_wed' => $d_wed,
+                    'd_thu' => $d_thu,
+                    'd_fri' => $d_fri,
+                    'd_sat' => $d_sat,
+                    'd_sun' => $d_sun
+                ))
+                ->getResult();
+    }
 }
