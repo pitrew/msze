@@ -80,7 +80,7 @@ class City
     public function setName($name)
     {
         $this->name = $name;
-        $this->slug = $name;
+        $this->slug = $this->name . ' ' . $this->district;
     
         return $this;
     }
@@ -104,7 +104,7 @@ class City
     public function setDistrict($district)
     {
         $this->district = $district;
-        $this->slug = $this->slug . ' ' . $this->district;
+        $this->slug = $this->name . ' ' . $this->district;
         
         return $this;
     }

@@ -26,3 +26,7 @@ show_church:
 show_masses:
     pattern: /show/masses/{church_id}
     defaults: { _controller: OipMszeBundle:Show:masses, church_id: -1 }
+    
+edit_city:
+    pattern: /edit/city/{id}
+    defaults: { _controller: OipMszeBundle:Edit:city, id: -1 }
