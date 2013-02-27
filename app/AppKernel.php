@@ -19,6 +19,7 @@ class AppKernel extends Kernel
             new JMS\AopBundle\JMSAopBundle(),
             new JMS\DiExtraBundle\JMSDiExtraBundle($this),
             new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
+            new Genemu\Bundle\FormBundle\GenemuFormBundle(),
             new Oip\MszeBundle\OipMszeBundle(),
         );
 

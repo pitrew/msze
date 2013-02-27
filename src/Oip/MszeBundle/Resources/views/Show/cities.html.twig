@@ -1,0 +1,10 @@
+{{ pattern }}
+
+<ul>
+
+{% for city in cities %}
+    <li>{{ city.name }} - {{ city.district }} <a href="{{ path('show_city', {'id': city.id }) }}">go</a> </li>
+{% endfor %}
+
+
+</ul>

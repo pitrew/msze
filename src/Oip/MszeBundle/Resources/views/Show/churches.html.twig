@@ -1,0 +1,10 @@
+Church: {{ pattern }}
+
+<ul>
+
+{% for church in churches %}
+    <li>{{ church.name }} - {{ church.address }} <a href="{{ path('show_church', {'city_id': church.city.id, 'id': church.id }) }}">go</a> </li>
+{% endfor %}
+
+
+</ul>

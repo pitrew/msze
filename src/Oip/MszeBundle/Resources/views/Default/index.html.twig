@@ -1,7 +1,18 @@
+<center>
+<img  height="250" src="http://upload.wikimedia.org/wikipedia/commons/b/b1/Church_in_Modzerowo.jpg" alt="kos">
 
-<img src="{{ asset('images/test.jpg') }}" alt="test">
+{# <img src="{{ asset('images/test.jpg') }}" alt="img test"> #}
+<br/>
+<br/>
 
-<input type="text" value="szukaj miasta" >
+Szukaj miasta
+<form action="{{ path('show_cities') }}" method="get" >
+    <input type="text" name="s"/>
+        <input type="submit"/>
+</form>
 
+
+<br/><br/>
 
 + Dodaj...
+</center>

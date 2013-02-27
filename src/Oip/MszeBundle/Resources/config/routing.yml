@@ -1,3 +1,23 @@
 oip_msze_homepage:
     pattern:  /
     defaults: { _controller: OipMszeBundle:Default:index }
+    
+show_cities:
+    pattern: /show/cities
+    defaults: { _controller: OipMszeBundle:Show:cities }
+    
+show_city:
+    pattern: /show/city/{id}
+    defaults: { _controller: OipMszeBundle:Show:city, id: -1 }
+    
+show_churches:
+    pattern: /show/churches/{city_id}
+    defaults: { _controller: OipMszeBundle:Show:churches, city_id: -1 }
+    
+show_church:
+    pattern: /show/church/{city_id}/{id}
+    defaults: { _controller: OipMszeBundle:Show:church, city_id: -1, id: -1 }
+    
+show_masses:
+    pattern: /show/masses/{church_id}
+    defaults: { _controller: OipMszeBundle:Show:masses, church_id: -1 }
