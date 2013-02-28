@@ -15,8 +15,8 @@ class ShowController extends Controller
             $pattern = $this->getRequest()->query->get('s');
         }
         
-        $repo = $this->getDoctrine()->getRepository('OipMszeBundle:City');
-        $cities = $repo->findByAny($pattern);
+        $repo = $this->getDoctrine()->getRepository('OipMszeBundle:City');        
+        $cities = $repo->findByAny(urldecode($pattern));
         
         if ($_format == 'json' || $_format == 'xml')
         {
@@ -29,7 +29,7 @@ class ShowController extends Controller
         }
     }
     
-    public function cityAction($id)
+    public function cityAction($id, $_format)
     {
         $repo = $this->getDoctrine()->getRepository('OipMszeBundle:City');
         $city = $repo->find($id);
@@ -52,7 +52,16 @@ class ShowController extends Controller
             return $this->forward('OipMszeBundle:Show:cities');
         }
         
-        return $this->render('OipMszeBundle:Show:city.html.twig', array('city' => $city, 'hours' => $hours, 'days' => $days ));
+        if ($_format == 'json' || $_format == 'xml')
+        {
+            $serializer = $this->container->get('serializer');
+            return new Response($serializer->serialize(array('city' => $city, 'hours' => $hours ), $_format));
+        }
+        else
+        {
+            return $this->render('OipMszeBundle:Show:city.html.twig', array('city' => $city, 'hours' => $hours, 'days' => $days ));
+        }
+        
     }
     
     public function churchesAction($city_id)

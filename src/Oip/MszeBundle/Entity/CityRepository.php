@@ -14,9 +14,13 @@ class CityRepository extends EntityRepository
 {
     public function findByAny($pattern)
     {
+        $pattern = str_replace('\\', '\\\\\\', $pattern);
+        $pattern = str_replace('_', '\\_', $pattern);
+        $pattern = str_replace('%', '\\%', $pattern);
+        
         return $this->getEntityManager()
-                ->createQuery('select c from OipMszeBundle:City c where c.name like :pattern or c.district like :pattern or c.slug like :pattern')
-                ->setParameter('pattern', '%' . $pattern . '%')
+                ->createQuery("select c from OipMszeBundle:City c where c.name like :pattern or c.district like :pattern or c.slug like :pattern")
+                ->setParameter('pattern', '%'.$pattern.'%')
                 ->getResult();
     }
     
@@ -49,7 +53,7 @@ class CityRepository extends EntityRepository
         }
         
         return $this->getEntityManager()
-                ->createQuery('select m from OipMszeBundle:Mass m, OipMszeBundle:Church c where m.church = c.id and c.city = :city_id '
+                ->createQuery('select m.start_time from OipMszeBundle:Mass m, OipMszeBundle:Church c where m.church = c.id and c.city = :city_id '
                         . ' and (' .
                         $str
                         . ') group by m.start_time')

@@ -24,3 +24,7 @@ assetic:
 
 #swiftmailer:
 #    delivery_address: me@example.com
+
+genemu_form:
+    captcha:
+        code: 1234

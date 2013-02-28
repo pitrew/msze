@@ -1,6 +1,25 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+
 <h2>Dodaj miasto</h2>
 
  <form action="{{ url }}" method="post" {{ form_enctype(form) }}>
  {{ form_widget(form) }}
  <input type="submit" />
  </form>
+
+<div id="cities_similar"></div>
+
+{% endblock %}
+
+
+{% block javascripts %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#oip_mszebundle_citytype_name').keyup(function() {
+        $.oip.ajax.getCities($('#oip_mszebundle_citytype_name').val(), $('#cities_similar'));
+    });
+});    
+</script>
+{% endblock %}

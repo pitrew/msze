@@ -27,6 +27,7 @@ return array(
     'JMS\\AopBundle' => $vendorDir . '/jms/aop-bundle/',
     'JMS\\' => $vendorDir . '/jms/parser-lib/src/',
     'Genemu\\Bundle\\FormBundle' => $vendorDir . '/genemu/form-bundle/',
+    'FOS\\JsRoutingBundle' => $vendorDir . '/friendsofsymfony/jsrouting-bundle/',
     'Doctrine\\ORM' => $vendorDir . '/doctrine/orm/lib/',
     'Doctrine\\DBAL' => $vendorDir . '/doctrine/dbal/lib/',
     'Doctrine\\Common' => $vendorDir . '/doctrine/common/lib/',

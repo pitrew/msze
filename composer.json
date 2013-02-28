@@ -21,7 +21,8 @@
         "kriswallsmith/assetic": "1.1.*@dev",
         "genemu/form-bundle": "2.1.*",
         "jms/serializer": "*",
-        "jms/serializer-bundle": "*"
+        "jms/serializer-bundle": "*",
+        "friendsofsymfony/jsrouting-bundle": "1.1.*"
     },
     "scripts": {
         "post-install-cmd": [

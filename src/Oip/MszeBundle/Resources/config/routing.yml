@@ -7,6 +7,8 @@ show_cities:
     defaults: { _controller: OipMszeBundle:Show:cities, _format: html }
     requirements:
       _format: html|json|xml
+    options:
+      expose: true
       
 show_city:
     pattern: /show/city/{id}.{_format}
@@ -30,3 +32,8 @@ show_masses:
 edit_city:
     pattern: /edit/city/{id}
     defaults: { _controller: OipMszeBundle:Edit:city, id: -1 }
+    
+    
+OipMszeBundle_ajax:
+        resource: "@OipMszeBundle/Resources/config/ajax.yml"
+        prefix:   /ajax

@@ -60,4 +60,6 @@ swiftmailer:
     spool:     { type: memory }
 
 genemu_form:
-    select2: ~
+    recaptcha:
+        public_key:  6Lehmd0SAAAAAArc4LsrgolSi8b9O8rLt_OEnHxh
+        private_key: 6Lehmd0SAAAAAMCJasaKSOzSB_ZQkEfLFgpXQ4tO

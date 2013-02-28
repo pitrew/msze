@@ -21,6 +21,7 @@ class AppKernel extends Kernel
             new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
             new Genemu\Bundle\FormBundle\GenemuFormBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle($this),
+            new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new Oip\MszeBundle\OipMszeBundle()
         );
 

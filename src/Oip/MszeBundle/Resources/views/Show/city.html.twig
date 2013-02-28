@@ -1,3 +1,7 @@
+{% extends "::base.html.twig" %}
+
+
+{% block body %}
 <h2>{{ city.name }}</h2>
 <ul>
 
@@ -10,10 +14,12 @@
     <h3>{{ days[i] }}</h3>
     <ul>        
             {% for hour in hour_tab %}
-                <li>{{hour.startTime|date('H:i')}}</li>
+                <li>{{ hour.start_time|date('H:i') }}</li>
             {% endfor %}
     </ul>
 {% set i = i + 1 %}
 {% endfor %}
 
 </ul>
+
+{% endblock %}
