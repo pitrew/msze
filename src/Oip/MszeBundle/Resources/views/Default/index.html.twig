@@ -1,15 +1,15 @@
-{% extends "::base.html.twig" %}
+{% extends "::base_start.html.twig" %}
 
 {% block body %}
 <center>
-<img  height="250" src="http://upload.wikimedia.org/wikipedia/commons/b/b1/Church_in_Modzerowo.jpg" alt="kos">
+<img  height="150" src="http://upload.wikimedia.org/wikipedia/commons/b/b1/Church_in_Modzerowo.jpg" alt="kos">
 
 {# <img src="{{ asset('images/test.jpg') }}" alt="img test"> #}
 <br/>
 <br/>
 
 <form action="{{ path('show_city') }}" method="get" >
-    <input type="text" name="id" width="300" id="search_dst"/>
+    <input type="text" name="id" id="search_dst"/>
     <input type="button" value="Pokaż" id="search_show"/>
 </form>
 
@@ -25,7 +25,7 @@
 
 {% block javascripts %}
 <script type="text/javascript">
-      function movieFormatResult(movie) {
+      function movieFormatResult(city) {
         var markup = "<table class='movie-result'><tr>";
         /*if (movie.posters !== undefined && movie.posters.thumbnail !== undefined) {
             markup += "<td class='movie-image'><img src='" + movie.posters.thumbnail + "'/></td>";
@@ -39,15 +39,19 @@
         }
         markup += "</td></tr></table>"
         */
-       markup += movie.name;
+        markup += "<div class='search_city_result'>" +
+            "<table><tr><td class='search_city_name'>" + city.name + "</td></tr>" +
+                   "<tr><td class='search_city_dist'>" + (city.district == undefined ? '' : city.district) + "</td></tr>" +
+            "</table></div>";
         return markup;
     }
 
-    function movieFormatSelection(movie) {
-        return movie.name;
+    function movieFormatSelection(city) {
+        return city.name + " " + (city.district == undefined ? '' : '(' + city.district + ')');
     }
     
     $(document).ready(function() {
+        $('#search_show').button();
         $('#search_show').click(function() {
   //          alert($("#search_dst").select2("val"));
             if ($("#search_dst").select2("val") != '')
@@ -60,6 +64,7 @@
         $("#search_dst").val('');
         $("#search_dst").select2(
             {
+                width: '350px',
                 placeholder: "Szukaj miasta",
                 minimumInputLength: 2,
                 ajax: {
@@ -85,10 +90,15 @@
                 formatSelection: movieFormatSelection, // omitted for brevity, see the source of this page
                 dropdownCssClass: "bigdrop", // apply css that makes the dropdown taller
                 escapeMarkup: function (m) { return m; }, // we do not want to escape markup since we are displaying html in results
+                selectOnBlur: true,
                 id: function(object)
                 {
                     return object.id;
-                }
+                },
+                formatInputTooShort: function (input, min) { var n = min - input.length; return "Wpisz jeszcze " + n + " znak" + (n == 1? "" : "i"); },
+                formatInputTooLong: function (input, max) { var n = input.length - max; return "Wpisz o " + n + "znak " + (n == 1? "" : n < 5?"i":"ów") + " mniej "; },
+                formatLoadMore: function (pageNumber) { return "Wczytuję. Proszę czekać..."; },
+                formatSearching: function () { return "Szukam..."; },
             }
         );
     });

@@ -14,10 +14,10 @@ $.oip.ajax.getCities = function(pattern, container) {
             Routing.generate('show_cities', { _format: 'json' }), 
             { s: escape(pattern) }, 
             function(data) {
-                var found = '<ul class="sim_list">';
+                var found = '<ul class="sim_list_city">';
                 for(var x = 0; x < data.length && x < 10; x++)
                 {
-                    found += '<li class="sim_c">' + data[x].name + '</li>';
+                    found += '<li class="sim_c">' + data[x].name + ' - ' + data[x].district + '</li>';
                 }
                 if (data.length > 10)
                 {

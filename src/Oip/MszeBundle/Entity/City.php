@@ -32,7 +32,7 @@ class City
     /**
      * @var string
      *
-     * @ORM\Column(name="district", type="string", length=64)
+     * @ORM\Column(name="district", type="string", length=64, nullable=true)
      */
     private $district;
 

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Msze{% endblock %}</title>
+         <link href="{{ asset('css/jquery-ui-1.10.1.custom.css') }}" rel="stylesheet"/>
+         <link href="{{ asset('bundles/oipmsze/css/select2.css') }}" rel="stylesheet"/>
+         <link href="{{ asset('bundles/oipmsze/css/msze.css') }}" rel="stylesheet"/>
+        {% block stylesheets %}{% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    <body>
+        {#<img  height="150" src="http://upload.wikimedia.org/wikipedia/commons/b/b1/Church_in_Modzerowo.jpg" alt="kos">#}
+
+        {% block body %}{% endblock %}
+            <script type="text/javascript" src="{{ asset('js/jquery-1.9.1.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('js/jquery-ui-1.10.1.custom.js') }}"></script>
+                        
+            <script type="text/javascript" src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+            <script type="text/javascript" src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+            
+            <script type="text/javascript" src="{{ asset('bundles/oipmsze/js/select2.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('bundles/oipmsze/js/mszeajax.js') }}"></script>
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>
