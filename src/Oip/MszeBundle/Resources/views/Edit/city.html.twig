@@ -2,12 +2,15 @@
 
 {% block body %}
 
+<div id="block_add_city">
 <h2>Dodaj miasto</h2>
 
  <form action="{{ url }}" method="post" {{ form_enctype(form) }}>
  {{ form_widget(form) }}
  <input type="submit" />
  </form>
+</div>
+<div id="block_show_city"></div>
 
 <div id="cities_similar"></div>
 

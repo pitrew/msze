@@ -11,7 +11,7 @@ show_cities:
       expose: true
       
 show_city:
-    pattern: /show/city/{id}.{_format}
+    pattern: /show/city/.{_format}
     defaults: { _controller: OipMszeBundle:Show:city, id: -1, _format: html }
     requirements:
       _format: html|json|xml

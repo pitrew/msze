@@ -8,10 +8,9 @@
 <br/>
 <br/>
 
-Szukaj miasta
-<form action="{{ path('show_cities') }}" method="get" >
-    <input type="text" name="s"/>
-        <input type="submit"/>
+<form action="{{ path('show_city') }}" method="get" >
+    <input type="text" name="id" width="300" id="search_dst"/>
+    <input type="button" value="Pokaż" id="search_show"/>
 </form>
 
 
@@ -22,4 +21,76 @@ Szukaj miasta
 </a>
 </center>
 
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+      function movieFormatResult(movie) {
+        var markup = "<table class='movie-result'><tr>";
+        /*if (movie.posters !== undefined && movie.posters.thumbnail !== undefined) {
+            markup += "<td class='movie-image'><img src='" + movie.posters.thumbnail + "'/></td>";
+        }
+        markup += "<td class='movie-info'><div class='movie-title'>" + movie.title + "</div>";
+        if (movie.critics_consensus !== undefined) {
+            markup += "<div class='movie-synopsis'>" + movie.critics_consensus + "</div>";
+        }
+        else if (movie.synopsis !== undefined) {
+            markup += "<div class='movie-synopsis'>" + movie.synopsis + "</div>";
+        }
+        markup += "</td></tr></table>"
+        */
+       markup += movie.name;
+        return markup;
+    }
+
+    function movieFormatSelection(movie) {
+        return movie.name;
+    }
+    
+    $(document).ready(function() {
+        $('#search_show').click(function() {
+  //          alert($("#search_dst").select2("val"));
+            if ($("#search_dst").select2("val") != '')
+            {
+                $(this).parent().find("#search_dst").val($("#search_dst").select2("val"));
+                $(this).parent().submit();
+            }
+        });
+        
+        $("#search_dst").val('');
+        $("#search_dst").select2(
+            {
+                placeholder: "Szukaj miasta",
+                minimumInputLength: 2,
+                ajax: {
+                    url: Routing.generate('show_cities', { _format: 'json' }),
+                    dataType: 'json',
+                    quietMillis: 100,
+                    data: function (term, page) { // page is the one-based page number tracked by Select2
+                        return {
+                            s: term, //search term
+                            page_limit: 10, // page size
+                            page: page // page number
+                            //apikey: "ju6z9mjyajq2djue3gbvv26p" // please do not use so this example keeps working
+                        };
+                },
+                results: function (data, page) {
+                    var more = (page * 10) < data.total; // whether or not there are more results available
+
+                    // notice we return the value of more so Select2 knows if more results can be loaded
+                    return {results: data, more: more};
+                }
+                },
+                formatResult: movieFormatResult, // omitted for brevity, see the source of this page
+                formatSelection: movieFormatSelection, // omitted for brevity, see the source of this page
+                dropdownCssClass: "bigdrop", // apply css that makes the dropdown taller
+                escapeMarkup: function (m) { return m; }, // we do not want to escape markup since we are displaying html in results
+                id: function(object)
+                {
+                    return object.id;
+                }
+            }
+        );
+    });
+</script>
 {% endblock %}

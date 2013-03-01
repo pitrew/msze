@@ -29,8 +29,13 @@ class ShowController extends Controller
         }
     }
     
-    public function cityAction($id, $_format)
+    public function cityAction($_format)
     {
+        if (!$this->getRequest()->query->has('id'))
+        {
+            return $this->forward('OipMszeBundle:Show:cities');
+        }
+        $id = $this->getRequest()->query->get('id');
         $repo = $this->getDoctrine()->getRepository('OipMszeBundle:City');
         $city = $repo->find($id);
         $days = array('Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela');
