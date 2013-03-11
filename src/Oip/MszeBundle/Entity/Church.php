@@ -58,10 +58,10 @@ class Church
     private $desc;
 
     /**
-     * @ORM\ManyToOne(targetEntity="City", inversedBy="churches")
-     * @ORM\JoinColumn(name="city_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="District", inversedBy="churches", fetch="LAZY")
+     * @ORM\JoinColumn(name="district_id", referencedColumnName="id")
      */
-    protected $city;
+    protected $district;
 
     /**
      * @ORM\OneToMany(targetEntity="Mass", mappedBy="church")
@@ -198,29 +198,6 @@ class Church
     }
 
     /**
-     * Set city
-     *
-     * @param \Oip\MszeBundle\Entity\City $city
-     * @return Church
-     */
-    public function setCity(\Oip\MszeBundle\Entity\City $city = null)
-    {
-        $this->city = $city;
-    
-        return $this;
-    }
-
-    /**
-     * Get city
-     *
-     * @return \Oip\MszeBundle\Entity\City 
-     */
-    public function getCity()
-    {
-        return $this->city;
-    }
-
-    /**
      * Add masses
      *
      * @param \Oip\MszeBundle\Entity\Mass $masses
@@ -251,5 +228,28 @@ class Church
     public function getMasses()
     {
         return $this->masses;
+    }
+
+    /**
+     * Set district
+     *
+     * @param \Oip\MszeBundle\Entity\District $district
+     * @return Church
+     */
+    public function setDistrict(\Oip\MszeBundle\Entity\District $district = null)
+    {
+        $this->district = $district;
+    
+        return $this;
+    }
+
+    /**
+     * Get district
+     *
+     * @return \Oip\MszeBundle\Entity\District 
+     */
+    public function getDistrict()
+    {
+        return $this->district;
     }
 }

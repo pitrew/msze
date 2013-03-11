@@ -85,7 +85,7 @@ class Mass
     private $day_sun;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Church", inversedBy="masses")
+     * @ORM\ManyToOne(targetEntity="Church", inversedBy="masses", fetch="LAZY")
      * @ORM\JoinColumn(name="church_id", referencedColumnName="id")
      */
     protected $church;

@@ -29,12 +29,6 @@ class City
      */
     private $name;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="district", type="string", length=64, nullable=true)
-     */
-    private $district;
 
     /**
      * @var string
@@ -51,13 +45,13 @@ class City
     private $foto;
     
     /**
-     * @ORM\OneToMany(targetEntity="Church", mappedBy="city")
+     * @ORM\OneToMany(targetEntity="District", mappedBy="city")
      */
-    protected $churches;
+    protected $districts;
     
     public function __construct() {
         $this->foto = 'city';
-        $this->churches = new ArrayCollection();
+        $this->districts = new ArrayCollection();
     }
 
 
@@ -93,30 +87,6 @@ class City
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Set district
-     *
-     * @param string $district
-     * @return City
-     */
-    public function setDistrict($district)
-    {
-        $this->district = $district;
-        $this->slug = $this->name . ' ' . $this->district;
-        
-        return $this;
-    }
-
-    /**
-     * Get district
-     *
-     * @return string 
-     */
-    public function getDistrict()
-    {
-        return $this->district;
     }
 
     /**
@@ -166,35 +136,35 @@ class City
     }
 
     /**
-     * Add churches
+     * Get churches
      *
-     * @param \Oip\MszeBundle\Entity\Church $churches
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getDistricts()
+    {
+        return $this->districts;
+    }
+
+    /**
+     * Add districts
+     *
+     * @param \Oip\MszeBundle\Entity\Church $districts
      * @return City
      */
-    public function addChurche(\Oip\MszeBundle\Entity\Church $churches)
+    public function addDistrict(\Oip\MszeBundle\Entity\Church $districts)
     {
-        $this->churches[] = $churches;
+        $this->districts[] = $districts;
     
         return $this;
     }
 
     /**
-     * Remove churches
+     * Remove districts
      *
-     * @param \Oip\MszeBundle\Entity\Church $churches
+     * @param \Oip\MszeBundle\Entity\Church $districts
      */
-    public function removeChurche(\Oip\MszeBundle\Entity\Church $churches)
+    public function removeDistrict(\Oip\MszeBundle\Entity\Church $districts)
     {
-        $this->churches->removeElement($churches);
-    }
-
-    /**
-     * Get churches
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getChurches()
-    {
-        return $this->churches;
+        $this->districts->removeElement($districts);
     }
 }

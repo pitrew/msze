@@ -1,0 +1,155 @@
+{% extends "::base_all.html.twig" %}
+
+
+{% block stylesheets %}
+<link href="{{ asset('bundles/oipmsze/css/city.css') }}" rel="stylesheet"/>
+{% endblock %}
+
+{% block body %}
+
+<div id="block_city">
+<div class="block_city_form">
+    <table>
+        <tr>
+            <td><input type="text" placeholder="Nazwa miasta" class="block_city_name"/></td>
+            <td><div class="block_city_add"></div></td>
+            <td><span class="block_city_use hidden">lub użyj isniejącego miasta:</span></td>
+            <td><div class="block_city_more"></div></td>
+        </tr>
+    </table>
+</div>
+
+<div class="block_city_selected hidden">
+    <div class="block_city_selected_name"></div>
+    <div class="block_city_selected_change pointer">Zmień</div>
+</div>
+</div>
+
+
+
+<div id="block_district hidden">
+<div class="block_district_form hidden">
+    <table>
+        <tr>
+            <td><input type="text" placeholder="Nazwa dzielnicy" class="block_district_name"/></td>
+            <td><div class="block_district_add"></div></td>
+            <td><span class="block_district_use hidden">lub użyj isniejącej dzielnicy:</span></td>
+            <td><div class="block_district_more"></div></td>
+        </tr>
+    </table>
+</div>
+
+<div class="block_district_selected hidden">
+    <div class="block_district_selected_name"></div>
+    <div class="block_district_selected_change pointer">Zmień</div>
+</div>
+</div>
+
+
+
+{% endblock %}
+
+
+{% block javascripts %}
+<script type="text/javascript" src="{{ asset('bundles/oipmsze/js/edit_or_add_manager.js') }}" ></script>
+<script type="text/javascript">    
+$(document).ready(function() {
+    $('.block_city_name').keyup(function() {
+        var max_city_search = 10;
+        if ($(this).val() == '')
+        {
+            $('.block_city_add').html('');
+            $('.block_city_use').hide();
+            $('.block_city_more').html('');
+        }
+        else
+        {
+            $('.block_city_add').html('Dodaj <span class="block_city_new common_border">' + $('.block_city_name').val() + '</span>');
+            $.oip.ajax.getCities($('.block_city_name').val(), function(data) {
+                    found_data = data;
+                    var found = '<ul class="block_city_list">';
+                    for(var x = 0; x < data.length && x < max_city_search; x++) {
+                        found += '<li class="block_city_list_element"><span class="sim_c_name common_border">' + data[x].name + '</span><span class="hidden city_id">' + data[x].id + '</span></li>';
+                    }
+                    if (data.length > max_city_search) {
+                        found += '<li>Oraz ' + (data.length - max_city_search) + ' innych</li>';
+                    }
+
+                    if (data.length == 0) {
+                        $('.block_city_use').hide();
+                    } else {
+                        $('.block_city_use').show();
+                    }
+                    found += '</ul>';
+                    $('.block_city_more').html(found);
+            });
+        }
+    });
+    
+    //CITY
+    $('.block_city_form').on('click', '.block_city_new', function() {
+        $.oip.manager.setupCityId(-1, true, $('.block_city_name').val());
+    });
+    
+    $('.block_city_form').on('click', '.block_city_list_element', function() {
+        $.oip.manager.setupCityId($(this).find('.city_id').html());
+    });
+    
+    $('.block_city_selected_change').click(function() {
+        $.oip.manager.setupCityId(-1);
+    });
+    
+    
+    //district
+    $('.block_district_name').keyup(function() {
+        if ($(this).val() == '')
+        {
+            $('.block_district_add').html('');
+            $('.block_district_use').hide();
+        }
+        else
+        {
+            $('.block_district_add').html('Dodaj <span class="block_district_new common_border">' + $('.block_district_name').val() + '</span>');
+        }
+    });
+    
+    
+    
+    
+    
+    $.oip.manager = new $.oip.managerDef({{ city_id }}, {{ district_id }}, {{ church_id }},
+        function(name) {
+            $('.block_city_selected_name').html(name);
+            $('.block_city_form').hide();
+            $('.block_city_selected').show();
+            
+        }, //city select
+        function() {
+            $('.block_city_selected').hide();
+            $('.block_city_form').show();
+        }, //city unselect
+        
+        function() {
+            $('.block_district_form').show();
+        }, //dist show
+        function() {
+            $('.block_district_form').hide();
+        }, //dist hide
+        function(name) {
+            $('.block_district_selected_name').html(name);
+            $('.block_district_form').hide();
+            $('.block_district_selected').show();
+        }, //dist select
+        function() {
+            $('.block_district_selected').hide();
+            $('.block_district_form').show();
+        }, //dist unselect
+        
+        function() {}, //church show
+        function() {}, //church hide
+        function() {}, //church select
+        function() {} //church unselect
+    );
+});
+</script>
+{% endblock %}

@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 
 class ShowController extends Controller
-{
+{    
     public function citiesAction($_format)
     {
         $pattern = '';
@@ -121,4 +121,5 @@ class ShowController extends Controller
         
         return $this->render('OipMszeBundle:Show:masses.html.twig', array('masses' => $masses ));
     }
+    
 }
