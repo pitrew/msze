@@ -79,6 +79,9 @@
 </div>
 
 
+<div id="save_all" class="hidden">Zapisz</div>
+
+
 
 {% endblock %}
 
@@ -285,6 +288,14 @@ $(document).ready(function() {
           fun_mass_clear: function() {
             $('.block_mass_more').html('');
           },
+          
+          
+          fun_hide_save: function() {
+              $('#save_all').hide();
+          },
+          fun_show_save: function() {
+            $('#save_all').show();
+          }
         }
     );
 });

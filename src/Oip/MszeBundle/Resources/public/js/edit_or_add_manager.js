@@ -25,7 +25,10 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         fun_mass_fill = fn["fun_mass_fill"],
         fun_mass_show = fn["fun_mass_show"],
         fun_mass_hide = fn["fun_mass_hide"],
-        fun_mass_clear = fn["fun_mass_clear"];
+        fun_mass_clear = fn["fun_mass_clear"],
+        
+        fun_hide_save = fn["fun_hide_save"],
+        fun_show_save = fn["fun_show_save"];
 
     var self = this;
     var _city_id = city_id;
@@ -59,10 +62,13 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             fun_mass_clear();
             
             if (afterFun != undefined) { afterFun(); }
+            
+            fun_show_save();
         }
         else if (id == -1 && isNew !== true)
         {
             _city_new = false;
+            fun_hide_save();
             fun_mass_clear();
             fun_mass_hide();
             fun_church_unselect();
@@ -97,10 +103,12 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             fun_mass_hide();
             fun_mass_clear();
             if (afterFun != undefined) { afterFun(); }
+            fun_show_save();
         }
         else if (id == -1 && isNew !== true)
         {
             _district_new = false;
+            fun_hide_save();
             fun_mass_hide();
             fun_mass_clear();
             fun_church_unselect();
@@ -130,10 +138,12 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             fun_mass_clear();
             fun_mass_show();
             if (afterFun != undefined) { afterFun(); }
+            fun_show_save();
         }
         else if (id == -1 && isNew !== true)
         {
             _church_new = false;
+            fun_hide_save();
             fun_church_unselect();
             fun_mass_hide();
             fun_mass_clear();
@@ -150,6 +160,10 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             });
         }
     } 
+    
+    self.Save = function() {
+        alert('saving...');
+    }
     
     //construct
     if (city_id != -1) {
