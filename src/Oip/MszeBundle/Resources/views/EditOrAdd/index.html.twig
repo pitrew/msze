@@ -64,6 +64,20 @@
 </div>
 </div>
 
+<div class="block_mass hidden">
+<div class="block_mass_form hidden">
+    <table>
+        <tr>
+            {#<td><input type="text" placeholder="Nazwa kościoła" class="block_church_name"/></td>
+            <td><div class="block_church_add"></div></td>
+            <td><span class="block_church_use hidden">lub użyj isniejącego kościoła:</span></td>#}
+            <td><div class="block_mass_more"></div></td>
+        </tr>
+    </table>
+</div>
+
+</div>
+
 
 
 {% endblock %}
@@ -249,7 +263,28 @@ $(document).ready(function() {
           }, //church unselect
           fun_church_clear: function() {
             $('.block_church_more').html('');
-          }
+          },
+          
+          fun_mass_fill: function(data) {
+                var found = '<ul class="block_mass_list">';
+                for (var x = 0; x < data.length; x++)
+                {
+                    found += '<li class="block_mass_list_element">' + 
+                        '<span class="sim_ma_name common_border">' + data[x].start_time + '</span><span class="hidden mass_id">' + data[x].id + '</span></li>';
+                }
+                found += '</ul>';
+                $('.block_mass_more').html(found);
+            }, //dist fill
+          fun_mass_show: function() {
+              $('.block_mass_form').show();
+              $('.block_mass').show();
+          }, //church show
+          fun_mass_hide: function() {
+              $('.block_mass').hide();
+          }, //church hide
+          fun_mass_clear: function() {
+            $('.block_mass_more').html('');
+          },
         }
     );
 });
