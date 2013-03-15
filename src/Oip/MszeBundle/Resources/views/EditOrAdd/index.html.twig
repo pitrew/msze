@@ -7,7 +7,7 @@
 
 {% block body %}
 
-<div id="block_city">
+<div class="block_city">
 <div class="block_city_form">
     <table>
         <tr>
@@ -27,7 +27,7 @@
 
 
 
-<div id="block_district hidden">
+<div class="block_district hidden">
 <div class="block_district_form hidden">
     <table>
         <tr>
@@ -42,6 +42,25 @@
 <div class="block_district_selected hidden">
     <div class="block_district_selected_name"></div>
     <div class="block_district_selected_change pointer">Zmień</div>
+</div>
+</div>
+
+
+<div class="block_church hidden">
+<div class="block_church_form hidden">
+    <table>
+        <tr>
+            <td><input type="text" placeholder="Nazwa kościoła" class="block_church_name"/></td>
+            <td><div class="block_church_add"></div></td>
+            <td><span class="block_church_use hidden">lub użyj isniejącego kościoła:</span></td>
+            <td><div class="block_church_more"></div></td>
+        </tr>
+    </table>
+</div>
+
+<div class="block_church_selected hidden">
+    <div class="block_church_selected_name"></div>
+    <div class="block_church_selected_change pointer">Zmień</div>
 </div>
 </div>
 
@@ -97,6 +116,8 @@ $(document).ready(function() {
     
     $('.block_city_selected_change').click(function() {
         $.oip.manager.setupCityId(-1);
+        $.oip.manager.setupDistrictId(-1);
+        $.oip.manager.setupCityId(-1);
     });
     
     
@@ -113,42 +134,123 @@ $(document).ready(function() {
         }
     });
     
+    //district
+    $('.block_district_form').on('click', '.block_district_new', function() {
+        $.oip.manager.setupDistrictId(-1, true, $('.block_district_name').val());
+    });
+    
+    $('.block_district_form').on('click', '.block_district_list_element', function() {
+        $.oip.manager.setupDistrictId($(this).find('.district_id').html());
+    });
+    
+    $('.block_district_selected_change').click(function() {
+        $.oip.manager.setupDistrictId(-1);
+    });
+    
+    
+    
+     //church
+    $('.block_church_name').keyup(function() {
+        if ($(this).val() == '')
+        {
+            $('.block_church_add').html('');
+            $('.block_church_use').hide();
+        }
+        else
+        {
+            $('.block_church_add').html('Dodaj <span class="block_church_new common_border">' + $('.block_church_name').val() + '</span>');
+        }
+    });
+    
+    //chruch
+    $('.block_church_form').on('click', '.block_church_new', function() {
+        $.oip.manager.setupChurchId(-1, true, $('.block_church_name').val());
+    });
+    
+    $('.block_church_form').on('click', '.block_church_list_element', function() {
+        $.oip.manager.setupChurchId($(this).find('.church_id').html());
+    });
+    
+    $('.block_church_selected_change').click(function() {
+         $.oip.manager.setupChurchId(-1);
+    });
     
     
     
     
-    $.oip.manager = new $.oip.managerDef({{ city_id }}, {{ district_id }}, {{ church_id }},
-        function(name) {
-            $('.block_city_selected_name').html(name);
-            $('.block_city_form').hide();
-            $('.block_city_selected').show();
-            
-        }, //city select
-        function() {
-            $('.block_city_selected').hide();
-            $('.block_city_form').show();
-        }, //city unselect
-        
-        function() {
-            $('.block_district_form').show();
-        }, //dist show
-        function() {
-            $('.block_district_form').hide();
-        }, //dist hide
-        function(name) {
-            $('.block_district_selected_name').html(name);
-            $('.block_district_form').hide();
-            $('.block_district_selected').show();
-        }, //dist select
-        function() {
-            $('.block_district_selected').hide();
-            $('.block_district_form').show();
-        }, //dist unselect
-        
-        function() {}, //church show
-        function() {}, //church hide
-        function() {}, //church select
-        function() {} //church unselect
+    
+    $.oip.manager = new $.oip.managerDef({{ city_id }}, {{ district_id }}, {{ church_id }},                 
+        {
+          fun_city_select: function(name) {
+                $('.block_city_selected_name').html(name);
+                $('.block_city_form').hide();
+                $('.block_city_selected').show();
+            }, //city select
+          fun_city_unselect: function() {    
+                $('.block_city_selected').hide();
+                $('.block_city_form').show();
+            }, //city unselect
+
+          fun_district_fill: function(data) {
+                var found = '<ul class="block_district_list">';
+                for (var x = 0; x < data.length; x++)
+                {
+                    found += '<li class="block_district_list_element">' + 
+                        '<span class="sim_d_name common_border">' + data[x].name + '</span><span class="hidden district_id">' + data[x].id + '</span></li>';
+                }
+                found += '</ul>';
+                $('.block_district_more').html(found);
+            }, //dist fill
+          fun_district_show: function() {
+                $('.block_district_form').show();
+                $('.block_district').show();
+            }, //dist show
+          fun_district_hide: function() {
+                $('.block_district').hide();
+            }, //dist hide
+          fun_district_select: function(name) {
+                $('.block_district_selected_name').html(name);
+                $('.block_district_form').hide();
+                $('.block_district_selected').show();
+            }, //dist select
+          fun_district_unselect: function() {
+                $('.block_district_selected').hide();
+                $('.block_district_form').show();
+            }, //dist unselect
+          fun_district_clear: function() {
+                $('.block_district_more').html('');
+            },
+
+          fun_church_fill: function(data) {
+                var found = '<ul class="block_church_list">';
+                for (var x = 0; x < data.length; x++)
+                {
+                    found += '<li class="block_church_list_element">' + 
+                        '<span class="sim_ch_name common_border">' + data[x].name + '</span><span class="hidden church_id">' + data[x].id + '</span></li>';
+                }
+                found += '</ul>';
+                $('.block_church_more').html(found);
+            }, //dist fill
+          fun_church_show: function() {
+              $('.block_church_form').show();
+              $('.block_church').show();
+          }, //church show
+          fun_church_hide: function() {
+              $('.block_church').hide();
+          }, //church hide
+          fun_church_select: function(name) {
+              $('.block_church_selected_name').html(name);
+              $('.block_church_form').hide();
+              $('.block_church_selected').show();
+          }, //church select
+          fun_church_unselect: function() {
+            $('.block_church_selected').hide();
+            $('.block_church_form').show();
+          }, //church unselect
+          fun_church_clear: function() {
+            $('.block_church_more').html('');
+          }
+        }
     );
 });
 </script>

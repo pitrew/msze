@@ -15,6 +15,16 @@ $.oip.ajax.getCities = function(pattern, callback) {
     }
 }
 
+$.oip.ajax.getJSON = function(route, route_params, data, callback) {
+    $.get(
+        Routing.generate(route, route_params), 
+        data, 
+        function(data) 
+        {                
+            callback(data); 
+        }, 'json');
+}
+
 $.oip.ajax.get = function(route, route_params, data, callback) {
     $.get(
         Routing.generate(route, route_params), 

@@ -43,3 +43,15 @@ fast_city:
     defaults: { _controller: "OipMszeBundle:Fast:city", id: -1 }
     options:
       expose: true
+      
+fast_district:
+    pattern:  /fast/district/{id}
+    defaults: { _controller: "OipMszeBundle:Fast:district", id: -1 }
+    options:
+      expose: true
+
+fast_church:
+    pattern:  /fast/church/{id}
+    defaults: { _controller: "OipMszeBundle:Fast:church", id: -1 }
+    options:
+      expose: true
