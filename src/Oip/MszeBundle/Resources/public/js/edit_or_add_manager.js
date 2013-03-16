@@ -184,7 +184,14 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     } 
     
     self.Save = function() {
-        alert('saving...');
+        var str = { 'cid': _city_id, 'cname': _city_new_name, 
+                'sid': _district_id, 'dname': _district_new_name,
+                'chid': _church_id, 'chname': _church_new_name
+              };
+        
+        $.oip.ajax.post('save_all', null, {'all_data': str}, function(data) {
+            location.href = Routing.generate('edit_or_add', {city_id: _city_id, district_id: _district_id, church_id: _church_id});
+        });
     }
     
     //construct
