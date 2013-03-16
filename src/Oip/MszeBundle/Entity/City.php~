@@ -45,7 +45,7 @@ class City
     private $foto;
     
     /**
-     * @ORM\OneToMany(targetEntity="District", mappedBy="city")
+     * @ORM\OneToMany(targetEntity="District", mappedBy="city", fetch="LAZY")
      */
     protected $districts;
     

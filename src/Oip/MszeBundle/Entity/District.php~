@@ -6,12 +6,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * City
+ * District
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="Oip\MszeBundle\Entity\CityRepository")
+ * @ORM\Entity()
  */
-class City
+class District
 {
     /**
      * @var integer
@@ -29,7 +29,6 @@ class City
      */
     private $name;
 
-
     /**
      * @var string
      *
@@ -38,20 +37,18 @@ class City
     private $slug;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="foto", type="string", length=64)
+     * @ORM\OneToMany(targetEntity="Church", mappedBy="district", fetch="LAZY")
      */
-    private $foto;
+    protected $churches;
     
     /**
-     * @ORM\OneToMany(targetEntity="District", mappedBy="city", fetch="LAZY")
+     * @ORM\ManyToOne(targetEntity="City", inversedBy="districts", fetch="LAZY")
+     * @ORM\JoinColumn(name="city_id", referencedColumnName="id")
      */
-    protected $districts;
+    protected $city;
     
-    public function __construct() {
-        $this->foto = 'city';
-        $this->districts = new ArrayCollection();
+    public function __construct() {        
+        $this->churches = new ArrayCollection();
     }
 
 
@@ -74,7 +71,7 @@ class City
     public function setName($name)
     {
         $this->name = $name;
-        $this->slug = $this->name . ' ' . $this->district;
+        $this->slug = $this->name; //TODO: make slug
     
         return $this;
     }
@@ -112,27 +109,22 @@ class City
         return $this->slug;
     }
 
-    /**
-     * Set foto
-     *
-     * @param string $foto
-     * @return City
-     */
-    public function setFoto($foto)
+   
+    public function addChurche(\Oip\MszeBundle\Entity\Church $churches)
     {
-        $this->foto = $foto;
+        $this->churches[] = $churches;
     
         return $this;
     }
 
     /**
-     * Get foto
+     * Remove churches
      *
-     * @return string 
+     * @param \Oip\MszeBundle\Entity\Church $churches
      */
-    public function getFoto()
+    public function removeChurche(\Oip\MszeBundle\Entity\Church $churches)
     {
-        return $this->foto;
+        $this->churches->removeElement($churches);
     }
 
     /**
@@ -140,31 +132,31 @@ class City
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getDistricts()
+    public function getChurches()
     {
-        return $this->districts;
+        return $this->churches;
     }
 
-    /**
-     * Add districts
+       /**
+     * Set city
      *
-     * @param \Oip\MszeBundle\Entity\Church $districts
-     * @return City
+     * @param \Oip\MszeBundle\Entity\City $city
+     * @return District
      */
-    public function addDistrict(\Oip\MszeBundle\Entity\Church $districts)
+    public function setCity(\Oip\MszeBundle\Entity\City $city = null)
     {
-        $this->districts[] = $districts;
+        $this->city = $city;
     
         return $this;
     }
 
     /**
-     * Remove districts
+     * Get city
      *
-     * @param \Oip\MszeBundle\Entity\Church $districts
+     * @return \Oip\MszeBundle\Entity\City 
      */
-    public function removeDistrict(\Oip\MszeBundle\Entity\Church $districts)
+    public function getCity()
     {
-        $this->districts->removeElement($districts);
+        return $this->city;
     }
 }

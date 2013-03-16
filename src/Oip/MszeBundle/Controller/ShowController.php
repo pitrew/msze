@@ -17,15 +17,20 @@ class ShowController extends Controller
         
         $repo = $this->getDoctrine()->getRepository('OipMszeBundle:City');        
         $cities = $repo->findByAny(urldecode($pattern));
+        $result = array();
+        for ($x = 0; $x < sizeof($cities); $x++)
+        {
+            $result[$x] = array('id' => $cities[$x]->getId(), 'name' => $cities[$x]->getName());
+        }
         
         if ($_format == 'json' || $_format == 'xml')
         {
             $serializer = $this->container->get('serializer');
-            return new Response($serializer->serialize($cities, $_format));
+            return new Response($serializer->serialize($result, $_format));
         }
         else
         {
-            return $this->render('OipMszeBundle:Show:cities.html.twig', array('cities' => $cities, 'pattern' => $pattern ));
+            return $this->render('OipMszeBundle:Show:cities.html.twig', array('cities' => $result, 'pattern' => $pattern ));
         }
     }
     

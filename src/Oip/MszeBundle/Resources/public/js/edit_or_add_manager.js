@@ -7,6 +7,8 @@ $.oip = $.oip || {}
 $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     var fun_city_select = fn["fun_city_select"],
         fun_city_unselect = fn["fun_city_unselect"],
+        fun_city_show_edit = fn["fun_city_show_edit"],
+        fun_city_hide_edit = fn["fun_city_hide_edit"],
         
         fun_district_fill = fn["fun_district_fill"],
         fun_district_show = fn["fun_district_show"],
@@ -14,6 +16,8 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         fun_district_select = fn["fun_district_select"],
         fun_district_unselect = fn["fun_district_unselect"],
         fun_district_clear = fn["fun_district_clear"],
+        fun_district_show_edit = fn["fun_district_show_edit"],
+        fun_district_hide_edit = fn["fun_district_hide_edit"],
         
         fun_church_fill = fn["fun_church_fill"],
         fun_church_show = fn["fun_church_show"],
@@ -21,6 +25,8 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         fun_church_select = fn["fun_church_select"],
         fun_church_unselect = fn["fun_church_unselect"],
         fun_church_clear = fn["fun_church_clear"],
+        fun_church_show_edit = fn["fun_church_show_edit"],
+        fun_church_hide_edit = fn["fun_church_hide_edit"],
         
         fun_mass_fill = fn["fun_mass_fill"],
         fun_mass_show = fn["fun_mass_show"],
@@ -49,6 +55,10 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         {
             _city_new = true;
             _city_new_name = newName;
+            fun_city_hide_edit();
+            fun_district_hide_edit();
+            fun_church_hide_edit();
+            
             fun_city_select(newName);
             fun_district_unselect();
             fun_district_show();
@@ -68,6 +78,9 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         else if (id == -1 && isNew !== true)
         {
             _city_new = false;
+            fun_city_hide_edit();
+            fun_district_hide_edit();
+            fun_church_hide_edit();
             fun_hide_save();
             fun_mass_clear();
             fun_mass_hide();
@@ -86,6 +99,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 fun_district_fill(data.districts)
                 fun_district_show();
                 if (afterFun != undefined) { afterFun(); }
+                fun_city_show_edit();
             });
         }
     }
@@ -96,6 +110,8 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         {
             _district_new = true;
             _district_new_name = newName;
+            fun_district_hide_edit();
+            fun_church_hide_edit();
             fun_district_select(newName);
             fun_church_unselect();
             fun_church_show();
@@ -108,6 +124,8 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         else if (id == -1 && isNew !== true)
         {
             _district_new = false;
+            fun_district_hide_edit();
+            fun_church_hide_edit();
             fun_hide_save();
             fun_mass_hide();
             fun_mass_clear();
@@ -124,6 +142,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 fun_church_fill(data.churches)
                 fun_church_show();
                 if (afterFun != undefined) { afterFun(); }
+                fun_district_show_edit();
             });
         }
     }
@@ -134,6 +153,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         {
             _church_new = true;
             _church_new_name = newName;
+            fun_church_hide_edit();
             fun_church_select(newName);
             fun_mass_clear();
             fun_mass_show();
@@ -143,6 +163,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         else if (id == -1 && isNew !== true)
         {
             _church_new = false;
+            fun_church_hide_edit();
             fun_hide_save();
             fun_church_unselect();
             fun_mass_hide();
@@ -157,6 +178,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 fun_mass_fill(data.masses)
                 fun_mass_show();
                 if (afterFun != undefined) { afterFun(); }
+                fun_church_show_edit();
             });
         }
     } 

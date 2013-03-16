@@ -64,7 +64,7 @@ class Church
     protected $district;
 
     /**
-     * @ORM\OneToMany(targetEntity="Mass", mappedBy="church")
+     * @ORM\OneToMany(targetEntity="Mass", mappedBy="church", fetch="LAZY")
      */
     protected $masses;
     
