@@ -35,6 +35,17 @@ $.oip.ajax.get = function(route, route_params, data, callback) {
         });
 }
 
+$.oip.ajax.postJSON = function(route, route_params, data, callback) {
+    $.post(
+        Routing.generate(route, route_params), 
+        data, 
+        function(data) 
+        {                
+            callback(data); 
+        },
+        'json');
+}
+
 $.oip.ajax.post = function(route, route_params, data, callback) {
     $.post(
         Routing.generate(route, route_params), 

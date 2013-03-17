@@ -53,9 +53,9 @@ class Church
     /**
      * @var string
      *
-     * @ORM\Column(name="desc", type="string", length=255)
+     * @ORM\Column(name="description", type="string", length=255)
      */
-    private $desc;
+    private $description;
 
     /**
      * @ORM\ManyToOne(targetEntity="District", inversedBy="churches", fetch="LAZY")
@@ -70,6 +70,12 @@ class Church
     
     public function __construct() {
         $this->masses = new ArrayCollection();
+    }
+    
+    private function updateSlug() {
+        $this->slug = ($this->name == null?'':$this->name) + ' ' + 
+                      ($this->address == null?'':$this->address) + ' ' + 
+                      ($this->description == null?'':$this->description);
     }
     
     /**
@@ -91,6 +97,7 @@ class Church
     public function setName($name)
     {
         $this->name = $name;
+        $this->updateSlug();
     
         return $this;
     }
@@ -114,6 +121,7 @@ class Church
     public function setAddress($address)
     {
         $this->address = $address;
+        $this->updateSlug();
     
         return $this;
     }
@@ -180,9 +188,10 @@ class Church
      * @param string $desc
      * @return Church
      */
-    public function setDesc($desc)
+    public function setDescription($desc)
     {
-        $this->desc = $desc;
+        $this->description = $desc;
+        $this->updateSlug();
     
         return $this;
     }
@@ -192,9 +201,9 @@ class Church
      *
      * @return string 
      */
-    public function getDesc()
+    public function getDescription()
     {
-        return $this->desc;
+        return $this->description;
     }
 
     /**

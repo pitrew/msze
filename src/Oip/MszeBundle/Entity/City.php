@@ -74,7 +74,7 @@ class City
     public function setName($name)
     {
         $this->name = $name;
-        $this->slug = $this->name . ' ' . $this->district;
+        $this->slug = $this->name;
     
         return $this;
     }
