@@ -9,7 +9,9 @@ class FastController extends Controller
 {
     public function cityAction($id) {
         $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('OipMszeBundle:City')->find($id);
+        $crepo = $em->getRepository('OipMszeBundle:City');
+        $drepo = $em->getRepository('OipMszeBundle:District');
+        $entity = $crepo->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find City entity.');
@@ -21,6 +23,9 @@ class FastController extends Controller
         {
             $dresult[$x] = array('id' => $districts[$x]->getId(), 'name' => $districts[$x]->getName());
         }
+        //$defDist = $drepo->findDefaultDistrict($id);
+        //array_unshift($dresult, array('id' => $defDist->getId(), 'name' => 'Brak dzielnicy'));
+        
         $result = array(
             'id' => $entity->getId(),
             'name' => $entity->getName(),
@@ -35,13 +40,23 @@ class FastController extends Controller
     }   
     
     public function districtAction($id) {
+        $serializer = $this->container->get('serializer');
         $em = $this->getDoctrine()->getManager();
+        
+        $crepo = $em->getRepository('OipMszeBundle:City');
+        
         $entity = $em->getRepository('OipMszeBundle:District')->find($id);
         
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find District entity.');
         }
-        $churches = $entity->getChurches();
+        
+        if ($entity->isDefault()) {
+            $churches = $crepo->findAllChurches($entity->getCity()->getId());
+        } else {
+            $churches = $entity->getChurches();    
+        }
+        
         
         $dresult = array();
         for ($x = 0; $x < sizeof($churches); $x++)
@@ -53,7 +68,6 @@ class FastController extends Controller
             'name' => $entity->getName(),
             'churches' => $dresult);
 
-        $serializer = $this->container->get('serializer');
         if ($entity != null)
         {
             return new Response($serializer->serialize($result, 'json'));

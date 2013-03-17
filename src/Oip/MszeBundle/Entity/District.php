@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * District
  *
  * @ORM\Table()
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="Oip\MszeBundle\Entity\DistrictRepository")
  */
 class District
 {
@@ -158,5 +158,10 @@ class District
     public function getCity()
     {
         return $this->city;
+    }
+    
+    public function isDefault()
+    {
+        return empty($this->name);
     }
 }

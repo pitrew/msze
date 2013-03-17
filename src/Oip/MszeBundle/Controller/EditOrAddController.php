@@ -55,19 +55,26 @@ class EditOrAddController extends Controller
                 return new Response($serializer->serialize(array('error' => '0001.Nie ma takiego miasta!'), 'json'));
             }
         } else {
-            if (!$cname == null) {
-                //return new Response($serializer->serialize(array('error' => '0002.Podaj nazwę miasta!'), 'json'));
-            
-                $city = new \Oip\MszeBundle\Entity\City();
-                $city->setName($cname);
-                $em->persist($city);
-                $em->flush();
+            if ($cname == null) {
+                return new Response($serializer->serialize(array('error' => '0002.Podaj nazwę miasta!'), 'json'));
             }
+            
+            $city = new \Oip\MszeBundle\Entity\City();
+            $city->setName($cname);
+            $em->persist($city);
+            $em->flush();
+
+            $defDist = new \Oip\MszeBundle\Entity\District();
+            $defDist->setName('');
+            $defDist->setCity($city);
+            $em->persist($defDist);
+            $em->flush();
+            
         }
         
         $drepo = $this->getDoctrine()->getRepository('OipMszeBundle:District');
         if ($district_id != -1) {
-            $district = $drepo->find($district_id);
+            $district = $drepo->findOrDef($city->getId(), $district_id);
             if ($district == null) {
                 return new Response($serializer->serialize(array('error' => '0003.Nie ma takiej dzielnicy!'), 'json'));
             }
@@ -110,6 +117,7 @@ class EditOrAddController extends Controller
         $data_ret['city_id'] = ($city != null?$city->getId():-1);
         $data_ret['district_id'] = ($district != null?$district->getId():-1);
         $data_ret['church_id'] = ($church != null?$church->getId():-1);
+        
         return new Response($serializer->serialize($data_ret, 'json'));
     }
 }

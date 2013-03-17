@@ -7,8 +7,53 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ShowController extends Controller
 {    
-    public function citiesAction($_format)
+    /*
+    function jquery2iso($in)
     {
+      $CONV = array();
+      $CONV['c4']['85'] = 'ą';
+      $CONV['c4']['84'] = 'Ą';
+      $CONV['c4']['87'] = 'ć';
+      $CONV['c4']['86'] = 'Ć';
+      $CONV['c4']['99'] = 'ę';
+      $CONV['c4']['98'] = 'Ę';
+      $CONV['c5']['82'] = 'ł';
+      $CONV['c5']['81'] = 'Ł';
+      $CONV['c4']['84'] = 'ń';
+      $CONV['c4']['83'] = 'Ń';
+      $CONV['c3']['b3'] = 'ó';
+      $CONV['c3']['93'] = 'Ó';
+      $CONV['c5']['9b'] = 'ś';
+      $CONV['c5']['9a'] = 'Ś';
+      $CONV['c5']['ba'] = 'ź';
+      $CONV['c5']['b9'] = 'Ź';
+      $CONV['c5']['bc'] = 'ż';
+      $CONV['c5']['bb'] = 'Ż';
+
+      $i=0;
+      $out = '';
+      while($i<strlen($in))
+      {
+        if(array_key_exists(bin2hex($in[$i]), $CONV))
+        {
+          $out .= $CONV[bin2hex($in[$i])][bin2hex($in[$i+1])];
+          $i += 2;
+        }
+        else
+        {
+          $out .= $in[$i];
+          $i += 1;
+        }
+      }
+
+      return $out;
+    }
+    */
+    
+    
+    
+    public function citiesAction($_format)
+    {   
         $pattern = '';
         if ($this->getRequest()->query->has('s'))
         {
@@ -16,7 +61,9 @@ class ShowController extends Controller
         }
         
         $repo = $this->getDoctrine()->getRepository('OipMszeBundle:City');        
-        $cities = $repo->findByAny(urldecode($pattern));
+        //$cities = $repo->findByAny(urldecode($pattern));
+        $cities = $repo->findByAny($pattern);
+        
         $result = array();
         for ($x = 0; $x < sizeof($cities); $x++)
         {

@@ -51,6 +51,8 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         
     self.setupCityId = function(id, isNew, newName, afterFun) {
         _city_id = id;
+        _district_id = -1;
+        _church_id = -1;
         if (id == -1 && isNew == true)
         {
             _city_new = true;
@@ -106,6 +108,13 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     
     self.setupDistrictId = function(id, isNew, newName, afterFun) {
         _district_id = id;
+        _church_id = -1;
+        if (id == -100) {
+            id = -1;
+            newName = '';
+            isNew = true;
+        }
+        
         if (id == -1 && isNew == true)
         {
             _district_new = true;
@@ -199,7 +208,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             }
         });
     }
-    
+    debugger;
     //construct
     if (city_id != -1) {
         self.setupCityId(city_id, undefined, undefined, function() {

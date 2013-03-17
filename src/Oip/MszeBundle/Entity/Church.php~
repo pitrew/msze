@@ -73,8 +73,8 @@ class Church
     }
     
     private function updateSlug() {
-        $this->slug = ($this->name == null?'':$this->name) + ' ' + 
-                      ($this->address == null?'':$this->address) + ' ' + 
+        $this->slug = ($this->name == null?'':$this->name) . ' ' . 
+                      ($this->address == null?'':$this->address) . ' ' . 
                       ($this->description == null?'':$this->description);
     }
     

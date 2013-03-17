@@ -37,6 +37,10 @@
         <tr>
             <td><input type="text" placeholder="Nazwa dzielnicy" class="block_district_name"/></td>
             <td><div class="block_district_add"></div></td>
+            <td class="block_district_list_element">                
+                <span class="sim_d_name common_border">Brak dzielnicy</span>
+                <span class="block_default_district_id hidden district_id">-100</span>
+            </td>
             <td><span class="block_district_use hidden">lub użyj isniejącej dzielnicy:</span></td>
             <td><div class="block_district_more"></div></td>
         </tr>
@@ -179,8 +183,7 @@ $(document).ready(function() {
     $('.block_district_selected_change').click(function() {
         $.oip.manager.setupDistrictId(-1);
     });
-    
-    
+   
     
      //church
     $('.block_church_name').keyup(function() {
@@ -234,7 +237,9 @@ $(document).ready(function() {
 
           fun_district_fill: function(data) {
                 var found = '<ul class="block_district_list">';
-                for (var x = 0; x < data.length; x++)
+                $('.block_default_district_id').html(data[0].id);
+                
+                for (var x = 1; x < data.length; x++)
                 {
                     found += '<li class="block_district_list_element">' + 
                         '<span class="sim_d_name common_border">' + data[x].name + '</span><span class="hidden district_id">' + data[x].id + '</span></li>';
@@ -250,7 +255,11 @@ $(document).ready(function() {
                 $('.block_district').hide();
             }, //dist hide
           fun_district_select: function(name) {
-                $('.block_district_selected_name').html(name);
+                if (name == '') {
+                  $('.block_district_selected_name').html('Bez dzielnicy.');
+                } else {
+                  $('.block_district_selected_name').html(name);
+                }
                 $('.block_district_form').hide();
                 $('.block_district_selected').show();
             }, //dist select

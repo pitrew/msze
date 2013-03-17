@@ -24,6 +24,15 @@ class CityRepository extends EntityRepository
                 ->getResult();
     }
     
+    public function findAllChurches($city_id)
+    {
+        return $this->getEntityManager()
+                ->createQuery('select c from OipMszeBundle:Church c ' .
+                        'where c.district in (select d from OipMszeBundle:District d where d.city = :city_id)')
+                ->setParameters(array('city_id' => $city_id))
+                ->getResult();
+    }
+    
     public function findAllHours($city_id, $day)
     {
         $str = '1=1 ';
