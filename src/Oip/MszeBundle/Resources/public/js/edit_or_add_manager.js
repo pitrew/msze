@@ -192,23 +192,22 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         }
     } 
     
-    self.Save = function() {
+    self.Save = function(re_c, re_r) {
         var str = { 'cid': _city_id, 'cname': _city_new_name, 
                 'did': _district_id, 'dname': _district_new_name,
                 'chid': _church_id, 'chname': _church_new_name
               };
-        
-        $.oip.ajax.postJSON('save_all', null, {'all_data': str}, function(data) {
-            
-            debugger;
-            if ($.inArray('error', data) == true) {
+              
+        $.oip.ajax.postJSON('save_all', null, {'all_data': str, 're_c': re_c, 're_r': re_r}, function(data) {
+            if (data['error'] != undefined) {
                 alert('Error' + data.error);
+                debugger;
+                Recaptcha.reload();
             } else {
                 location.href = Routing.generate('edit_or_add', {city_id: data.city_id, district_id: data.district_id, church_id: data.church_id});
             }
         });
     }
-    debugger;
     //construct
     if (city_id != -1) {
         self.setupCityId(city_id, undefined, undefined, function() {

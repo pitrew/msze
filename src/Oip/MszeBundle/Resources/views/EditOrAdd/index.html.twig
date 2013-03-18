@@ -94,6 +94,9 @@
 
 </div>
 
+<div id="oip_captcha">
+{{ form|raw }}
+</div>
 
 <div id="save_all" class="hidden pointer">Zapisz</div>
 
@@ -106,6 +109,8 @@
 <script type="text/javascript" src="{{ asset('bundles/oipmsze/js/edit_or_add_manager.js') }}" ></script>
 <script type="text/javascript">    
 $(document).ready(function() {
+    
+    
     $('.block_city_name').keyup(function() {
         var max_city_search = 10;
         if ($(this).val() == '')
@@ -213,7 +218,10 @@ $(document).ready(function() {
     
     
     $('#save_all').click(function() {
-        $.oip.manager.Save();
+        
+        var re_c = $('#recaptcha_challenge_field').val();
+        var re_r = $('#recaptcha_response_field').val();
+        $.oip.manager.Save(re_c, re_r);
     });
     
     

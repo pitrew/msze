@@ -10,8 +10,11 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        {#<img  height="150" src="http://upload.wikimedia.org/wikipedia/commons/b/b1/Church_in_Modzerowo.jpg" alt="kos">#}
-
+        <script type="text/javascript">
+        var RecaptchaOptions = {
+            theme : 'clean'
+        };
+        </script>
         {% block body %}{% endblock %}
             <script type="text/javascript" src="{{ asset('js/jquery-1.9.1.js') }}"></script>
             <script type="text/javascript" src="{{ asset('js/jquery-ui-1.10.1.custom.js') }}"></script>

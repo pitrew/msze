@@ -5,15 +5,20 @@ namespace Oip\MszeBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 
+
 class EditOrAddController extends Controller
 {
     public function indexAction($city_id, $district_id, $church_id)
     {
+        $cap = new \Oip\MszeBundle\OipCaptcha();
+        $form = $cap->recaptcha_get_html('6Lehmd0SAAAAAArc4LsrgolSi8b9O8rLt_OEnHxh');
+        
         return $this->render('OipMszeBundle:EditOrAdd:index.html.twig', 
                   array(
                       'city_id' => $city_id, 
                       'district_id' => $district_id,
-                      'church_id' => $church_id
+                      'church_id' => $church_id,
+                      'form' => $form
                   ));
     }
     
@@ -31,6 +36,28 @@ class EditOrAddController extends Controller
     //only post
     public function saveAction()
     {
+        $serializer = $this->container->get('serializer');
+        $data_ret = array();
+         
+        if (!$this->getRequest()->request->has('re_c') || 
+            !$this->getRequest()->request->has('re_r'))
+        {    
+            $data_ret['error'] = "Wpisz kod";
+            return new Response($serializer->serialize($data_ret, 'json'));
+        }
+        
+        $re_c = $this->getRequest()->request->get('re_c');
+        $re_r = $this->getRequest()->request->get('re_r');
+        
+        $cap = new \Oip\MszeBundle\OipCaptcha();
+        $cap_resp = $cap->recaptcha_check_answer("6Lehmd0SAAAAAMCJasaKSOzSB_ZQkEfLFgpXQ4tO", 
+                $this->getRequest()->getClientIp(), $re_c, $re_r);
+        
+        if (!$cap_resp->is_valid) {
+               $data_ret['error'] = "Kod nieprawidłowy";
+               return new Response($serializer->serialize($data_ret, 'json'));
+        }
+        
         $data = $this->getRequest()->request->get('all_data');
         $em = $this->getDoctrine()->getManager();
         
@@ -45,9 +72,7 @@ class EditOrAddController extends Controller
         $cname = $this->getArrayElement('cname', $data);
         $dname = $this->getArrayElement('dname', $data);
         $chname = $this->getArrayElement('chname', $data);
-        
-        $serializer = $this->container->get('serializer');
-        
+               
         $crepo = $this->getDoctrine()->getRepository('OipMszeBundle:City');
         if ($city_id != -1) {
             $city = $crepo->find($city_id);
@@ -113,7 +138,6 @@ class EditOrAddController extends Controller
             }
         }
         
-        $data_ret = array();
         $data_ret['city_id'] = ($city != null?$city->getId():-1);
         $data_ret['district_id'] = ($district != null?$district->getId():-1);
         $data_ret['church_id'] = ($church != null?$church->getId():-1);
