@@ -104,7 +104,7 @@
 </div>
 
 
-<div id="map-canvas"/>
+<div id="map-canvas"></div>
 
 <div id="save_all" class="hidden pointer">Zapisz</div>
 
@@ -121,22 +121,49 @@
 <script type="text/javascript">    
 
     var map;
-    
-    function goToAddress(address)
+    var marker;
+    function setupMarker(pos)
     {
-        geocoder = new google.maps.Geocoder();
-        geocoder.geocode({ 'address': address }, function(results, status) {
-          if (status == google.maps.GeocoderStatus.OK) {
-            map.setCenter(results[0].geometry.location);
-            map.setZoom(16);
-            var marker = new google.maps.Marker({
-                map: map,
-                position: results[0].geometry.location,
-                draggable:true
-              });   
-          }
-        });
+        if (pos == null) {
+            if (marker != null)
+            {
+                marker.setMap(null);
+                marker = null;
+            }
+        } else {
+            if (marker == null) {
+                marker = new google.maps.Marker({
+                    map: map,
+                    position: pos,
+                    draggable:true
+                  }); 
+            } else {
+                marker.setPosition(pos);
+            }
+        }
     }
+    
+    function goToAddress(address, zoom)
+    {
+        if (address == undefined)
+        {
+            setupMarker(null);
+            map.setCenter(new google.maps.LatLng(52.038977,18.962402));
+            map.setZoom(5);
+        }
+        else
+        {
+            geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ 'address': address }, function(results, status) {
+              if (status == google.maps.GeocoderStatus.OK) {
+                map.setCenter(results[0].geometry.location);
+                map.setZoom(zoom);
+                setupMarker(results[0].geometry.location);
+              }
+            });
+        }
+    }
+    
     
 $(document).ready(function() {
     
@@ -261,10 +288,12 @@ $(document).ready(function() {
                 $('.block_city_selected_name').html(name);
                 $('.block_city_form').hide();
                 $('.block_city_selected').show();
+                goToAddress(name, 11);
             }, //city select
           fun_city_unselect: function() {    
                 $('.block_city_selected').hide();
                 $('.block_city_form').show();
+                goToAddress();
             }, //city unselect
           fun_city_show_edit: function() {
               $('.block_city_selected_name_edit').show();
@@ -393,12 +422,18 @@ $(document).ready(function() {
       };
       var map = new google.maps.Map(document.getElementById("map-canvas"),
           mapOptions);
+                
+      google.maps.event.addListener(map, 'click', function(event) {
+        setupMarker(event.latLng);
+      });
       return map;
     }
     map = initialize();       
 
+//city ~ 11
+//address ~ 16
 
-    goToAddress('Kraków, św Anny');
+    
 });
 </script>
 {% endblock %}
