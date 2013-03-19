@@ -166,10 +166,35 @@
 $(document).ready(function() {
     
     
-    $('.block_city_name').keyup(function() {
+    function search_fun()
+    {
         var max_city_search = 10;
+        $.oip.ajax.getCities($('.block_city_name').val(), function(data) {
+                found_data = data;
+                var found = '<ul class="block_city_list">';
+                for(var x = 0; x < data.length && x < max_city_search; x++) {
+                    found += '<li class="block_city_list_element"><span class="sim_c_name common_border">' + data[x].name + '</span><span class="hidden city_id">' + data[x].id + '</span></li>';
+                }
+                if (data.length > max_city_search) {
+                    found += '<li>Oraz ' + (data.length - max_city_search) + ' innych</li>';
+                }
+
+                if (data.length == 0) {
+                    $('.block_city_use').hide();
+                } else {
+                    $('.block_city_use').show();
+                }
+                found += '</ul>';
+                $('.block_city_more').html(found);
+        });
+    }
+    
+    var tim = new oip_timer(search_fun);
+    
+    $('.block_city_name').keyup(function() {
         if ($(this).val() == '')
         {
+            tim.stop();
             $('.block_city_add').html('');
             $('.block_city_use').hide();
             $('.block_city_more').html('');
@@ -177,24 +202,8 @@ $(document).ready(function() {
         else
         {
             $('.block_city_add').html('Dodaj <span class="block_city_new common_border">' + $('.block_city_name').val() + '</span>');
-            $.oip.ajax.getCities($('.block_city_name').val(), function(data) {
-                    found_data = data;
-                    var found = '<ul class="block_city_list">';
-                    for(var x = 0; x < data.length && x < max_city_search; x++) {
-                        found += '<li class="block_city_list_element"><span class="sim_c_name common_border">' + data[x].name + '</span><span class="hidden city_id">' + data[x].id + '</span></li>';
-                    }
-                    if (data.length > max_city_search) {
-                        found += '<li>Oraz ' + (data.length - max_city_search) + ' innych</li>';
-                    }
-
-                    if (data.length == 0) {
-                        $('.block_city_use').hide();
-                    } else {
-                        $('.block_city_use').show();
-                    }
-                    found += '</ul>';
-                    $('.block_city_more').html(found);
-            });
+            tim.stop();
+            tim.setup(300);
         }
     });
     

@@ -1,0 +1,32 @@
+/* 
+    Document   : msze
+    Created on : 2013-03-01, 19:29:22
+    Author     : pitre
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+html
+{
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    background-color: #ccffff;
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    padding-right: 0px;
+    padding-left: 0px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+.pointer
+{
+    cursor: pointer;
+}
+
+.hidden
+{
+    display: none;
+}
