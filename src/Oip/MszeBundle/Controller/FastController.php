@@ -103,6 +103,8 @@ class FastController extends Controller
         $result = array(
             'id' => $entity->getId(),
             'name' => $entity->getName(),
+            'address' => $entity->getAddress(),
+            'description' => $entity->getDescription(),
             'masses' => $dresult);
 
         $serializer = $this->container->get('serializer');

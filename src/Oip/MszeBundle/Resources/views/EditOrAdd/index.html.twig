@@ -85,9 +85,7 @@
     <table>
         <tr>
             <td><input type="text" placeholder="Adres" class="block_church_address"/></td>
-            <td>
-                
-            </td>
+            <td><textarea placeholder="Opis" class="block_church_description"></textarea></td>
             {#<td><input type="text" placeholder="Nazwa kościoła" class="block_church_name"/></td>
             <td><div class="block_church_add"></div></td>
             <td><span class="block_church_use hidden">lub użyj isniejącego kościoła:</span></td>#}
@@ -364,8 +362,13 @@ $(document).ready(function() {
           fun_church_hide: function() {
               $('.block_church').hide();
           }, //church hide
-          fun_church_select: function(name) {
+          fun_church_select: function(name, data) {
               $('.block_church_selected_name').html(name);
+              if (data != undefined)
+              {
+                  $('.block_church_description').val(data.description);
+                  $('.block_church_address').val(data.address);
+              }
               $('.block_church_form').hide();
               $('.block_church_selected').show();
           }, //church select

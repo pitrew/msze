@@ -183,7 +183,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         {
             _church_new = false;
             $.oip.ajax.getJSON(('fast_church'), { id: id }, null, function(data) {
-                fun_church_select(data.name);
+                fun_church_select(data.name, data);
                 fun_mass_fill(data.masses)
                 fun_mass_show();
                 if (afterFun != undefined) { afterFun(); }
