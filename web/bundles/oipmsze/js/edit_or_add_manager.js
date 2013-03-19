@@ -45,9 +45,31 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     var _district_new, _district_new_name;
     var _church_new, _church_new_name;
     
+    var _cur_city_name, _cur_district_name;
+    
+    var _cur_church_address, _cur_church_desc;
+    
+    self.setChurchAddress = function(address) {
+        _cur_church_address = address;
+    }
+    self.setChurchDescription = function(desc) {
+        _cur_church_desc = desc;
+    }
+    
     self.getCityId = function() { return _city_id; }
     self.getChurchId = function() { return _church_id; }
     self.getDistrictId = function() { return _district_id; }
+    self.getGoogleSearch = function() 
+    { 
+        var _ret = _cur_city_name;
+        if (_cur_district_name != undefined && _cur_district_name != '') {
+            _ret += ', ' + _cur_district_name;
+        }
+        if (_cur_church_address != undefined && _cur_church_address != '') {
+            _ret += ', ' + _cur_church_address;
+        }
+        return _ret;
+    }
         
     self.setupCityId = function(id, isNew, newName, afterFun) {
         _city_id = id;
@@ -57,6 +79,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         {
             _city_new = true;
             _city_new_name = newName;
+            _cur_city_name = newName;
             fun_city_hide_edit();
             fun_district_hide_edit();
             fun_church_hide_edit();
@@ -80,6 +103,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         else if (id == -1 && isNew !== true)
         {
             _city_new = false;
+            _cur_city_name = '';
             fun_city_hide_edit();
             fun_district_hide_edit();
             fun_church_hide_edit();
@@ -97,6 +121,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         {
             _city_new = false;
             $.oip.ajax.getJSON(('fast_city'), { id: id }, null, function(data) {
+                _cur_city_name = data.name;
                 fun_city_select(data.name);
                 fun_district_fill(data.districts)
                 fun_district_show();
@@ -119,6 +144,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         {
             _district_new = true;
             _district_new_name = newName;
+            _cur_district_name = newName;
             fun_district_hide_edit();
             fun_church_hide_edit();
             fun_district_select(newName);
@@ -133,6 +159,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         else if (id == -1 && isNew !== true)
         {
             _district_new = false;
+            _cur_district_name = '';
             fun_district_hide_edit();
             fun_church_hide_edit();
             fun_hide_save();
@@ -147,6 +174,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         {
             _district_new = false;
             $.oip.ajax.getJSON(('fast_district'), { id: id }, null, function(data) {
+                _cur_district_name = data.name;
                 fun_district_select(data.name);
                 fun_church_fill(data.churches)
                 fun_church_show();
@@ -183,6 +211,8 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         {
             _church_new = false;
             $.oip.ajax.getJSON(('fast_church'), { id: id }, null, function(data) {
+                _cur_church_address = data.address;
+                _cur_church_desc = data.description;
                 fun_church_select(data.name, data);
                 fun_mass_fill(data.masses)
                 fun_mass_show();
@@ -195,7 +225,9 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     self.Save = function(re_c, re_r) {
         var str = { 'cid': _city_id, 'cname': _city_new_name, 
                 'did': _district_id, 'dname': _district_new_name,
-                'chid': _church_id, 'chname': _church_new_name
+                'chid': _church_id, 'chname': _church_new_name,
+                'caddr': _cur_church_address,
+                'cdesc': _cur_church_desc
               };
               
         $.oip.ajax.postJSON('save_all', null, {'all_data': str, 're_c': re_c, 're_r': re_r}, function(data) {

@@ -73,9 +73,10 @@ class Church
     }
     
     private function updateSlug() {
-        $this->slug = ($this->name == null?'':$this->name) . ' ' . 
+        $this->slug = \Oip\MszeBundle\OipHelpers::makeSlug(
+                      ($this->name == null?'':$this->name) . ' ' . 
                       ($this->address == null?'':$this->address) . ' ' . 
-                      ($this->description == null?'':$this->description);
+                      ($this->description == null?'':$this->description));
     }
     
     /**

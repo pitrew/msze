@@ -71,7 +71,7 @@ class District
     public function setName($name)
     {
         $this->name = $name;
-        $this->slug = $this->name; //TODO: make slug
+        $this->slug = \Oip\MszeBundle\OipHelpers::makeSlug($this->name); //TODO: make slug
     
         return $this;
     }

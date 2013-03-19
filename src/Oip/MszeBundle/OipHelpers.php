@@ -82,7 +82,7 @@ class OipHelpers
     
     
     public static function makeSlug($txt) {
-       return OipHelpers::_no_pl(strtolower($txt));
+       return strtolower(OipHelpers::_no_pl($txt));
        
     }
 }

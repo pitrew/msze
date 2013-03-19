@@ -68,10 +68,13 @@ class EditOrAddController extends Controller
         $city_id = $data['cid'];
         $district_id = $data['did'];
         $church_id = $data['chid'];
-        
+
         $cname = $this->getArrayElement('cname', $data);
         $dname = $this->getArrayElement('dname', $data);
         $chname = $this->getArrayElement('chname', $data);
+        
+        $caddrress = $this->getArrayElement('caddr', $data);
+        $cdetails = $this->getArrayElement('cdesc', $data);
                
         $crepo = $this->getDoctrine()->getRepository('OipMszeBundle:City');
         if ($city_id != -1) {
@@ -121,6 +124,9 @@ class EditOrAddController extends Controller
             if ($church == null) {
                 return new Response($serializer->serialize(array('error' => '0005.Nie ma takiego kościoła!'), 'json'));
             }
+            $church->setAddress($caddrress);
+            $church->setDescription($cdetails);
+            $em->flush();
         } else {
             if ($chname != null && $district != null) {
                 //return new Response($serializer->serialize(array('error' => '0006.Podaj nazwę kościoła!'), 'json'));
@@ -129,8 +135,8 @@ class EditOrAddController extends Controller
                 $church->setName($chname);
                 $church->setDistrict($district);
 
-                $church->setAddress('');
-                $church->setDescription('');
+                $church->setAddress($caddrress);
+                $church->setDescription($cdetails);
                 $church->setFoto('');
 
                 $em->persist($church);
