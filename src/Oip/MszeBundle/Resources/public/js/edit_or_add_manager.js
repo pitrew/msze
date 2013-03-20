@@ -46,14 +46,19 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     var _church_new, _church_new_name;
     
     var _cur_city_name, _cur_district_name;
-    
-    var _cur_church_address, _cur_church_desc;
+    var _cur_church_address, _cur_church_desc = '';
+    var _pos_lat, _pos_lng;
     
     self.setChurchAddress = function(address) {
         _cur_church_address = address;
     }
     self.setChurchDescription = function(desc) {
         _cur_church_desc = desc;
+    }
+    
+    self.setupPosition = function(lat, lng) {
+        _pos_lat = lat;
+        _pos_lng = lng;
     }
     
     self.getCityId = function() { return _city_id; }
@@ -227,7 +232,9 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 'did': _district_id, 'dname': _district_new_name,
                 'chid': _church_id, 'chname': _church_new_name,
                 'caddr': _cur_church_address,
-                'cdesc': _cur_church_desc
+                'cdesc': _cur_church_desc,
+                'clat': _pos_lat,
+                'clng': _pos_lng
               };
               
         $.oip.ajax.postJSON('save_all', null, {'all_data': str, 're_c': re_c, 're_r': re_r}, function(data) {

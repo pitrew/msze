@@ -75,6 +75,9 @@ class EditOrAddController extends Controller
         
         $caddrress = $this->getArrayElement('caddr', $data);
         $cdetails = $this->getArrayElement('cdesc', $data);
+        
+        $clat = $this->getArrayElement('clat', $data);
+        $clng = $this->getArrayElement('clng', $data);
                
         $crepo = $this->getDoctrine()->getRepository('OipMszeBundle:City');
         if ($city_id != -1) {
@@ -126,6 +129,8 @@ class EditOrAddController extends Controller
             }
             $church->setAddress($caddrress);
             $church->setDescription($cdetails);
+            $church->setLatitude($clat);
+            $church->setLongitude($clng);
             $em->flush();
         } else {
             if ($chname != null && $district != null) {
@@ -138,6 +143,9 @@ class EditOrAddController extends Controller
                 $church->setAddress($caddrress);
                 $church->setDescription($cdetails);
                 $church->setFoto('');
+                
+                $church->setLatitude($clat);
+                $church->setLongitude($clng);
 
                 $em->persist($church);
                 $em->flush();

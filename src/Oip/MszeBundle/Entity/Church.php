@@ -39,6 +39,20 @@ class Church
     /**
      * @var string
      *
+     * @ORM\Column(name="latitude", type="text", length=64, nullable=true)
+     */
+    private $latitude;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="longitude", type="text", length=64, nullable=true)
+     */
+    private $longitude;
+    
+    /**
+     * @var string
+     *
      * @ORM\Column(name="slug", type="string", length=128)
      */
     private $slug;
@@ -135,6 +149,50 @@ class Church
     public function getAddress()
     {
         return $this->address;
+    }
+    
+    /**
+     * Set latitude
+     *
+     * @param string $latitude
+     */
+    public function setLatitude($latitude)
+    {
+        $this->latitude = $latitude;
+    
+        return $this;
+    }
+
+    /**
+     * Get latitude
+     *
+     * @return string 
+     */
+    public function getLatitude()
+    {
+        return $this->latitude;
+    }
+    
+     /**
+     * Set longitude
+     *
+     * @param string $longitude
+     */
+    public function setLongitude($longitude)
+    {
+        $this->longitude = $longitude;
+    
+        return $this;
+    }
+
+    /**
+     * Get longitude
+     *
+     * @return string 
+     */
+    public function getLongitude()
+    {
+        return $this->longitude;
     }
 
     /**

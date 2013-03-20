@@ -120,6 +120,7 @@
 
     var map;
     var marker;
+    
     function setupMarker(pos)
     {
         if (pos == null) {
@@ -138,7 +139,15 @@
             } else {
                 marker.setPosition(pos);
             }
+            $.oip.manager.setupPosition(pos.lat(), pos.lng());
+            map.setCenter(marker.getPosition());
         }
+    }
+    
+    function setupMarkerFromObject(lat, lng)
+    {
+        var pos = new google.maps.LatLng(lat, lng);
+        setupMarker(pos);
     }
     
     function goToAddress(address, zoom)
@@ -157,8 +166,18 @@
                 map.setCenter(results[0].geometry.location);
                 map.setZoom(zoom);
                 setupMarker(results[0].geometry.location);
+                $.oip.manager.setupPosition(results[0].geometry.location.lat(), results[0].geometry.location.lng());
               }
             });
+        }
+    }
+    
+    function getMarkerPosition() {
+        if (marker == undefined) {
+            return { lat: null, lng: null};
+        } else {
+            var pos = marker.getPosition();
+            return { lat: pos.lat(), lng: pos.lng() };
         }
     }
     
@@ -306,6 +325,21 @@ $(document).ready(function() {
         $.oip.manager.Save(re_c, re_r);
     });
     
+    function initialize() {
+      var mapOptions = {
+        center: new google.maps.LatLng(52.245461,21.007233),
+        zoom: 8,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
+      var map = new google.maps.Map(document.getElementById("map-canvas"),
+          mapOptions);
+                
+      google.maps.event.addListener(map, 'click', function(event) {
+        setupMarker(event.latLng);
+      });
+      return map;
+    }
+    map = initialize();    
     
     $.oip.manager = new $.oip.managerDef({{ city_id }}, {{ district_id }}, {{ church_id }},                 
         {
@@ -398,6 +432,8 @@ $(document).ready(function() {
               {
                   $('.block_church_description').val(data.description);
                   $('.block_church_address').val(data.address);
+                  debugger;
+                  setupMarkerFromObject(data.latitude, data.longitude);
               }
               $('.block_church_form').hide();
               $('.block_church_selected').show();
@@ -445,23 +481,7 @@ $(document).ready(function() {
             $('#save_all').show();
           }
         }
-    );
-        
-    function initialize() {
-      var mapOptions = {
-        center: new google.maps.LatLng(52.245461,21.007233),
-        zoom: 8,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      };
-      var map = new google.maps.Map(document.getElementById("map-canvas"),
-          mapOptions);
-                
-      google.maps.event.addListener(map, 'click', function(event) {
-        setupMarker(event.latLng);
-      });
-      return map;
-    }
-    map = initialize();       
+    );   
 
 //city ~ 11
 //address ~ 16

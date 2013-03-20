@@ -105,6 +105,8 @@ class FastController extends Controller
             'name' => $entity->getName(),
             'address' => $entity->getAddress(),
             'description' => $entity->getDescription(),
+            'latitude' => $entity->getLatitude(),
+            'longitude' => $entity->getLongitude(),
             'masses' => $dresult);
 
         $serializer = $this->container->get('serializer');
