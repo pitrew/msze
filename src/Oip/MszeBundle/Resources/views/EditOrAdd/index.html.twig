@@ -121,9 +121,10 @@
     var map;
     var marker;
     
-    function setupMarker(pos)
+    var saved_pos;
+    function _setupMarker()
     {
-        if (pos == null) {
+        if (saved_pos == null) {
             if (marker != null)
             {
                 marker.setMap(null);
@@ -133,15 +134,27 @@
             if (marker == null) {
                 marker = new google.maps.Marker({
                     map: map,
-                    position: pos,
+                    position: saved_pos,
                     draggable:true
                   }); 
+                  google.maps.event.addListener(marker, "dragend", function(event) { 
+                    $.oip.manager.setupPosition(event.latLng.lat(), event.latLng.lng());
+                    showSaveAll();
+                  }); 
             } else {
-                marker.setPosition(pos);
+                marker.setPosition(saved_pos);
             }
-            $.oip.manager.setupPosition(pos.lat(), pos.lng());
+            $.oip.manager.setupPosition(saved_pos.lat(), saved_pos.lng());
             map.setCenter(marker.getPosition());
         }
+    }
+    
+    var markerTimer = new oip_timer(_setupMarker);
+    function setupMarker(pos)
+    {
+        saved_pos = pos;
+        markerTimer.stop();
+        markerTimer.setup(300);
     }
     
     function setupMarkerFromObject(lat, lng)
@@ -179,6 +192,10 @@
             var pos = marker.getPosition();
             return { lat: pos.lat(), lng: pos.lng() };
         }
+    }
+    
+    function showSaveAll() {
+        $('#save_all').show();
     }
     
     
@@ -307,14 +324,14 @@ $(document).ready(function() {
     
     $('.block_church_address').keyup(function() {
         $.oip.manager.setChurchAddress($(this).val());
-        $('#save_all').show();
+        showSaveAll();
         addrTim.stop();
         addrTim.setup(300);
     });
     
     $('.block_church_description').keyup(function() {
         $.oip.manager.setChurchDescription($(this).val());
-        $('#save_all').show();
+        showSaveAll();
     });
     
     
@@ -336,7 +353,9 @@ $(document).ready(function() {
                 
       google.maps.event.addListener(map, 'click', function(event) {
         setupMarker(event.latLng);
+        showSaveAll();
       });
+      
       return map;
     }
     map = initialize();    
@@ -432,7 +451,6 @@ $(document).ready(function() {
               {
                   $('.block_church_description').val(data.description);
                   $('.block_church_address').val(data.address);
-                  debugger;
                   setupMarkerFromObject(data.latitude, data.longitude);
               }
               $('.block_church_form').hide();
@@ -478,7 +496,7 @@ $(document).ready(function() {
               $('#save_all').hide();
           },
           fun_show_save: function() {
-            $('#save_all').show();
+            showSaveAll();
           }
         }
     );   
