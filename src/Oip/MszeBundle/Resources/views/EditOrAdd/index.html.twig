@@ -96,6 +96,36 @@
 
 </div>
 
+<script id="church_template" type="text/template"> 
+    <ul class="block_church_list">
+        <% for (var x = 0; x < data.length; x++) { %>
+            <li class="block_church_list_element">
+                <span class="sim_ch_name common_border">
+                    <%= data[x].name %>
+                </span>
+                <span class="hidden church_id">
+                    <%= data[x].id %>
+                </span>
+             </li>
+         <% } %>
+    </ul>
+</script>
+
+<script id="mass_template" type="text/template"> 
+    <ul class="block_mass_list">
+    <% for (var x = 0; x < data.length; x++) { %>
+        <li class="block_mass_list_element">
+            <span class="sim_ma_name common_border">
+                <%= data[x].start_time %>
+            </span>
+            <span class="hidden mass_id">
+                <%= data[x].id %>
+            </span>
+        </li>
+     <% } %>
+     </ul>
+</script>
+
 
 <div id="oip_captcha">
 {{ form|raw }}
@@ -145,7 +175,7 @@
                 marker.setPosition(saved_pos);
             }
             $.oip.manager.setupPosition(saved_pos.lat(), saved_pos.lng());
-            map.setCenter(marker.getPosition());
+            map.setCenter(marker.getPosition());           
         }
     }
     
@@ -245,17 +275,17 @@ $(document).ready(function() {
     
     //CITY
     $('.block_city_form').on('click', '.block_city_new', function() {
-        $.oip.manager.setupCityId(-1, true, $('.block_city_name').val());
+        $.oip.manager.setupCityId(-1, true, $.trim($('.block_city_name').val()));
     });
     
     $('.block_city_form').on('click', '.block_city_list_element', function() {
-        $.oip.manager.setupCityId($(this).find('.city_id').html());
+        $.oip.manager.setupCityId($.trim($(this).find('.city_id').html()));
     });
     
     $('.block_city_selected_change').click(function() {
         $.oip.manager.setupCityId(-1);
         $.oip.manager.setupDistrictId(-1);
-        $.oip.manager.setupCityId(-1);
+        $.oip.manager.setupChurchId(-1);
     });
     
     $('.block_city_selected_name_edit').click(function() {
@@ -278,11 +308,11 @@ $(document).ready(function() {
     
     //district
     $('.block_district_form').on('click', '.block_district_new', function() {
-        $.oip.manager.setupDistrictId(-1, true, $('.block_district_name').val());
+        $.oip.manager.setupDistrictId(-1, true, $.trim($('.block_district_name').val()));
     });
     
     $('.block_district_form').on('click', '.block_district_list_element', function() {
-        $.oip.manager.setupDistrictId($(this).find('.district_id').html());
+        $.oip.manager.setupDistrictId($.trim($(this).find('.district_id').html()));
     });
     
     $('.block_district_selected_change').click(function() {
@@ -305,28 +335,38 @@ $(document).ready(function() {
     
     //chruch
     $('.block_church_form').on('click', '.block_church_new', function() {
-        $.oip.manager.setupChurchId(-1, true, $('.block_church_name').val());
+        $.oip.manager.setupChurchId(-1, true, $.trim($('.block_church_name').val()));
     });
     
     $('.block_church_form').on('click', '.block_church_list_element', function() {
-        $.oip.manager.setupChurchId($(this).find('.church_id').html());
+        $.oip.manager.setupChurchId($.trim($(this).find('.church_id').html()));
     });
     
     $('.block_church_selected_change').click(function() {
          $.oip.manager.setupChurchId(-1);
     });
     
+    var _local_zoom = 16;
     function _local_addr()
     {
-        goToAddress($.oip.manager.getGoogleSearch(), 16);   
+        goToAddress($.oip.manager.getGoogleSearch(), _local_zoom);   
     }
     var addrTim = new oip_timer(_local_addr);
+    function _local_goToAddress(zoom)
+    {
+        if (zoom != undefined) {
+            _local_zoom = zoom;
+        } else {
+            _local_zoom = 16;
+        }
+        addrTim.stop();
+        addrTim.setup(500);
+    }
     
     $('.block_church_address').keyup(function() {
         $.oip.manager.setChurchAddress($(this).val());
         showSaveAll();
-        addrTim.stop();
-        addrTim.setup(300);
+        _local_goToAddress(16);
     });
     
     $('.block_church_description').keyup(function() {
@@ -352,8 +392,11 @@ $(document).ready(function() {
           mapOptions);
                 
       google.maps.event.addListener(map, 'click', function(event) {
-        setupMarker(event.latLng);
-        showSaveAll();
+        if ($.oip.manager.isAddressSetupAllowed())
+        {
+            setupMarker(event.latLng);
+            showSaveAll();
+        }
       });
       
       return map;
@@ -366,12 +409,12 @@ $(document).ready(function() {
                 $('.block_city_selected_name').html(name);
                 $('.block_city_form').hide();
                 $('.block_city_selected').show();
-                goToAddress($.oip.manager.getGoogleSearch(), 11);
+                _local_goToAddress(11);
             }, //city select
           fun_city_unselect: function() {    
                 $('.block_city_selected').hide();
                 $('.block_city_form').show();
-                goToAddress();
+                _local_goToAddress(16);
             }, //city unselect
           fun_city_show_edit: function() {
               $('.block_city_selected_name_edit').show();
@@ -407,13 +450,12 @@ $(document).ready(function() {
                 }
                 $('.block_district_form').hide();
                 $('.block_district_selected').show();
-                debugger;
-                goToAddress($.oip.manager.getGoogleSearch(), 15);
+                _local_goToAddress(15);
             }, //dist select
           fun_district_unselect: function() {
                 $('.block_district_selected').hide();
                 $('.block_district_form').show();
-                goToAddress($.oip.manager.getGoogleSearch(), 11);
+                _local_goToAddress(11);
             }, //dist unselect
           fun_district_clear: function() {
                 $('.block_district_more').html('');
@@ -429,13 +471,7 @@ $(document).ready(function() {
             
 
           fun_church_fill: function(data) {
-                var found = '<ul class="block_church_list">';
-                for (var x = 0; x < data.length; x++)
-                {
-                    found += '<li class="block_church_list_element">' + 
-                        '<span class="sim_ch_name common_border">' + data[x].name + '</span><span class="hidden church_id">' + data[x].id + '</span></li>';
-                }
-                found += '</ul>';
+                var found = new EJS({text: $('#church_template').html()}).render({data: data});
                 $('.block_church_more').html(found);
             }, //dist fill
           fun_church_show: function() {
@@ -471,14 +507,8 @@ $(document).ready(function() {
           },
           
           fun_mass_fill: function(data) {
-                var found = '<ul class="block_mass_list">';
-                for (var x = 0; x < data.length; x++)
-                {
-                    found += '<li class="block_mass_list_element">' + 
-                        '<span class="sim_ma_name common_border">' + data[x].start_time + '</span><span class="hidden mass_id">' + data[x].id + '</span></li>';
-                }
-                found += '</ul>';
-                $('.block_mass_more').html(found);
+              var found = new EJS({text: $('#mass_template').html()}).render({data: data});
+              $('.block_mass_more').html(found);
             }, //dist fill
           fun_mass_show: function() {
               $('.block_mass_form').show();
