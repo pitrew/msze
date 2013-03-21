@@ -62,6 +62,10 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         _pos_lng = lng;
     }
     self.getGoogleGPSPos = function() {
+        if (_pos_lat == undefined || _pos_lng == undefined)
+        {
+            return undefined;
+        }
         return { lat: _pos_lat, lng: _pos_lng };
     }
     
@@ -70,6 +74,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     self.getDistrictId = function() { return _district_id; }
     self.getGoogleSearch = function() 
     {        
+        debugger;
         var _ret = '';
         if (_cur_city_name != undefined && _cur_city_name != '') {
             _ret += _cur_city_name;
@@ -92,6 +97,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             _city_new = true;
             _city_new_name = newName;
             _cur_city_name = newName;
+            _pos_lat = undefined;
             fun_city_hide_edit();
             fun_district_hide_edit();
             fun_church_hide_edit();
@@ -116,6 +122,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         {
             _city_new = false;
             _cur_city_name = '';
+            _pos_lat = undefined;
             fun_city_hide_edit();
             fun_district_hide_edit();
             fun_church_hide_edit();
@@ -157,6 +164,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             _district_new = true;
             _district_new_name = newName;
             _cur_district_name = newName;
+            _pos_lat = undefined;
             fun_district_hide_edit();
             fun_church_hide_edit();
             fun_district_select(newName);
@@ -172,6 +180,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         {
             _district_new = false;
             _cur_district_name = '';
+            _pos_lat = undefined;
             fun_district_hide_edit();
             fun_church_hide_edit();
             fun_hide_save();
@@ -204,6 +213,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             _church_new_name = newName;
             _cur_church_address = '';
             _cur_church_desc = '';
+            _pos_lat = undefined;
             _address_setup_allow = true;
             fun_church_hide_edit();
             fun_church_select(newName);
@@ -218,6 +228,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             _church_new_name = '';
             _cur_church_address = '';
             _cur_church_desc = '';
+            _pos_lat = undefined;
             _address_setup_allow = false;
             fun_church_hide_edit();
             fun_hide_save();

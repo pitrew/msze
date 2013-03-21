@@ -34,22 +34,42 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         fun_mass_clear = fn["fun_mass_clear"],
         
         fun_hide_save = fn["fun_hide_save"],
-        fun_show_save = fn["fun_show_save"];
+        fun_show_save = fn["fun_show_save"],
 
-    var self = this;
-    var _city_id = city_id;
-    var _district_id = district_id;
-    var _church_id = church_id;
+        self = this,
+        _city_id = city_id, _city_new_name, _cur_city_name,
+        
+        _district_id = district_id, _district_new_name, _cur_district_name,
+        
+        _church_id = church_id, _church_new_name,
+        _cur_church_address, _cur_church_desc = '',
+        _pos_lat, _pos_lng,
     
-    var _city_new, _city_new_name;
-    var _district_new, _district_new_name;
-    var _church_new, _church_new_name;
-    
-    var _cur_city_name, _cur_district_name;
-    var _cur_church_address, _cur_church_desc = '', _cur_church_gps = undefined;
-    var _pos_lat, _pos_lng;
-    
-    var _address_setup_allow = false;
+        _address_setup_allow = false,
+        
+        _local_clear_church = function () { 
+            _city_id = -1;
+            
+            _city_new_name = undefined;
+            _cur_city_name = undefined;
+        },
+        
+        _local_clear_district = function () {
+            _district_id = -1;
+            
+            _district_new_name = undefined;
+            _cur_district_name = undefined;
+        },
+        
+        _local_clear_church = function () {
+            _church_id = -1;
+            
+            _church_new_name = undefined;
+            _cur_church_address = undefined;
+            _cur_church_desc = undefined;
+            _pos_lat = undefined;
+            _pos_lng = undefined;
+        };
     
     self.setChurchAddress = function(address) {
         _cur_church_address = address;
@@ -62,6 +82,10 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         _pos_lng = lng;
     }
     self.getGoogleGPSPos = function() {
+        if (_pos_lat == undefined || _pos_lng == undefined)
+        {
+            return undefined;
+        }
         return { lat: _pos_lat, lng: _pos_lng };
     }
     
@@ -70,6 +94,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     self.getDistrictId = function() { return _district_id; }
     self.getGoogleSearch = function() 
     {        
+        debugger;
         var _ret = '';
         if (_cur_city_name != undefined && _cur_city_name != '') {
             _ret += _cur_city_name;
@@ -84,14 +109,16 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     }
         
     self.setupCityId = function(id, isNew, newName, afterFun) {
+        _local_clear_city()
+        _local_clear_district();
+        _local_clear_church();
         _city_id = id;
-        _district_id = -1;
-        _church_id = -1;
+            
         if (id == -1 && isNew == true)
         {
-            _city_new = true;
             _city_new_name = newName;
             _cur_city_name = newName;
+            
             fun_city_hide_edit();
             fun_district_hide_edit();
             fun_church_hide_edit();
@@ -114,8 +141,6 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         }
         else if (id == -1 && isNew !== true)
         {
-            _city_new = false;
-            _cur_city_name = '';
             fun_city_hide_edit();
             fun_district_hide_edit();
             fun_church_hide_edit();
@@ -131,7 +156,6 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         }
         else if (id != -1)
         {
-            _city_new = false;
             $.oip.ajax.getJSON(('fast_city'), { id: id }, null, function(data) {
                 _cur_city_name = data.name;
                 fun_city_select(data.name);
@@ -144,8 +168,9 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     }
     
     self.setupDistrictId = function(id, isNew, newName, afterFun) {
+        _local_clear_district();
+        _local_clear_church();
         _district_id = id;
-        _church_id = -1;
         if (id == -100) {
             id = -1;
             newName = '';
@@ -154,9 +179,9 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         
         if (id == -1 && isNew == true)
         {
-            _district_new = true;
             _district_new_name = newName;
             _cur_district_name = newName;
+            
             fun_district_hide_edit();
             fun_church_hide_edit();
             fun_district_select(newName);
@@ -170,8 +195,6 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         }
         else if (id == -1 && isNew !== true)
         {
-            _district_new = false;
-            _cur_district_name = '';
             fun_district_hide_edit();
             fun_church_hide_edit();
             fun_hide_save();
@@ -184,7 +207,6 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         }
         else if (id != -1)
         {
-            _district_new = false;
             $.oip.ajax.getJSON(('fast_district'), { id: id }, null, function(data) {
                 _cur_district_name = data.name;
                 fun_district_select(data.name);
@@ -197,13 +219,12 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     }
     
     self.setupChurchId = function(id, isNew, newName, afterFun) {
+        _local_clear_church();
         _church_id = id;
         if (id == -1 && isNew == true)
         {
-            _church_new = true;
             _church_new_name = newName;
-            _cur_church_address = '';
-            _cur_church_desc = '';
+            
             _address_setup_allow = true;
             fun_church_hide_edit();
             fun_church_select(newName);
@@ -214,10 +235,6 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         }
         else if (id == -1 && isNew !== true)
         {
-            _church_new = false;
-            _church_new_name = '';
-            _cur_church_address = '';
-            _cur_church_desc = '';
             _address_setup_allow = false;
             fun_church_hide_edit();
             fun_hide_save();
@@ -228,12 +245,11 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         }
         else if (id != -1)
         {
-            _church_new = false;
             $.oip.ajax.getJSON(('fast_church'), { id: id }, null, function(data) {
                 _cur_church_address = data.address;
                 _cur_church_desc = data.description;
-                _pos_lat: data.latitude;
-                _pos_lng: data.longitude;
+                _pos_lat = data.latitude;
+                _pos_lng = data.longitude;
                 _address_setup_allow = true;
                 fun_church_select(data.name, data);
                 fun_mass_fill(data.masses)
