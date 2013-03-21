@@ -146,11 +146,27 @@
 
 <script id="mass_template" type="text/template"> 
     <ul class="block_mass_list">
-    <% for (var x = 0; x < data.length; x++) { %>
+    <% for (var x = 0; x < data.length; x++) { 
+        var _tmp_date = new Date(data[x].start_time);
+        var _tmp_min = _tmp_date.getMinutes() < 10 ? '0' + _tmp_date.getMinutes() : _tmp_date.getMinutes(); 
+        %>
         <li class="block_mass_list_element">
             <span class="sim_ma_name common_border">
-                <%= data[x].start_time %>
+                <%= _tmp_date.getHours() %>:<%= _tmp_min %>
+            </span>    
+            <span class="sim_ma_name common_border">
+                <%= data[x].day_mon %>
+                <%= data[x].day_tue %>
+                <%= data[x].day_wed %>
+                <%= data[x].day_thu %>
+                <%= data[x].day_fri %>
+                <%= data[x].day_sat %>
+                <%= data[x].day_sun %>
             </span>
+            <span class="sim_ma_name common_border">
+                <%= data[x].details %>
+            </span>
+                
             <span class="hidden mass_id">
                 <%= data[x].id %>
             </span>
@@ -226,25 +242,36 @@
         setupMarker(pos);
     }
     
-    function goToAddress(address, zoom)
+    function goToAddress(address, zoom, gps)
     {
-        if (address == undefined)
+        if (gps != undefined)
         {
-            setupMarker(null);
-            map.setCenter(new google.maps.LatLng(52.038977,18.962402));
-            map.setZoom(5);
+            var gpsLL = new google.maps.LatLng(gps.lat, gps.lng);
+            map.setCenter(gpsLL);
+            map.setZoom(zoom);
+            setupMarker(gpsLL);
+            $.oip.manager.setupPosition(gps.lat, gps.lng);
         }
         else
         {
-            geocoder = new google.maps.Geocoder();
-            geocoder.geocode({ 'address': address }, function(results, status) {
-              if (status == google.maps.GeocoderStatus.OK) {
-                map.setCenter(results[0].geometry.location);
-                map.setZoom(zoom);
-                setupMarker(results[0].geometry.location);
-                $.oip.manager.setupPosition(results[0].geometry.location.lat(), results[0].geometry.location.lng());
-              }
-            });
+            if (address == undefined)
+            {
+                setupMarker(null);
+                map.setCenter(new google.maps.LatLng(52.038977,18.962402));
+                map.setZoom(5);
+            }
+            else
+            {
+                geocoder = new google.maps.Geocoder();
+                geocoder.geocode({ 'address': address }, function(results, status) {
+                  if (status == google.maps.GeocoderStatus.OK) {
+                    map.setCenter(results[0].geometry.location);
+                    map.setZoom(zoom);
+                    setupMarker(results[0].geometry.location);
+                    $.oip.manager.setupPosition(results[0].geometry.location.lat(), results[0].geometry.location.lng());
+                  }
+                });
+            }
         }
     }
     
@@ -375,7 +402,7 @@ $(document).ready(function() {
     var _local_zoom = 16;
     function _local_addr()
     {
-        goToAddress($.oip.manager.getGoogleSearch(), _local_zoom);   
+        goToAddress($.oip.manager.getGoogleSearch(), _local_zoom, $.oip.manager.getGoogleGPSPos());   
     }
     var addrTim = new oip_timer(_local_addr);
     function _local_goToAddress(zoom)

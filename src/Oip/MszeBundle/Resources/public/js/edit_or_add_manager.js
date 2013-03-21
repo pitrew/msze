@@ -46,7 +46,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     var _church_new, _church_new_name;
     
     var _cur_city_name, _cur_district_name;
-    var _cur_church_address, _cur_church_desc = '';
+    var _cur_church_address, _cur_church_desc = '', _cur_church_gps = undefined;
     var _pos_lat, _pos_lng;
     
     var _address_setup_allow = false;
@@ -57,18 +57,19 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     self.setChurchDescription = function(desc) {
         _cur_church_desc = desc;
     }
-    
     self.setupPosition = function(lat, lng) {
         _pos_lat = lat;
         _pos_lng = lng;
+    }
+    self.getGoogleGPSPos = function() {
+        return { lat: _pos_lat, lng: _pos_lng };
     }
     
     self.getCityId = function() { return _city_id; }
     self.getChurchId = function() { return _church_id; }
     self.getDistrictId = function() { return _district_id; }
     self.getGoogleSearch = function() 
-    { 
-        debugger;
+    {        
         var _ret = '';
         if (_cur_city_name != undefined && _cur_city_name != '') {
             _ret += _cur_city_name;
@@ -231,6 +232,8 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             $.oip.ajax.getJSON(('fast_church'), { id: id }, null, function(data) {
                 _cur_church_address = data.address;
                 _cur_church_desc = data.description;
+                _pos_lat: data.latitude;
+                _pos_lng: data.longitude;
                 _address_setup_allow = true;
                 fun_church_select(data.name, data);
                 fun_mass_fill(data.masses)
