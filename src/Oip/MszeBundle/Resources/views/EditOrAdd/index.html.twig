@@ -96,6 +96,39 @@
 
 </div>
 
+<script id="city_template" type="text/template"> 
+    <ul class="block_city_list">
+        <% for(var x = 0; x < data.length && x < max_city_search; x++) { %>
+            <li class="block_city_list_element">
+                <span class="sim_c_name common_border">
+                    <%= data[x].name %>
+                </span>
+                <span class="hidden city_id">
+                    <%= data[x].id %>
+                </span>
+            </li>
+         <% } %>
+         <% if (data.length > max_city_search) { %>
+            <li>Oraz <%= (data.length - max_city_search) %> innych</li>
+         <% } %>
+    </ul>
+</script>
+
+<script id="district_template" type="text/template"> 
+    <ul class="block_district_list">
+        <% for (var x = 1; x < data.length; x++) { %>
+            <li class="block_district_list_element">
+                <span class="sim_d_name common_border">
+                    <%= data[x].name %>
+                </span>
+                <span class="hidden district_id">
+                    <%= data[x].id %>
+                </span>
+            </li>
+        <% } %>
+    </ul>
+</script>
+
 <script id="church_template" type="text/template"> 
     <ul class="block_church_list">
         <% for (var x = 0; x < data.length; x++) { %>
@@ -236,21 +269,14 @@ $(document).ready(function() {
     {
         var max_city_search = 10;
         $.oip.ajax.getCities($('.block_city_name').val(), function(data) {
-                found_data = data;
-                var found = '<ul class="block_city_list">';
-                for(var x = 0; x < data.length && x < max_city_search; x++) {
-                    found += '<li class="block_city_list_element"><span class="sim_c_name common_border">' + data[x].name + '</span><span class="hidden city_id">' + data[x].id + '</span></li>';
-                }
-                if (data.length > max_city_search) {
-                    found += '<li>Oraz ' + (data.length - max_city_search) + ' innych</li>';
-                }
+                //found_data = data;
+                var found = new EJS({text: $('#city_template').html()}).render({data: data, max_city_search: max_city_search});
 
                 if (data.length == 0) {
                     $('.block_city_use').hide();
                 } else {
                     $('.block_city_use').show();
                 }
-                found += '</ul>';
                 $('.block_city_more').html(found);
         });
     }
@@ -424,15 +450,8 @@ $(document).ready(function() {
           },
 
           fun_district_fill: function(data) {
-                var found = '<ul class="block_district_list">';
                 $('.block_default_district_id').html(data[0].id);
-                
-                for (var x = 1; x < data.length; x++)
-                {
-                    found += '<li class="block_district_list_element">' + 
-                        '<span class="sim_d_name common_border">' + data[x].name + '</span><span class="hidden district_id">' + data[x].id + '</span></li>';
-                }
-                found += '</ul>';
+                var found = new EJS({text: $('#district_template').html()}).render({data: data});
                 $('.block_district_more').html(found);
             }, //dist fill
           fun_district_show: function() {
