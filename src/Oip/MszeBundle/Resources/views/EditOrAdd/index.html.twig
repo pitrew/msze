@@ -151,28 +151,56 @@
         var _tmp_min = _tmp_date.getMinutes() < 10 ? '0' + _tmp_date.getMinutes() : _tmp_date.getMinutes(); 
         %>
         <li class="block_mass_list_element">
-            <span class="sim_ma_name common_border">
-                <%= _tmp_date.getHours() %>:<%= _tmp_min %>
-            </span>    
-            <span class="sim_ma_name common_border">
-                <%= data[x].day_mon %>
-                <%= data[x].day_tue %>
-                <%= data[x].day_wed %>
-                <%= data[x].day_thu %>
-                <%= data[x].day_fri %>
-                <%= data[x].day_sat %>
-                <%= data[x].day_sun %>
-            </span>
-            <span class="sim_ma_name common_border">
-                <%= data[x].details %>
-            </span>
-                
+            <form class="block_mass_list_element_form">
+                <input type="text" class="inp_change" name="hour" value=<%= _tmp_date.getHours() %> class="block_mass_hour"></input>
+                :
+                <input type="text" class="inp_change" name="minute" value=<%= _tmp_min %> class="block_mass_minute"></input>
+
+                <input type="checkbox" class="chb_change" name="day_mon" <% if (data[x].day_mon) { %>checked<% } %> value="0"></input>
+                <input type="checkbox" class="chb_change" name="day_tue" <% if (data[x].day_tue) { %>checked<% } %> value="1"></input>
+                <input type="checkbox" class="chb_change" name="day_wed" <% if (data[x].day_wed) { %>checked<% } %> value="2"></input>
+                <input type="checkbox" class="chb_change" name="day_thu" <% if (data[x].day_thu) { %>checked<% } %> value="3"></input>
+                <input type="checkbox" class="chb_change" name="day_fri" <% if (data[x].day_fri) { %>checked<% } %> value="4"></input>
+                <input type="checkbox" class="chb_change" name="day_sat" <% if (data[x].day_sat) { %>checked<% } %> value="5"></input>
+                <input type="checkbox" class="chb_change" name="day_sun" <% if (data[x].day_sun) { %>checked<% } %> value="6"></input>
+
+                <textarea name="details" class="inp_change"><%= data[x].details %></textarea>
+            </form>
             <span class="hidden mass_id">
                 <%= data[x].id %>
             </span>
+                
+            <input type="checkbox" name="mass_delete"></input>
         </li>
      <% } %>
+   
      </ul>
+     <div class="mass_list_add_new">New</div>
+</script>
+
+<script id="new_empty_mass_template" type="text/template">
+    <li class="block_mass_list_element">
+        <form class="block_mass_list_element_form">
+            <input type="text" class="inp_change" name="hour" value="12" class="block_mass_hour"></input>
+            :
+            <input type="text" class="inp_change" name="minute" value="00" class="block_mass_minute"></input>
+
+            <input type="checkbox" class="chb_change" name="day_mon" value="0"></input>
+            <input type="checkbox" class="chb_change" name="day_tue" value="1"></input>
+            <input type="checkbox" class="chb_change" name="day_wed" value="2"></input>
+            <input type="checkbox" class="chb_change" name="day_thu" value="3"></input>
+            <input type="checkbox" class="chb_change" name="day_fri" value="4"></input>
+            <input type="checkbox" class="chb_change" name="day_sat" value="5"></input>
+            <input type="checkbox" class="chb_change" name="day_sun" value="6"></input>
+
+            <textarea name="details" class="inp_change"></textarea>
+        </form>
+        <span class="hidden mass_id">
+            <%= newId %>
+        </span>
+
+        <span class="mass_new_delete">Delete</span>
+    </li>
 </script>
 
 
@@ -199,6 +227,25 @@
 
     var map;
     var marker;
+    
+    function _get_mass_object_from_entry(elem)
+    {
+       var ret = {};
+       ret['hour'] = elem.find('input[name="hour"]').val();
+       ret['minute'] = elem.find('input[name="minute"]').val();
+       
+       ret['day_mon'] = elem.find('input[name="day_mon"]').is(':checked');
+       ret['day_tue'] = elem.find('input[name="day_tue"]').is(':checked');
+       ret['day_wed'] = elem.find('input[name="day_wed"]').is(':checked');
+       ret['day_thu'] = elem.find('input[name="day_thu"]').is(':checked');
+       ret['day_fri'] = elem.find('input[name="day_fri"]').is(':checked');
+       ret['day_sat'] = elem.find('input[name="day_sat"]').is(':checked');
+       ret['day_sun'] = elem.find('input[name="day_sun"]').is(':checked');
+       
+       ret['details'] = elem.find('textarea[name="details"]').val();
+       
+       return ret;
+    }
     
     var saved_pos;
     function _setupMarker()
@@ -398,6 +445,49 @@ $(document).ready(function() {
     $('.block_church_selected_change').click(function() {
          $.oip.manager.setupChurchId(-1);
     });
+    
+    $('.block_mass_more').on('click', 'input[name="mass_delete"]', function(event) {
+        var par = $(this).closest('.block_mass_list_element');
+        var mid = $.trim(par.find('.mass_id').html());
+        debugger;
+        if ($(this).is(':checked'))
+        {
+            $.oip.manager.markMassForDeletion(mid);
+        } 
+        else
+        {
+            $.oip.manager.unmarkMassForDeletion(mid);
+        }
+    });
+    
+    $('.block_mass_more').on('click', '.chb_change', function(event) {
+        var par = $(this).closest('.block_mass_list_element');
+        var mid = $.trim(par.find('.mass_id').html());
+        $.oip.manager.markMassForChange(mid, _get_mass_object_from_entry(par));
+    });
+    
+    $('.block_mass_more').on('keyup', '.inp_change', function(event) {
+        var par = $(this).closest('.block_mass_list_element');
+        var mid = $.trim(par.find('.mass_id').html());
+        $.oip.manager.markMassForChange(mid, _get_mass_object_from_entry(par));
+    });
+     
+     debugger;
+    $('.block_mass_more').on('click', '.mass_list_add_new', function(event) {
+        debugger;
+        var list = $(this).closest('.block_mass_more').find('.block_mass_list');
+        var newForm = new EJS({text: $('#new_empty_mass_template').html()}).render({newId: $.oip.manager.getNewMassId()});
+        list.append(newForm);
+    });
+    
+    $('.block_mass_more').on('click', '.mass_new_delete', function(event) {
+        var par = $(this).closest('.block_mass_list_element');
+        var mid = $.trim(par.find('.mass_id').html());
+        $.oip.manager.markMassForDeletion(mid);
+        par.remove();
+    });
+    
+    
     
     var _local_zoom = 16;
     function _local_addr()

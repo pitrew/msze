@@ -78,6 +78,9 @@ class EditOrAddController extends Controller
         
         $clat = $this->getArrayElement('clat', $data);
         $clng = $this->getArrayElement('clng', $data);
+        
+        $mmod = $this->getArrayElement('mmod', $data);
+        $mdel = $this->getArrayElement('mdel', $data);
                
         $crepo = $this->getDoctrine()->getRepository('OipMszeBundle:City');
         if ($city_id != -1) {
@@ -149,6 +152,61 @@ class EditOrAddController extends Controller
 
                 $em->persist($church);
                 $em->flush();
+            }
+        }
+        
+        $mrepo = $this->getDoctrine()->getRepository('OipMszeBundle:Mass');
+        if ($mdel != null && $church != null) {
+            foreach($mdel as $mid => $mpar)
+            {
+                $mass = $mrepo->find($mid);
+                if ($mass != null)
+                {
+                    $em->remove($mass);
+                    $em->flush();
+                }
+            }
+        }
+        if ($mmod != null && $church != null) {
+            $dt = new \DateTime();
+            foreach($mmod as $mid => $mpar)
+            {
+                if ($mid < 0)
+                {
+                    $mass = new \Oip\MszeBundle\Entity\Mass();
+                    $mass->setChurch($church);
+                    
+                    $dt->setTime($mpar['hour'], $mpar['minute'], 0);
+                    $mass->setStartTime($dt);
+                    $mass->setDetails($mpar['details']);
+                    $mass->setDayMon($mpar['day_mon']);
+                    $mass->setDayTue($mpar['day_tue']);
+                    $mass->setDayWed($mpar['day_wed']);
+                    $mass->setDayThu($mpar['day_thu']);
+                    $mass->setDayFri($mpar['day_fri']);
+                    $mass->setDaySat($mpar['day_sat']);
+                    $mass->setDaySun($mpar['day_sun']);
+                    $em->persist($mass);
+                    $em->flush();
+                }
+                else
+                {
+                    $mass = $mrepo->find($mid);
+                    if ($mass != null)
+                    {
+                        $dt->setTime($mpar['hour'], $mpar['minute'], 0);
+                        $mass->setStartTime($dt);
+                        $mass->setDetails($mpar['details']);
+                        $mass->setDayMon($mpar['day_mon']);
+                        $mass->setDayTue($mpar['day_tue']);
+                        $mass->setDayWed($mpar['day_wed']);
+                        $mass->setDayThu($mpar['day_thu']);
+                        $mass->setDayFri($mpar['day_fri']);
+                        $mass->setDaySat($mpar['day_sat']);
+                        $mass->setDaySun($mpar['day_sun']);
+                        $em->flush();
+                    }
+                }
             }
         }
         
