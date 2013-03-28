@@ -6,6 +6,38 @@
         Purpose of the stylesheet follows.
 */
 
+/************
+div { outline: 1px solid red; }
+span { outline: 1px solid yellow; }
+table { outline: 1px solid blue; }
+table td { outline: 1px solid green; }
+/************/
+
+.main_add_header
+{
+    height: 100px;
+    outline: 0px solid red;    
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.main_add_header_logo
+{
+    width: 300px;
+    height: 100px;
+    background-color: yellow;
+    margin-top: 0px;
+    float: left;
+}
+
+.main_add_header_action
+{
+    font-size: 30px;
+    position: absolute;
+    bottom: 0px;
+    left: 310px;
+}
+
 .common_border
 {
     border: 1px solid red;
@@ -30,5 +62,26 @@
 {
     /*height: 300px;*/
     height: 300px;
-    width: 600px;
+    width: 500px;
+}
+
+/********************/
+
+.main_add_division_table
+{
+    width: 100%;
+}
+.main_add_division_table td
+{
+    vertical-align: top;
+}
+.main_add_division_table td.map
+{
+    width: 500px;
+}
+
+.block_city, .block_city table
+{
+    /*margin: 0 auto;*/
+    /*width: 300px;*/
 }

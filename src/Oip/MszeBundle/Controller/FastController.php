@@ -83,21 +83,41 @@ class FastController extends Controller
             throw $this->createNotFoundException('Unable to find Church entity.');
         }
         
-        $masses = $entity->getMasses();
-        $dresult = array();
-        for ($x = 0; $x < sizeof($masses); $x++)
+        $massesEntity = $em->getRepository('OipMszeBundle:Mass');
+        $sundayMasses = $massesEntity->findMassesOrderByHour($id, true);
+        $weekMasses = $massesEntity->findMassesOrderByHour($id, false);
+        
+        $sresult = array();
+        $wresult = array();
+        for ($x = 0; $x < sizeof($sundayMasses); $x++)
         {
-            $dresult[$x] = array(
-                'id' => $masses[$x]->getId(), 
-                'start_time' => $masses[$x]->getStartTime(),
-                'details' => $masses[$x]->getDetails(),
-                'day_mon' => $masses[$x]->getDayMon(),
-                'day_tue' => $masses[$x]->getDayTue(),
-                'day_wed' => $masses[$x]->getDayWed(),
-                'day_thu' => $masses[$x]->getDayThu(),
-                'day_fri' => $masses[$x]->getDayFri(),
-                'day_sat' => $masses[$x]->getDaySat(),
-                'day_sun' => $masses[$x]->getDaySun()
+            $sresult[$x] = array(
+                'id' => $sundayMasses[$x]->getId(), 
+                'start_time' => $sundayMasses[$x]->getStartTime(),
+                'details' => $sundayMasses[$x]->getDetails()
+                /*'day_mon' => $sundayMasses[$x]->getDayMon(),
+                'day_tue' => $sundayMasses[$x]->getDayTue(),
+                'day_wed' => $sundayMasses[$x]->getDayWed(),
+                'day_thu' => $sundayMasses[$x]->getDayThu(),
+                'day_fri' => $sundayMasses[$x]->getDayFri(),
+                'day_sat' => $sundayMasses[$x]->getDaySat(),
+                'day_sun' => $sundayMasses[$x]->getDaySun()*/
+                );
+        }
+        
+        for ($x = 0; $x < sizeof($weekMasses); $x++)
+        {
+            $wresult[$x] = array(
+                'id' => $weekMasses[$x]->getId(), 
+                'start_time' => $weekMasses[$x]->getStartTime(),
+                'details' => $weekMasses[$x]->getDetails(),
+                'day_mon' => $weekMasses[$x]->getDayMon(),
+                'day_tue' => $weekMasses[$x]->getDayTue(),
+                'day_wed' => $weekMasses[$x]->getDayWed(),
+                'day_thu' => $weekMasses[$x]->getDayThu(),
+                'day_fri' => $weekMasses[$x]->getDayFri(),
+                'day_sat' => $weekMasses[$x]->getDaySat(),
+                'day_sun' => $weekMasses[$x]->getDaySun()
                 );
         }
         $result = array(
@@ -107,7 +127,8 @@ class FastController extends Controller
             'description' => $entity->getDescription(),
             'latitude' => $entity->getLatitude(),
             'longitude' => $entity->getLongitude(),
-            'masses' => $dresult);
+            'smasses' => $sresult,
+            'wmasses' => $wresult);
 
         $serializer = $this->container->get('serializer');
         if ($entity != null)

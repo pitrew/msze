@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EditOrAddController extends Controller
 {
+    private $skipCaptcha = true;
+    
     public function indexAction($city_id, $district_id, $church_id)
     {
         $cap = new \Oip\MszeBundle\OipCaptcha();
@@ -39,23 +41,26 @@ class EditOrAddController extends Controller
         $serializer = $this->container->get('serializer');
         $data_ret = array();
          
-        if (!$this->getRequest()->request->has('re_c') || 
-            !$this->getRequest()->request->has('re_r'))
-        {    
-            $data_ret['error'] = "Wpisz kod";
-            return new Response($serializer->serialize($data_ret, 'json'));
-        }
-        
-        $re_c = $this->getRequest()->request->get('re_c');
-        $re_r = $this->getRequest()->request->get('re_r');
-        
-        $cap = new \Oip\MszeBundle\OipCaptcha();
-        $cap_resp = $cap->recaptcha_check_answer("6Lehmd0SAAAAAMCJasaKSOzSB_ZQkEfLFgpXQ4tO", 
-                $this->getRequest()->getClientIp(), $re_c, $re_r);
-        
-        if (!$cap_resp->is_valid) {
-               $data_ret['error'] = "Kod nieprawidłowy";
-               return new Response($serializer->serialize($data_ret, 'json'));
+        if (!$this->skipCaptcha)
+        {
+            if (!$this->getRequest()->request->has('re_c') || 
+                !$this->getRequest()->request->has('re_r'))
+            {    
+                $data_ret['error'] = "Wpisz kod";
+                return new Response($serializer->serialize($data_ret, 'json'));
+            }
+
+            $re_c = $this->getRequest()->request->get('re_c');
+            $re_r = $this->getRequest()->request->get('re_r');
+
+            $cap = new \Oip\MszeBundle\OipCaptcha();
+            $cap_resp = $cap->recaptcha_check_answer("6Lehmd0SAAAAAMCJasaKSOzSB_ZQkEfLFgpXQ4tO", 
+                    $this->getRequest()->getClientIp(), $re_c, $re_r);
+
+            if (!$cap_resp->is_valid) {
+                   $data_ret['error'] = "Kod nieprawidłowy";
+                   return new Response($serializer->serialize($data_ret, 'json'));
+            }
         }
         
         $data = $this->getRequest()->request->get('all_data');
@@ -179,13 +184,13 @@ class EditOrAddController extends Controller
                     $dt->setTime($mpar['hour'], $mpar['minute'], 0);
                     $mass->setStartTime($dt);
                     $mass->setDetails($mpar['details']);
-                    $mass->setDayMon($mpar['day_mon']);
-                    $mass->setDayTue($mpar['day_tue']);
-                    $mass->setDayWed($mpar['day_wed']);
-                    $mass->setDayThu($mpar['day_thu']);
-                    $mass->setDayFri($mpar['day_fri']);
-                    $mass->setDaySat($mpar['day_sat']);
-                    $mass->setDaySun($mpar['day_sun']);
+                    $mass->setDayMon(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_mon']));
+                    $mass->setDayTue(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_tue']));
+                    $mass->setDayWed(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_wed']));
+                    $mass->setDayThu(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_thu']));
+                    $mass->setDayFri(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_fri']));
+                    $mass->setDaySat(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_sat']));
+                    $mass->setDaySun(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_sun']));
                     $em->persist($mass);
                     $em->flush();
                 }
@@ -197,13 +202,13 @@ class EditOrAddController extends Controller
                         $dt->setTime($mpar['hour'], $mpar['minute'], 0);
                         $mass->setStartTime($dt);
                         $mass->setDetails($mpar['details']);
-                        $mass->setDayMon($mpar['day_mon']);
-                        $mass->setDayTue($mpar['day_tue']);
-                        $mass->setDayWed($mpar['day_wed']);
-                        $mass->setDayThu($mpar['day_thu']);
-                        $mass->setDayFri($mpar['day_fri']);
-                        $mass->setDaySat($mpar['day_sat']);
-                        $mass->setDaySun($mpar['day_sun']);
+                        $mass->setDayMon(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_mon']));
+                        $mass->setDayTue(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_tue']));
+                        $mass->setDayWed(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_wed']));
+                        $mass->setDayThu(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_thu']));
+                        $mass->setDayFri(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_fri']));
+                        $mass->setDaySat(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_sat']));
+                        $mass->setDaySun(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_sun']));
                         $em->flush();
                     }
                 }

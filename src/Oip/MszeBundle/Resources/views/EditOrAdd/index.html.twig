@@ -7,209 +7,227 @@
 
 {% block body %}
 
-<div class="block_city">
-<div class="block_city_form">
-    <table>
-        <tr>
-            <td><input type="text" placeholder="Nazwa miasta" class="block_city_name"/></td>
-            <td><div class="block_city_add"></div></td>
-            <td><span class="block_city_use hidden">lub użyj isniejącego miasta:</span></td>
-            <td><div class="block_city_more"></div></td>
-        </tr>
-    </table>
-</div>
-
-<div class="block_city_selected hidden">
-    <div class="block_city_selected_name"></div>
-    <div class="block_city_selected_name_edit hidden">Edytuj</div>
-    <input type="text" class="block_city_selected_name_edit_text hidden"/>
-    <div class="block_city_selected_name_edit_save hidden">Zapisz nazwę</div>
-    
-    <div class="block_city_selected_change pointer">Zmień</div>
-</div>
+<div class="main_add_header">
+    <div class="main_add_header_logo"></div>
+    <div class="main_add_header_action">Dodaj</div>
 </div>
 
 
+<table class="main_add_division_table">
+    <tr>
+        <td>
+            <div class="block_city">
+            <div class="block_city_form">
+                <table>
+                    <tr>
+                        <td>Nazwa miasta:<br/><input type="text" placeholder="Nazwa miasta" class="block_city_name"/></td>
+                        <td><div class="block_city_add"></div></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><div class="block_city_more"></div></td>
+                    </tr>
+                </table>
+            </div>
 
-<div class="block_district hidden">
-<div class="block_district_form hidden">
-    <table>
-        <tr>
-            <td><input type="text" placeholder="Nazwa dzielnicy" class="block_district_name"/></td>
-            <td><div class="block_district_add"></div></td>
-            <td class="block_district_list_element">                
-                <span class="sim_d_name common_border">Brak dzielnicy</span>
-                <span class="block_default_district_id hidden district_id">-100</span>
-            </td>
-            <td><span class="block_district_use hidden">lub użyj isniejącej dzielnicy:</span></td>
-            <td><div class="block_district_more"></div></td>
-        </tr>
-    </table>
-</div>
+            <div class="block_city_selected hidden">
+                <div class="block_city_selected_name"></div>
+                <div class="block_city_selected_name_edit hidden">Edytuj</div>
+                <input type="text" class="block_city_selected_name_edit_text hidden"/>
+                <div class="block_city_selected_name_edit_save hidden">Zapisz nazwę</div>
 
-<div class="block_district_selected hidden">
-    <div class="block_district_selected_name"></div>
-    <div class="block_district_selected_name_edit hidden">Edytuj</div>
-    <input type="text" class="block_district_selected_name_edit_text hidden"/>
-    <div class="block_district_selected_name_edit_save hidden">Zapisz nazwę</div>
-    
-    <div class="block_district_selected_change pointer">Zmień</div>
-</div>
-</div>
-
-
-<div class="block_church hidden">
-<div class="block_church_form hidden">
-    <table>
-        <tr>
-            <td><input type="text" placeholder="Nazwa kościoła" class="block_church_name"/></td>
-            <td><div class="block_church_add"></div></td>
-            <td><span class="block_church_use hidden">lub użyj isniejącego kościoła:</span></td>
-            <td><div class="block_church_more"></div></td>
-        </tr>
-    </table>
-</div>
-
-<div class="block_church_selected hidden">
-    <div class="block_church_selected_name"></div>
-    <div class="block_church_selected_name_edit hidden">Edytuj</div>
-    <input type="text" class="block_church_selected_name_edit_text hidden"/>
-    <div class="block_church_selected_name_edit_save hidden">Zapisz nazwę</div>
-    
-    <div class="block_church_selected_change pointer">Zmień</div>
-</div>
-</div>
-
-<div class="block_mass hidden">
-<div class="block_mass_form hidden">
-    <table>
-        <tr>
-            <td><input type="text" placeholder="Adres" class="block_church_address"/></td>
-            <td><textarea placeholder="Opis" class="block_church_description"></textarea></td>
-            {#<td><input type="text" placeholder="Nazwa kościoła" class="block_church_name"/></td>
-            <td><div class="block_church_add"></div></td>
-            <td><span class="block_church_use hidden">lub użyj isniejącego kościoła:</span></td>#}
-            <td><div class="block_mass_more"></div></td>
-        </tr>
-    </table>
-</div>
-
-</div>
-
-<script id="city_template" type="text/template"> 
-    <ul class="block_city_list">
-        <% for(var x = 0; x < data.length && x < max_city_search; x++) { %>
-            <li class="block_city_list_element">
-                <span class="sim_c_name common_border">
-                    <%= data[x].name %>
-                </span>
-                <span class="hidden city_id">
-                    <%= data[x].id %>
-                </span>
-            </li>
-         <% } %>
-         <% if (data.length > max_city_search) { %>
-            <li>Oraz <%= (data.length - max_city_search) %> innych</li>
-         <% } %>
-    </ul>
-</script>
-
-<script id="district_template" type="text/template"> 
-    <ul class="block_district_list">
-        <% for (var x = 1; x < data.length; x++) { %>
-            <li class="block_district_list_element">
-                <span class="sim_d_name common_border">
-                    <%= data[x].name %>
-                </span>
-                <span class="hidden district_id">
-                    <%= data[x].id %>
-                </span>
-            </li>
-        <% } %>
-    </ul>
-</script>
-
-<script id="church_template" type="text/template"> 
-    <ul class="block_church_list">
-        <% for (var x = 0; x < data.length; x++) { %>
-            <li class="block_church_list_element">
-                <span class="sim_ch_name common_border">
-                    <%= data[x].name %>
-                </span>
-                <span class="hidden church_id">
-                    <%= data[x].id %>
-                </span>
-             </li>
-         <% } %>
-    </ul>
-</script>
-
-<script id="mass_template" type="text/template"> 
-    <ul class="block_mass_list">
-    <% for (var x = 0; x < data.length; x++) { 
-        var _tmp_date = new Date(data[x].start_time);
-        var _tmp_min = _tmp_date.getMinutes() < 10 ? '0' + _tmp_date.getMinutes() : _tmp_date.getMinutes(); 
-        %>
-        <li class="block_mass_list_element">
-            <form class="block_mass_list_element_form">
-                <input type="text" class="inp_change" name="hour" value=<%= _tmp_date.getHours() %> class="block_mass_hour"></input>
-                :
-                <input type="text" class="inp_change" name="minute" value=<%= _tmp_min %> class="block_mass_minute"></input>
-
-                <input type="checkbox" class="chb_change" name="day_mon" <% if (data[x].day_mon) { %>checked<% } %> value="0"></input>
-                <input type="checkbox" class="chb_change" name="day_tue" <% if (data[x].day_tue) { %>checked<% } %> value="1"></input>
-                <input type="checkbox" class="chb_change" name="day_wed" <% if (data[x].day_wed) { %>checked<% } %> value="2"></input>
-                <input type="checkbox" class="chb_change" name="day_thu" <% if (data[x].day_thu) { %>checked<% } %> value="3"></input>
-                <input type="checkbox" class="chb_change" name="day_fri" <% if (data[x].day_fri) { %>checked<% } %> value="4"></input>
-                <input type="checkbox" class="chb_change" name="day_sat" <% if (data[x].day_sat) { %>checked<% } %> value="5"></input>
-                <input type="checkbox" class="chb_change" name="day_sun" <% if (data[x].day_sun) { %>checked<% } %> value="6"></input>
-
-                <textarea name="details" class="inp_change"><%= data[x].details %></textarea>
-            </form>
-            <span class="hidden mass_id">
-                <%= data[x].id %>
-            </span>
-                
-            <input type="checkbox" name="mass_delete"></input>
-        </li>
-     <% } %>
-   
-     </ul>
-     <div class="mass_list_add_new">New</div>
-</script>
-
-<script id="new_empty_mass_template" type="text/template">
-    <li class="block_mass_list_element">
-        <form class="block_mass_list_element_form">
-            <input type="text" class="inp_change" name="hour" value="12" class="block_mass_hour"></input>
-            :
-            <input type="text" class="inp_change" name="minute" value="00" class="block_mass_minute"></input>
-
-            <input type="checkbox" class="chb_change" name="day_mon" value="0"></input>
-            <input type="checkbox" class="chb_change" name="day_tue" value="1"></input>
-            <input type="checkbox" class="chb_change" name="day_wed" value="2"></input>
-            <input type="checkbox" class="chb_change" name="day_thu" value="3"></input>
-            <input type="checkbox" class="chb_change" name="day_fri" value="4"></input>
-            <input type="checkbox" class="chb_change" name="day_sat" value="5"></input>
-            <input type="checkbox" class="chb_change" name="day_sun" value="6"></input>
-
-            <textarea name="details" class="inp_change"></textarea>
-        </form>
-        <span class="hidden mass_id">
-            <%= newId %>
-        </span>
-
-        <span class="mass_new_delete">Delete</span>
-    </li>
-</script>
+                <div class="block_city_selected_change pointer">Zmień</div>
+            </div>
+            </div>
 
 
-<div id="oip_captcha">
-{{ form|raw }}
-</div>
+
+            <div class="block_district hidden">
+            <div class="block_district_form hidden">
+                <table>
+                    <tr>
+                        <td><input type="text" placeholder="Nazwa dzielnicy" class="block_district_name"/></td>
+                        <td><div class="block_district_add"></div></td>
+                        <td class="block_district_list_element">                
+                            <span class="sim_d_name common_border">Brak dzielnicy</span>
+                            <span class="block_default_district_id hidden district_id">-100</span>
+                        </td>
+                        <td><span class="block_district_use hidden">lub użyj isniejącej dzielnicy:</span></td>
+                        <td><div class="block_district_more"></div></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="block_district_selected hidden">
+                <div class="block_district_selected_name"></div>
+                <div class="block_district_selected_name_edit hidden">Edytuj</div>
+                <input type="text" class="block_district_selected_name_edit_text hidden"/>
+                <div class="block_district_selected_name_edit_save hidden">Zapisz nazwę</div>
+
+                <div class="block_district_selected_change pointer">Zmień</div>
+            </div>
+            </div>
 
 
-<div id="map-canvas"></div>
+            <div class="block_church hidden">
+            <div class="block_church_form hidden">
+                <table>
+                    <tr>
+                        <td><input type="text" placeholder="Nazwa kościoła" class="block_church_name"/></td>
+                        <td><div class="block_church_add"></div></td>
+                        <td><span class="block_church_use hidden">lub użyj isniejącego kościoła:</span></td>
+                        <td><div class="block_church_more"></div></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="block_church_selected hidden">
+                <div class="block_church_selected_name"></div>
+                <div class="block_church_selected_name_edit hidden">Edytuj</div>
+                <input type="text" class="block_church_selected_name_edit_text hidden"/>
+                <div class="block_church_selected_name_edit_save hidden">Zapisz nazwę</div>
+
+                <div class="block_church_selected_change pointer">Zmień</div>
+            </div>
+            </div>
+
+            <div class="block_mass hidden">
+            <div class="block_mass_form hidden">
+                <table>
+                    <tr>
+                        <td><input type="text" placeholder="Adres" class="block_church_address"/></td>
+                        <td><textarea placeholder="Opis" class="block_church_description"></textarea></td>
+                        {#<td><input type="text" placeholder="Nazwa kościoła" class="block_church_name"/></td>
+                        <td><div class="block_church_add"></div></td>
+                        <td><span class="block_church_use hidden">lub użyj isniejącego kościoła:</span></td>#}
+                        <td><div class="block_mass_more"></div></td>
+                    </tr>
+                </table>
+            </div>
+
+            </div>
+
+            <script id="city_template" type="text/template"> 
+                <ul class="block_city_list">
+                    <% for(var x = 0; x < data.length && x < max_city_search; x++) { %>
+                        <li class="block_city_list_element">
+                            <span class="sim_c_name common_border">
+                                <%= data[x].name %>
+                            </span>
+                            <span class="hidden city_id">
+                                <%= data[x].id %>
+                            </span>
+                        </li>
+                     <% } %>
+                     <% if (data.length > max_city_search) { %>
+                        <li>Oraz <%= (data.length - max_city_search) %> innych</li>
+                     <% } %>
+                </ul>
+            </script>
+
+            <script id="district_template" type="text/template"> 
+                <ul class="block_district_list">
+                    <% for (var x = 1; x < data.length; x++) { %>
+                        <li class="block_district_list_element">
+                            <span class="sim_d_name common_border">
+                                <%= data[x].name %>
+                            </span>
+                            <span class="hidden district_id">
+                                <%= data[x].id %>
+                            </span>
+                        </li>
+                    <% } %>
+                </ul>
+            </script>
+
+            <script id="church_template" type="text/template"> 
+                <ul class="block_church_list">
+                    <% for (var x = 0; x < data.length; x++) { %>
+                        <li class="block_church_list_element">
+                            <span class="sim_ch_name common_border">
+                                <%= data[x].name %>
+                            </span>
+                            <span class="hidden church_id">
+                                <%= data[x].id %>
+                            </span>
+                         </li>
+                     <% } %>
+                </ul>
+            </script>
+
+            <script id="mass_template" type="text/template"> 
+                <ul class="block_mass_list">
+                <% for (var x = 0; x < data.length; x++) { 
+                    var _tmp_date = new Date(data[x].start_time);
+                    var _tmp_min = _tmp_date.getMinutes() < 10 ? '0' + _tmp_date.getMinutes() : _tmp_date.getMinutes(); 
+                    %>
+                    <li class="block_mass_list_element">
+                        <form class="block_mass_list_element_form">
+                            <input type="text" class="inp_change" name="hour" value=<%= _tmp_date.getHours() %> class="block_mass_hour"></input>
+                            :
+                            <input type="text" class="inp_change" name="minute" value=<%= _tmp_min %> class="block_mass_minute"></input>
+
+                            <input type="checkbox" class="chb_change" name="day_mon" <% if (data[x].day_mon) { %>checked<% } %> value="0"></input>
+                            <input type="checkbox" class="chb_change" name="day_tue" <% if (data[x].day_tue) { %>checked<% } %> value="1"></input>
+                            <input type="checkbox" class="chb_change" name="day_wed" <% if (data[x].day_wed) { %>checked<% } %> value="2"></input>
+                            <input type="checkbox" class="chb_change" name="day_thu" <% if (data[x].day_thu) { %>checked<% } %> value="3"></input>
+                            <input type="checkbox" class="chb_change" name="day_fri" <% if (data[x].day_fri) { %>checked<% } %> value="4"></input>
+                            <input type="checkbox" class="chb_change" name="day_sat" <% if (data[x].day_sat) { %>checked<% } %> value="5"></input>
+                            <input type="checkbox" class="chb_change" name="day_sun" <% if (data[x].day_sun) { %>checked<% } %> value="6"></input>
+
+                            <textarea name="details" class="inp_change"><%= data[x].details %></textarea>
+                        </form>
+                        <span class="hidden mass_id">
+                            <%= data[x].id %>
+                        </span>
+
+                        <input type="checkbox" name="mass_delete"></input>
+                    </li>
+                 <% } %>
+
+                 </ul>
+                 <div class="mass_list_add_new">New</div>
+            </script>
+
+            <script id="new_empty_mass_template" type="text/template">
+                <li class="block_mass_list_element">
+                    <form class="block_mass_list_element_form">
+                        <input type="text" class="inp_change" name="hour" value="12" class="block_mass_hour"></input>
+                        :
+                        <input type="text" class="inp_change" name="minute" value="00" class="block_mass_minute"></input>
+
+                        <input type="checkbox" class="chb_change" name="day_mon" value="0"></input>
+                        <input type="checkbox" class="chb_change" name="day_tue" value="1"></input>
+                        <input type="checkbox" class="chb_change" name="day_wed" value="2"></input>
+                        <input type="checkbox" class="chb_change" name="day_thu" value="3"></input>
+                        <input type="checkbox" class="chb_change" name="day_fri" value="4"></input>
+                        <input type="checkbox" class="chb_change" name="day_sat" value="5"></input>
+                        <input type="checkbox" class="chb_change" name="day_sun" value="6"></input>
+
+                        <textarea name="details" class="inp_change"></textarea>
+                    </form>
+                    <span class="hidden mass_id">
+                        <%= newId %>
+                    </span>
+
+                    <span class="mass_new_delete">Delete</span>
+                </li>
+            </script>
+
+
+    </td>
+    <td class="map">
+
+            {#
+            <div id="oip_captcha">
+            {{ form|raw }}
+            </div>
+            #}
+
+            <div id="map-canvas"></div>
+
+    </td>
+    </tr>
+</table>
 
 <div id="save_all" class="hidden pointer">Zapisz</div>
 
@@ -472,7 +490,6 @@ $(document).ready(function() {
         $.oip.manager.markMassForChange(mid, _get_mass_object_from_entry(par));
     });
      
-     debugger;
     $('.block_mass_more').on('click', '.mass_list_add_new', function(event) {
         debugger;
         var list = $(this).closest('.block_mass_more').find('.block_mass_list');
@@ -642,8 +659,8 @@ $(document).ready(function() {
               $('.block_church_selected_name_edit').hide();
           },
           
-          fun_mass_fill: function(data) {
-              var found = new EJS({text: $('#mass_template').html()}).render({data: data});
+          fun_mass_fill: function(smasses, wmasses) {
+              var found = new EJS({text: $('#mass_template').html()}).render({data: wmasses});
               $('.block_mass_more').html(found);
             }, //dist fill
           fun_mass_show: function() {

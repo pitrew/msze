@@ -111,7 +111,6 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     self.getDistrictId = function() { return _district_id; }
     self.getGoogleSearch = function() 
     {        
-        debugger;
         var _ret = '';
         if (_cur_city_name != undefined && _cur_city_name != '') {
             _ret += _cur_city_name;
@@ -270,7 +269,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 _address_setup_allow = true;
                 fun_church_select(data.name, data);
                 _masses_all = data.masses;
-                fun_mass_fill(data.masses)
+                fun_mass_fill(data.smasses, data.wmasses)
                 fun_mass_show();
                 if (afterFun != undefined) { afterFun(); }
                 fun_church_show_edit();
@@ -294,7 +293,6 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     }
     
     self.markMassForChange = function(id, values) {
-        debugger;
         _mod_masses_list[id] = values;
     }
     
@@ -313,7 +311,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 'mmod': _mod_masses_list,
                 'mdel': _del_masses_list
               };
-              
+              debugger;
         $.oip.ajax.postJSON('save_all', null, {'all_data': str, 're_c': re_c, 're_r': re_r}, function(data) {
             if (data['error'] != undefined) {
                 alert('Error' + data.error);

@@ -10,15 +10,23 @@ html
 {
     font-family: Verdana,Arial,Helvetica,sans-serif;
     font-size: 12px;
-    background-color: #ccffff;
-    margin-right: 0px;
-    margin-left: 0px;
-    margin-bottom: 0px;
-    margin-top: 0px;
-    padding-right: 0px;
-    padding-left: 0px;
-    padding-bottom: 0px;
-    padding-top: 0px;
+    background-color: #ffd;
+    margin: 0px;
+    padding: 0px;
+}
+
+body
+{
+    margin: 0px;
+}
+
+.main_content
+{
+    width: 970px;
+    margin: 0 auto;
+    background-color: #EFEFEF;
+    text-align: center;
+    min-height: 600px;
 }
 
 .pointer

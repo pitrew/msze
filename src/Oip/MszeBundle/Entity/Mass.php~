@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Mass
  *
  * @ORM\Table()
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Oip\MszeBundle\Entity\MassRepository")
  */
 class Mass
 {
