@@ -6,9 +6,9 @@
         Purpose of the stylesheet follows.
 */
 
-/************
-div { outline: 1px solid red; }
-span { outline: 1px solid yellow; }
+/************/
+/*div { outline: 1px solid red; }*/
+/*span { outline: 1px solid yellow; }*
 table { outline: 1px solid blue; }
 table td { outline: 1px solid green; }
 /************/
@@ -40,17 +40,147 @@ table td { outline: 1px solid green; }
 
 .common_border
 {
-    border: 1px solid red;
+    border: 0px solid red;
     cursor: pointer;
+    display: inline-block;
+    width: 120px;
+    height: 45px;
+    padding-top: 5px;
+    color: #222222;
+    overflow: hidden;
+    
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+
+    -webkit-box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, .5);
+    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, .5);
+
+    background: #cdeb8e; /* Old browsers */
+    background: -moz-linear-gradient(top, #cdeb8e 0%, #a5c956 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#cdeb8e), color-stop(100%,#a5c956)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #cdeb8e 0%,#a5c956 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #cdeb8e 0%,#a5c956 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #cdeb8e 0%,#a5c956 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #cdeb8e 0%,#a5c956 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cdeb8e', endColorstr='#a5c956',GradientType=0 ); /* IE6-9 */
+
 }
 
-.block_city_list li
+.block_district, .block_church
+{
+    border-top: 1px solid #969696;
+    margin-top: 5px;
+}
+
+.block_city_form_table, .block_district_form_table, .block_church_form_table
+{
+    width: 100%;
+}
+.block_city_form_table .block_city_form_td_left
+{
+    width: 200px;
+}
+
+.block_city_selected_name, .block_district_selected_name, .block_church_selected_name
+{
+    font-size: 20px;
+    font-weight: bold;
+}
+.block_city_selected_name .subname, .block_district_selected_name .subname, .block_church_selected_name .subname
+{
+    font-size: 12px;
+    color: #333;
+}
+
+.block_city_selected_name_edit, .block_city_selected_change,
+.block_district_selected_name_edit, .block_district_selected_change,
+.block_church_selected_name_edit, .block_church_selected_change
+{
+    height: 20px;
+    width: 90px;
+    margin: 0 auto;
+    padding-top: 5px;
+    cursor: pointer;
+}
+.block_city_selected_name_edit:hover, .block_city_selected_change:hover,
+.block_district_selected_name_edit:hover, .block_district_selected_change:hover,
+.block_church_selected_name_edit:hover, .block_church_selected_change:hover
+{
+    background-color: #b1b1b1;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.block_city_new, .block_district_new
+{
+    background: #fefcea; /* Old browsers */
+    background: -moz-linear-gradient(top, #fefcea 0%, #f1da36 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fefcea), color-stop(100%,#f1da36)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #fefcea 0%,#f1da36 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #fefcea 0%,#f1da36 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #fefcea 0%,#f1da36 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #fefcea 0%,#f1da36 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefcea', endColorstr='#f1da36',GradientType=0 ); /* IE6-9 */
+}
+
+.block_city_more
+{
+    border: 0px solid red;
+    width: 100%;
+}
+
+.block_district_form_td_left, .block_church_form_td_left
+{
+    width: 160px;
+    height: 50px;
+}
+
+.block_list li
 {
     list-style-type: none;
     display: inline;
     width: 40px;
     height: 40px;
     margin-right: 10px;
+}
+.block_district_more
+{
+    width: 450px;
+}
+
+.block_district_none_element
+{
+    width: 100px;
+}
+.block_district_none_element .common_border
+{
+    width: 100px;
+    background: #eeeeee; /* Old browsers */
+    background: -moz-linear-gradient(top, #eeeeee 0%, #cccccc 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eeeeee), color-stop(100%,#cccccc)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #eeeeee 0%,#cccccc 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #eeeeee 0%,#cccccc 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #eeeeee 0%,#cccccc 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #eeeeee 0%,#cccccc 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#cccccc',GradientType=0 ); /* IE6-9 */
+}
+
+.block_district_spacer
+{
+    height: 20px;
+}
+
+.block_church_description
+{
+    width: 280px;
+    height: 50px;
+}
+
+.block_church_address
+{
+    text-align: left;
 }
 
 .left
@@ -69,7 +199,7 @@ table td { outline: 1px solid green; }
 
 .main_add_division_table
 {
-    width: 100%;
+    width: 970px;
 }
 .main_add_division_table td
 {
