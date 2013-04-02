@@ -31,7 +31,7 @@
 
             <div class="block_city_selected hidden">
                 <div class="block_city_selected_name"></div>
-                <div class="block_city_selected_name_edit hidden">Edytuj</div>
+                <div class="block_city_selected_name_edit hidden">Edytuj nazwę</div>
                 <input type="text" class="block_city_selected_name_edit_text hidden"/>
                 <div class="block_city_selected_name_edit_save hidden">Zapisz nazwę</div>
 
@@ -64,7 +64,7 @@
 
             <div class="block_district_selected hidden">
                 <div class="block_district_selected_name"></div>
-                <div class="block_district_selected_name_edit hidden">Edytuj</div>
+                <div class="block_district_selected_name_edit hidden">Edytuj nazwę</div>
                 <input type="text" class="block_district_selected_name_edit_text hidden"/>
                 <div class="block_district_selected_name_edit_save hidden">Zapisz nazwę</div>
 
@@ -90,7 +90,7 @@
 
             <div class="block_church_selected hidden">
                 <div class="block_church_selected_name"></div>
-                <div class="block_church_selected_name_edit hidden">Edytuj</div>
+                <div class="block_church_selected_name_edit hidden">Edytuj nazwę</div>
                 <input type="text" class="block_church_selected_name_edit_text hidden"/>
                 <div class="block_church_selected_name_edit_save hidden">Zapisz nazwę</div>
 
@@ -104,7 +104,7 @@
             <div class="block_mass_form hidden">
                 <table>
                     <tr>
-                        <td class="block_church_address">
+                        <td class="block_church_address_td">
                             Adres:<br/>
                             <input type="text" placeholder="Adres" class="block_church_address"/>
                         </td>
@@ -178,9 +178,9 @@
     <ul class="block_church_list block_list">
         <% for (var x = 0; x < data.length; x++) { %>
             <li class="block_church_list_element">
-                <span class="sim_ch_name common_border">
+                <div class="sim_ch_name common_border">
                     <%= data[x].name %>
-                </span>
+                </div>
                 <span class="hidden church_id">
                     <%= data[x].id %>
                 </span>
@@ -318,10 +318,11 @@
         markerTimer.setup(300);
     }
     
-    function setupMarkerFromObject(lat, lng)
+    function setupMarkerFromObject(lat, lng, zoom)
     {
         var pos = new google.maps.LatLng(lat, lng);
         setupMarker(pos);
+        map.setZoom(zoom);
     }
     
     function goToAddress(address, zoom, gps)
@@ -485,7 +486,7 @@ $(document).ready(function() {
     $('.block_mass_more').on('click', 'input[name="mass_delete"]', function(event) {
         var par = $(this).closest('.block_mass_list_element');
         var mid = $.trim(par.find('.mass_id').html());
-        debugger;
+        
         if ($(this).is(':checked'))
         {
             $.oip.manager.markMassForDeletion(mid);
@@ -509,7 +510,7 @@ $(document).ready(function() {
     });
      
     $('.block_mass_more').on('click', '.mass_list_add_new', function(event) {
-        debugger;
+        
         var list = $(this).closest('.block_mass_more').find('.block_mass_list');
         var newForm = new EJS({text: $('#new_empty_mass_template').html()}).render({newId: $.oip.manager.getNewMassId()});
         list.append(newForm);
@@ -542,6 +543,7 @@ $(document).ready(function() {
     }
     
     $('.block_church_address').keyup(function() {
+        
         $.oip.manager.setChurchAddress($(this).val());
         showSaveAll();
         _local_goToAddress(16);
@@ -622,18 +624,18 @@ $(document).ready(function() {
             }, //dist hide
           fun_district_select: function(name) {
                 if (name == '') {
-                  $('.block_district_selected_name').html('Bez dzielnicy');
+                  $('.block_district_selected_name').html('<span class="subname">Dzielnica:</span> Bez dzielnicy');
                 } else {
                   $('.block_district_selected_name').html('<span class="subname">Dzielnica:</span> ' + name);
                 }
                 $('.block_district_form').hide();
                 $('.block_district_selected').show();
-                _local_goToAddress(15);
+                //_local_goToAddress(15);
             }, //dist select
           fun_district_unselect: function() {
                 $('.block_district_selected').hide();
                 $('.block_district_form').show();
-                _local_goToAddress(11);
+                //_local_goToAddress(11);
             }, //dist unselect
           fun_district_clear: function() {
                 $('.block_district_more').html('');
@@ -665,7 +667,7 @@ $(document).ready(function() {
               {
                   $('.block_church_description').val(data.description);
                   $('.block_church_address').val(data.address);
-                  setupMarkerFromObject(data.latitude, data.longitude);
+                  setupMarkerFromObject(data.latitude, data.longitude, 17);
               }
               $('.block_church_form').hide();
               $('.block_church_selected').show();
@@ -673,8 +675,11 @@ $(document).ready(function() {
           fun_church_unselect: function() {
             $('.block_church_selected').hide();
             $('.block_church_form').show();
+            _local_goToAddress(11);
           }, //church unselect
           fun_church_clear: function() {
+            $('.block_church_address').val('');
+            $('.block_church_description').val('');
             $('.block_church_more').html('');
           },
           fun_church_show_edit: function() {
