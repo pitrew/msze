@@ -168,6 +168,19 @@
     width: 140px;
     height: 33px;
 }
+.block_mass_edit_textarea_div
+{
+    width: 146px;
+    height: 39px;
+    margin: 0 auto;
+}
+
+.block_mass_edit_box_div
+{
+    margin: 0 auto;
+    width: 65px;
+}
+
 .block_mass_edit_el
 {
     position: absolute;
@@ -515,6 +528,9 @@
                                 <span class="block_mass_min"><%= _tmp_min %></span>
                             </div>
                             <div class="block_mass_desc"><%= sdata[x].details %></div>
+                            <span class="hidden mass_id">
+                                <%= sdata[x].id %>
+                            </span>
                         </div>
                 </td></tr>
                 <% } %>
@@ -547,6 +563,9 @@
                                 <% if (wdata[x].day_sat) { %>so<span class="bm_d_sat hidden"></span><% } %>
                             </div>
                             <div class="block_mass_desc"><%= wdata[x].details %></div>
+                            <span class="hidden mass_id">
+                                <%= wdata[x].id %>
+                            </span>
                         </div>
                 </td></tr>
                 <% } %>
@@ -566,12 +585,16 @@
     <h3>Nowa msza</h3>
     <p>Niedziela</p>
     <p>
+    <div class="block_mass_edit_box_div">
     <input type="text" class="block_mass_edit_box block_mass_edit_hour" name="hour" value="12" maxlength="2"></input>
     :
     <input type="text" class="block_mass_edit_box block_mass_edit_minute" name="minute" value="00" maxlength="2"></input>
+    </div>
     </p>
     <p>
-        <textarea name="details" class="block_mass_edit_textarea" placeholder="Szczegóły"></textarea>
+        <div class="block_mass_edit_textarea_div">
+            <textarea name="details" class="block_mass_edit_textarea" placeholder="Szczegóły"></textarea>
+        </div>
     </p>
     <p>
         <span class="show_el show_add show_del block_mass_edit_button block_mass_edit_sun_button_cancel">Anuluj</span>
@@ -586,6 +609,8 @@
     {% for i in 0..11 %}
         <div class="block_mass_edit_el block_mass_edit_min_el block_mass_edit_min_{{i}}">{% if i*5 < 10 %}0{% endif %}{{i*5}}</div>
     {% endfor %}
+        
+    <span class="hidden mass_id">-1</span>
 </div>
 
 <div class="block_mass_edit_win block_mass_edit_other hidden">
@@ -593,7 +618,7 @@
     <p>
     <table class="block_mass_edit_other_days_table">
         <tr><td>pn</td><td>wt</td><td>śr</td><td>czw</td><td>pt</td><td>so</td></tr>
-        <tr>
+        <tr class="block_mass_edit_other_days_table_tr">
             <td><input type="checkbox" class="chb_change" name="day_mon" value="0"></input></td>
             <td><input type="checkbox" class="chb_change" name="day_tue" value="1"></input></td>
             <td><input type="checkbox" class="chb_change" name="day_wed" value="2"></input></td>
@@ -605,12 +630,16 @@
     </p>
     
     <p>
+    <div class="block_mass_edit_box_div">
     <input type="text" class="block_mass_edit_box block_mass_edit_hour" name="hour" value="12" maxlength="2"></input>
     :
     <input type="text" class="block_mass_edit_box block_mass_edit_minute" name="minute" value="00" maxlength="2"></input>
+    </div>
     </p>
     <p>
-        <textarea name="details" class="block_mass_edit_textarea" placeholder="Szczegóły"></textarea>
+        <div class="block_mass_edit_textarea_div">
+            <textarea name="details" class="block_mass_edit_textarea" placeholder="Szczegóły"></textarea>
+        </div>
     </p>
     <p>
         <span class="show_el show_add show_del block_mass_edit_button block_mass_edit_other_button_cancel">Anuluj</span>
@@ -625,6 +654,8 @@
     {% for i in 0..11 %}
         <div class="block_mass_edit_el block_mass_edit_min_el block_mass_edit_min_{{i}}">{% if i*5 < 10 %}0{% endif %}{{i*5}}</div>
     {% endfor %}
+        
+    <span class="hidden mass_id">-1</span>
 </div>
 {% endblock %}
 
@@ -649,6 +680,7 @@
           data['hour'] = $(this).find('.block_mass_hour').html();
           data['min'] = $(this).find('.block_mass_min').html();
           data['desc'] = $(this).find('.block_mass_desc').html();            
+          data['id'] = $.trim($(this).find('.mass_id').html());
             
           showEditWindowSun(data);
         });
@@ -656,6 +688,7 @@
         $('.main_content').on('click', '.block_mass_other .block_mass_button_new_other', function() {
           showEditWindowOther(undefined);
         });
+        
         $('.main_content').on('click', '.block_mass_other .block_mass_entry', function() {
           var data = {};
           data['hour'] = $(this).find('.block_mass_hour').html();
@@ -669,6 +702,8 @@
           data['dfri'] = $(this).find('.bm_d_fri').length > 0;
           data['dsat'] = $(this).find('.bm_d_sat').length > 0;
           
+          data['id'] = $.trim($(this).find('.mass_id').html());
+          
           showEditWindowOther(data);
         });
 
@@ -677,6 +712,26 @@
               hideWall();
             });
         });
+
+        $('.block_mass_edit_sun_button_delete, .block_mass_edit_other_button_delete').click(function() {
+            var win = $(this).closest('.block_mass_edit_win');
+            var mid = $.trim(win.find('.mass_id').html());
+            $.oip.manager.markMassForDeletion(parseInt(mid));
+            
+            win.fadeOut('fast', function() {
+              hideWall();
+            });
+        });
+        $('.block_mass_edit_sun_button_undelete, .block_mass_edit_other_button_undelete').click(function() {
+            var win = $(this).closest('.block_mass_edit_win');
+            var mid = $.trim(win.find('.mass_id').html());
+            $.oip.manager.unmarkMassForDeletion(parseInt(mid));
+            
+            win.fadeOut('fast', function() {
+              hideWall();
+            });
+        })
+        
 
         $('.block_mass_edit_hour').focusout(hideHours);
         $('.block_mass_edit_hour').focus(showHours);
@@ -715,8 +770,17 @@
             wind.find('.block_mass_edit_hour').val(data.hour);
             wind.find('.block_mass_edit_minute').val(data.min);
             wind.find('.block_mass_edit_textarea').val(data.desc);
+            wind.find('.mass_id').html(data.id);            
+            
             wind.find('.show_el').hide(0, function(){
-                wind.find('.show_add').show();
+                if ($.oip.manager.isMarkedForDeletion(data.id)) {
+                    wind.find('.show_del').show();
+                    wind.find('.block_mass_edit_other_days_table_tr, .block_mass_edit_box_div, .block_mass_edit_textarea_div').attr('readonly','readonly').oipLoading('show', true);
+                    
+                } else {
+                    wind.find('.show_add').show();   
+                    wind.find('.block_mass_edit_other_days_table_tr, .block_mass_edit_box_div, .block_mass_edit_textarea_div').removeAttr('readonly').oipLoading('hide');
+                }
             });
         }
         wind.fadeIn('fast');
@@ -740,6 +804,7 @@
             wind.find('.block_mass_edit_hour').val(data.hour);
             wind.find('.block_mass_edit_minute').val(data.min);
             wind.find('.block_mass_edit_textarea').val(data.desc);
+            wind.find('.mass_id').html(data.id);
 
             if (data.dmon != true) { wind.find('input[name="day_mon"]').attr('checked', false); } else {  wind.find('input[name="day_mon"]').attr('checked', true); }
             if (data.dtue != true) { wind.find('input[name="day_tue"]').attr('checked', false); } else {  wind.find('input[name="day_tue"]').attr('checked', true); }
@@ -749,7 +814,13 @@
             if (data.dsat != true) { wind.find('input[name="day_sat"]').attr('checked', false); } else {  wind.find('input[name="day_sat"]').attr('checked', true); }
             
             wind.find('.show_el').hide(0, function(){
-                wind.find('.show_add').show();
+                if ($.oip.manager.isMarkedForDeletion(data.id)) {
+                    wind.find('.show_del').show();
+                    wind.find('.block_mass_edit_other_days_table_tr, .block_mass_edit_box_div, .block_mass_edit_textarea_div').attr('readonly','readonly').oipLoading('show', true);
+                } else {
+                    wind.find('.show_add').show(); 
+                    wind.find('.block_mass_edit_other_days_table_tr, .block_mass_edit_box_div, .block_mass_edit_textarea_div').removeAttr('readonly').oipLoading('hide');
+                }
             });
         }
         wind.fadeIn('fast');
@@ -1043,46 +1114,6 @@ $(document).ready(function() {
     
     $('.block_church_selected_change').click(function() {
          $.oip.manager.setupChurchId(-1);
-    });
-    
-    $('.block_mass_more').on('click', 'input[name="mass_delete"]', function(event) {
-        var par = $(this).closest('.block_mass_list_element');
-        var mid = $.trim(par.find('.mass_id').html());
-        
-        if ($(this).is(':checked'))
-        {
-            $.oip.manager.markMassForDeletion(mid);
-        } 
-        else
-        {
-            $.oip.manager.unmarkMassForDeletion(mid);
-        }
-    });
-    
-    $('.block_mass_more').on('click', '.chb_change', function(event) {
-        var par = $(this).closest('.block_mass_list_element');
-        var mid = $.trim(par.find('.mass_id').html());
-        $.oip.manager.markMassForChange(mid, _get_mass_object_from_entry(par));
-    });
-    
-    $('.block_mass_more').on('keyup', '.inp_change', function(event) {
-        var par = $(this).closest('.block_mass_list_element');
-        var mid = $.trim(par.find('.mass_id').html());
-        $.oip.manager.markMassForChange(mid, _get_mass_object_from_entry(par));
-    });
-     
-    $('.block_mass_more').on('click', '.mass_list_add_new', function(event) {
-        
-        var list = $(this).closest('.block_mass_more').find('.block_mass_list');
-        var newForm = new EJS({text: $('#new_empty_mass_template').html()}).render({newId: $.oip.manager.getNewMassId()});
-        list.append(newForm);
-    });
-    
-    $('.block_mass_more').on('click', '.mass_new_delete', function(event) {
-        var par = $(this).closest('.block_mass_list_element');
-        var mid = $.trim(par.find('.mass_id').html());
-        $.oip.manager.markMassForDeletion(mid);
-        par.remove();
     });
     
     

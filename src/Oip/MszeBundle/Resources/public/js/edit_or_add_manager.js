@@ -271,7 +271,6 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 _pos_lng = data.longitude;
                 _address_setup_allow = true;
                 fun_church_select(data.name, data);
-                _masses_all = data.masses;
                 fun_mass_fill(data.smasses, data.wmasses)
                 fun_mass_show();
                 if (afterFun != undefined) { afterFun(); }
@@ -279,6 +278,10 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             });
         }
     } 
+    
+    self.isMarkedForDeletion = function(id) {
+        return _del_masses_list[id] != undefined;
+    }
     
     self.markMassForDeletion = function(id) {
         if (id < 0)
@@ -299,6 +302,10 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         _mod_masses_list[id] = values;
     }
     
+    self.unmarkMassForChange = function(id) {
+        delete _mod_masses_list[id];
+    }
+    
     self.isAddressSetupAllowed = function() {
         return _address_setup_allow;
     }
@@ -314,11 +321,9 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 'mmod': _mod_masses_list,
                 'mdel': _del_masses_list
               };
-              debugger;
         $.oip.ajax.postJSON('save_all', null, {'all_data': str, 're_c': re_c, 're_r': re_r}, function(data) {
             if (data['error'] != undefined) {
                 alert('Error' + data.error);
-                debugger;
                 Recaptcha.reload();
             } else {
                 location.href = Routing.generate('edit_or_add', {city_id: data.city_id, district_id: data.district_id, church_id: data.church_id});
