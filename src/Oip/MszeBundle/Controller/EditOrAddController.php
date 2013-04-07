@@ -181,7 +181,7 @@ class EditOrAddController extends Controller
                     $mass = new \Oip\MszeBundle\Entity\Mass();
                     $mass->setChurch($church);
                     
-                    $dt->setTime($mpar['hour'], $mpar['minute'], 0);
+                    $dt->setTime($mpar['hours'], $mpar['minutes'], 0);
                     $mass->setStartTime($dt);
                     $mass->setDetails($mpar['details']);
                     $mass->setDayMon(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_mon']));
@@ -199,7 +199,7 @@ class EditOrAddController extends Controller
                     $mass = $mrepo->find($mid);
                     if ($mass != null)
                     {
-                        $dt->setTime($mpar['hour'], $mpar['minute'], 0);
+                        $dt->setTime($mpar['hours'], $mpar['minutes'], 0);
                         $mass->setStartTime($dt);
                         $mass->setDetails($mpar['details']);
                         $mass->setDayMon(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_mon']));

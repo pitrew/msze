@@ -6,6 +6,11 @@
 
 <style type="text/css">
 
+.main_add_division_table
+{
+    margin-bottom: 200px;
+}
+        
 .block_mass_main_table
 {
     margin: 0 auto;
@@ -442,68 +447,6 @@
     </ul>
 </script>
 
-{#
-<script id="mass_template" type="text/template"> 
-    <ul class="block_mass_list">
-    <% for (var x = 0; x < data.length; x++) { 
-        var _tmp_date = new Date(data[x].start_time);
-        var _tmp_min = _tmp_date.getMinutes() < 10 ? '0' + _tmp_date.getMinutes() : _tmp_date.getMinutes(); 
-        %>
-        <li class="block_mass_list_element">
-            <form class="block_mass_list_element_form">
-                <input type="text" class="inp_change" name="hour" value=<%= _tmp_date.getHours() %> class="block_mass_hour"></input>
-                :
-                <input type="text" class="inp_change" name="minute" value=<%= _tmp_min %> class="block_mass_minute"></input>
-
-                <input type="checkbox" class="chb_change" name="day_mon" <% if (data[x].day_mon) { %>checked<% } %> value="0"></input>
-                <input type="checkbox" class="chb_change" name="day_tue" <% if (data[x].day_tue) { %>checked<% } %> value="1"></input>
-                <input type="checkbox" class="chb_change" name="day_wed" <% if (data[x].day_wed) { %>checked<% } %> value="2"></input>
-                <input type="checkbox" class="chb_change" name="day_thu" <% if (data[x].day_thu) { %>checked<% } %> value="3"></input>
-                <input type="checkbox" class="chb_change" name="day_fri" <% if (data[x].day_fri) { %>checked<% } %> value="4"></input>
-                <input type="checkbox" class="chb_change" name="day_sat" <% if (data[x].day_sat) { %>checked<% } %> value="5"></input>
-                <input type="checkbox" class="chb_change" name="day_sun" <% if (data[x].day_sun) { %>checked<% } %> value="6"></input>
-
-                <textarea name="details" class="inp_change"><%= data[x].details %></textarea>
-            </form>
-            <span class="hidden mass_id">
-                <%= data[x].id %>
-            </span>
-
-            <input type="checkbox" name="mass_delete"></input>
-        </li>
-     <% } %>
-
-     </ul>
-     <div class="mass_list_add_new">New</div>
-</script>
-
-<script id="new_empty_mass_template" type="text/template">
-    <li class="block_mass_list_element">
-        <form class="block_mass_list_element_form">
-            <input type="text" class="inp_change" name="hour" value="12" class="block_mass_hour"></input>
-            :
-            <input type="text" class="inp_change" name="minute" value="00" class="block_mass_minute"></input>
-
-            <input type="checkbox" class="chb_change" name="day_mon" value="0"></input>
-            <input type="checkbox" class="chb_change" name="day_tue" value="1"></input>
-            <input type="checkbox" class="chb_change" name="day_wed" value="2"></input>
-            <input type="checkbox" class="chb_change" name="day_thu" value="3"></input>
-            <input type="checkbox" class="chb_change" name="day_fri" value="4"></input>
-            <input type="checkbox" class="chb_change" name="day_sat" value="5"></input>
-            <input type="checkbox" class="chb_change" name="day_sun" value="6"></input>
-
-            <textarea name="details" class="inp_change"></textarea>
-        </form>
-        <span class="hidden mass_id">
-            <%= newId %>
-        </span>
-
-        <span class="mass_new_delete">Delete</span>
-    </li>
-</script>
-
-#}
-
 <script id="mass_template" type="text/template"> 
 
 <table class="block_mass_main_table">
@@ -598,9 +541,9 @@
         <span class="show_el show_add show_del block_mass_edit_button block_mass_edit_sun_button_cancel">Anuluj</span>
         <span class="show_el show_add block_mass_edit_button block_mass_edit_sun_button_delete">Usuń</span>
         <span class="show_el show_add block_mass_edit_button block_mass_edit_sun_button_save">Zapisz</span>
-        <span class="show_el show_del block_mass_edit_button block_mass_edit_other_button_undelete">Cofnij usunięcie</span>
+        <span class="show_el show_del block_mass_edit_button block_mass_edit_sun_button_undelete">Cofnij usunięcie</span>
         <br/>
-        <span class="show_el show_mod block_mass_edit_button block_mass_edit_other_button_undo">Cofnij zmiany</span>
+        <span class="show_el show_mod block_mass_edit_button block_mass_edit_sun_button_undo">Cofnij zmiany</span>
     </p>
     {% for i in 1..24 %}
         <div class="block_mass_edit_el block_mass_edit_hour_el block_mass_edit_hour_{{i}}">{% if i < 10 %}0{% endif %}{{i}}</div>
@@ -706,7 +649,7 @@
           data['dsat'] = $(this).find('.bm_d_sat').length > 0;
           
           data['id'] = $.trim($(this).find('.mass_id').html());
-          data['mod'] = ($(this).find('.mass_mid').length > 0);
+          data['mod'] = ($(this).find('.mass_mod').length > 0);
           
           showEditWindowOther(data);
         });
@@ -726,6 +669,16 @@
               hideWall();
             });
         });
+        $('.block_mass_edit_sun_button_undo, .block_mass_edit_other_button_undo').click(function() {
+            var win = $(this).closest('.block_mass_edit_win');
+            var mid = $.trim(win.find('.mass_id').html());
+            $.oip.manager.unmarkMassForChange(parseInt(mid));
+            
+            win.fadeOut('fast', function() {
+              hideWall();
+            });
+        });
+        
         $('.block_mass_edit_sun_button_undelete, .block_mass_edit_other_button_undelete').click(function() {
             var win = $(this).closest('.block_mass_edit_win');
             var mid = $.trim(win.find('.mass_id').html());
@@ -951,7 +904,7 @@
         return ret;
     }
     
-    var saved_pos;
+    var saved_pos, remember_pos;
     function _setupMarker()
     {
         if (saved_pos == null) {
@@ -974,16 +927,20 @@
             } else {
                 marker.setPosition(saved_pos);
             }
-            $.oip.manager.setupPosition(saved_pos.lat(), saved_pos.lng());
+            if (remember_pos)
+            {
+                $.oip.manager.setupPosition(saved_pos.lat(), saved_pos.lng());
+            }
             map.setCenter(marker.getPosition());           
         }
     }
     
     var markerTimer = new oip_timer(_setupMarker);
-    function setupMarker(pos)
+    function setupMarker(pos, force_remember_pos)
     {
         saved_pos = pos;
         markerTimer.stop();
+        remember_pos = (force_remember_pos == undefined || force_remember_pos == true);
         markerTimer.setup(300);
     }
     
@@ -1019,8 +976,8 @@
                   if (status == google.maps.GeocoderStatus.OK) {
                     map.setCenter(results[0].geometry.location);
                     map.setZoom(zoom);
-                    setupMarker(results[0].geometry.location);
-                    $.oip.manager.setupPosition(results[0].geometry.location.lat(), results[0].geometry.location.lng());
+                    setupMarker(results[0].geometry.location, false);
+                    //$.oip.manager.setupPosition(results[0].geometry.location.lat(), results[0].geometry.location.lng());
                   }
                 });
             }
@@ -1179,9 +1136,9 @@ $(document).ready(function() {
     }
     
     $('.block_church_address').keyup(function() {
-        
         $.oip.manager.setChurchAddress($(this).val());
         showSaveAll();
+        debugger;
         _local_goToAddress(16);
     });
     
@@ -1311,6 +1268,8 @@ $(document).ready(function() {
           fun_church_unselect: function() {
             $('.block_church_selected').hide();
             $('.block_church_form').show();
+            $('.block_church_description').val('');
+            $('.block_church_address').val('');
             _local_goToAddress(11);
           }, //church unselect
           fun_church_clear: function() {

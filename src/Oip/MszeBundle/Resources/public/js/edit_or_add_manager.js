@@ -326,6 +326,9 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             fun_mass_show();
             if (afterFun != undefined) { afterFun(); }
             fun_show_save();
+            
+            fun_mass_fill([],[]);
+            fun_mass_show();
         }
         else if (id == -1 && isNew !== true)
         {
