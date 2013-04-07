@@ -183,7 +183,7 @@
 .block_mass_edit_box_div
 {
     margin: 0 auto;
-    width: 65px;
+    width: 80px;
 }
 
 .block_mass_edit_el
@@ -729,7 +729,7 @@
             wind.find('.block_mass_edit_textarea').val('');
             wind.find('.mass_id').html($.oip.manager.getNewMassId());            
             wind.find('.show_el').hide(0, function(){
-                wind.find('.block_mass_edit_other_days_table_tr, .block_mass_edit_box_div, .block_mass_edit_textarea_div').removeAttr('readonly').oipLoading('hide');
+                wind.find('.block_mass_edit_other_days_table, .block_mass_edit_box_div, .block_mass_edit_textarea_div').removeAttr('readonly').oipLoading('hide');
                 wind.find('.show_add').show();
             });
         }
@@ -743,10 +743,10 @@
             wind.find('.show_el').hide(0, function(){
                 if ($.oip.manager.isMarkedForDeletion(data.id)) {
                     wind.find('.show_del').show();
-                    wind.find('.block_mass_edit_other_days_table_tr, .block_mass_edit_box_div, .block_mass_edit_textarea_div').attr('readonly','readonly').oipLoading('show', true);
+                    wind.find('.block_mass_edit_other_days_table, .block_mass_edit_box_div, .block_mass_edit_textarea_div').attr('readonly','readonly').oipLoading('show', true);
                     
                 } else {
-                    wind.find('.block_mass_edit_other_days_table_tr, .block_mass_edit_box_div, .block_mass_edit_textarea_div').removeAttr('readonly').oipLoading('hide');
+                    wind.find('.block_mass_edit_other_days_table, .block_mass_edit_box_div, .block_mass_edit_textarea_div').removeAttr('readonly').oipLoading('hide');
                     wind.find('.show_add').show();   
                     if (data.mod) {
                         wind.find('.show_mod').show();   
@@ -768,7 +768,7 @@
             wind.find('input[name^=day]').attr('checked', true);
             wind.find('.mass_id').html($.oip.manager.getNewMassId());            
             wind.find('.show_el').hide(0, function(){
-                wind.find('.block_mass_edit_other_days_table_tr, .block_mass_edit_box_div, .block_mass_edit_textarea_div').removeAttr('readonly').oipLoading('hide');
+                wind.find('.block_mass_edit_other_days_table, .block_mass_edit_box_div, .block_mass_edit_textarea_div').removeAttr('readonly').oipLoading('hide');
                 wind.find('.show_add').show();
             });
         }
@@ -779,19 +779,19 @@
             wind.find('.block_mass_edit_textarea').val(data.desc);
             wind.find('.mass_id').html(data.id);
 
-            if (data.dmon != true) { wind.find('input[name="day_mon"]').attr('checked', false); } else {  wind.find('input[name="day_mon"]').attr('checked', true); }
-            if (data.dtue != true) { wind.find('input[name="day_tue"]').attr('checked', false); } else {  wind.find('input[name="day_tue"]').attr('checked', true); }
-            if (data.dwed != true) { wind.find('input[name="day_wed"]').attr('checked', false); } else {  wind.find('input[name="day_wed"]').attr('checked', true); }
-            if (data.dthu != true) { wind.find('input[name="day_thu"]').attr('checked', false); } else {  wind.find('input[name="day_thu"]').attr('checked', true); }
-            if (data.dfri != true) { wind.find('input[name="day_fri"]').attr('checked', false); } else {  wind.find('input[name="day_fri"]').attr('checked', true); }
-            if (data.dsat != true) { wind.find('input[name="day_sat"]').attr('checked', false); } else {  wind.find('input[name="day_sat"]').attr('checked', true); }
+            if (data.dmon != true) { wind.find('input[name=day_mon]').attr('checked', false); } else {  wind.find('input[name=day_mon]').attr('checked', true); }
+            if (data.dtue != true) { wind.find('input[name=day_tue]').attr('checked', false); } else {  wind.find('input[name=day_tue]').attr('checked', true); }
+            if (data.dwed != true) { wind.find('input[name=day_wed]').attr('checked', false); } else {  wind.find('input[name=day_wed]').attr('checked', true); }
+            if (data.dthu != true) { wind.find('input[name=day_thu]').attr('checked', false); } else {  wind.find('input[name=day_thu]').attr('checked', true); }
+            if (data.dfri != true) { wind.find('input[name=day_fri]').attr('checked', false); } else {  wind.find('input[name=day_fri]').attr('checked', true); }
+            if (data.dsat != true) { wind.find('input[name=day_sat]').attr('checked', false); } else {  wind.find('input[name=day_sat]').attr('checked', true); }
             
             wind.find('.show_el').hide(0, function(){
                 if ($.oip.manager.isMarkedForDeletion(data.id)) {
                     wind.find('.show_del').show();
-                    wind.find('.block_mass_edit_other_days_table_tr, .block_mass_edit_box_div, .block_mass_edit_textarea_div').attr('readonly','readonly').oipLoading('show', true);
+                    wind.find('.block_mass_edit_other_days_table, .block_mass_edit_box_div, .block_mass_edit_textarea_div').attr('readonly','readonly').oipLoading('show', true);
                 } else {
-                    wind.find('.block_mass_edit_other_days_table_tr, .block_mass_edit_box_div, .block_mass_edit_textarea_div').removeAttr('readonly').oipLoading('hide');
+                    wind.find('.block_mass_edit_other_days_table, .block_mass_edit_box_div, .block_mass_edit_textarea_div').removeAttr('readonly').oipLoading('hide');
                     wind.find('.show_add').show(); 
                     if (data.mod) {
                         wind.find('.show_mod').show();   
