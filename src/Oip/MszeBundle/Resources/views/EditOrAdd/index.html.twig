@@ -244,11 +244,9 @@
 .back_wall
 {
     background-color: rgba(0,0,0,0.6);
-    width: 100%;
-    height: 200%;
     top: 0px;
     left: 0px;
-    position: absolute;
+    position: fixed;
     display: none;
 }
 
@@ -515,22 +513,22 @@
             <span class="block_mass_button block_mass_button_new_sun">+ Dodaj</span>
             
             <table class="block_mass_inner_table">
-                <% for (var x = 0; x < sdata.length; x++) { 
-                    var _tmp_date = new Date(sdata[x].start_time);
-                    var _tmp_min = _tmp_date.getMinutes() < 10 ? '0' + _tmp_date.getMinutes() : _tmp_date.getMinutes(); 
-                %>
+                <% for (var x = 0; x < sdata.length; x++) { %>
                 <tr><td><div class="block_mass_line"></div></td></tr>
                 <tr><td>
-                        <div class="block_mass_entry">
+                        <div class="block_mass_entry <% if (sdata[x].id < 0) { %>block_mass_new<% } else { %> <% if (sdata[x].mod) { %>block_mass_edit<% } %> <% if (sdata[x].del) { %>block_mass_del<% } } %>">
                             <div class="block_mass_time">
-                                <span class="block_mass_hour"><%= _tmp_date.getHours() %></span>
+                                <span class="block_mass_hour"><%= sdata[x].hours %></span>
                                 :
-                                <span class="block_mass_min"><%= _tmp_min %></span>
+                                <span class="block_mass_min"><%= sdata[x].minutes %></span>
                             </div>
                             <div class="block_mass_desc"><%= sdata[x].details %></div>
                             <span class="hidden mass_id">
                                 <%= sdata[x].id %>
                             </span>
+                            <% if (sdata[x].mod) { %>
+                                <span class="mass_mod" />
+                            <% } %>
                         </div>
                 </td></tr>
                 <% } %>
@@ -542,17 +540,14 @@
             <span class="block_mass_button block_mass_button_new_other">+ Dodaj</span>
             
             <table class="block_mass_inner_table">
-                <% for (var x = 0; x < wdata.length; x++) { 
-                    var _tmp_date = new Date(wdata[x].start_time);
-                    var _tmp_min = _tmp_date.getMinutes() < 10 ? '0' + _tmp_date.getMinutes() : _tmp_date.getMinutes(); 
-                %>
+                <% for (var x = 0; x < wdata.length; x++) { %>
                 <tr><td><div class="block_mass_line"></div></td></tr>
                 <tr><td>
-                        <div class="block_mass_entry">
+                        <div class="block_mass_entry <% if (wdata[x].id < 0) { %>block_mass_new<% } else { %> <% if (wdata[x].mod) { %>block_mass_edit<% } %> <% if (wdata[x].del) { %>block_mass_del<% } } %>">
                             <div class="block_mass_time">
-                                <span class="block_mass_hour"><%= _tmp_date.getHours() %></span>
+                                <span class="block_mass_hour"><%= wdata[x].hours %></span>
                                 :
-                                <span class="block_mass_min"><%= _tmp_min %></span>
+                                <span class="block_mass_min"><%= wdata[x].minutes %></span>
                             </div>
                             <div class="block_mass_days">
                                 <% if (wdata[x].day_mon) { %>pn <span class="bm_d_mon hidden"></span><% } %>
@@ -566,6 +561,9 @@
                             <span class="hidden mass_id">
                                 <%= wdata[x].id %>
                             </span>
+                            <% if (wdata[x].mod) { %>
+                                <span class="mass_mod" />
+                            <% } %>
                         </div>
                 </td></tr>
                 <% } %>
@@ -601,6 +599,8 @@
         <span class="show_el show_add block_mass_edit_button block_mass_edit_sun_button_delete">Usuń</span>
         <span class="show_el show_add block_mass_edit_button block_mass_edit_sun_button_save">Zapisz</span>
         <span class="show_el show_del block_mass_edit_button block_mass_edit_other_button_undelete">Cofnij usunięcie</span>
+        <br/>
+        <span class="show_el show_mod block_mass_edit_button block_mass_edit_other_button_undo">Cofnij zmiany</span>
     </p>
     {% for i in 1..24 %}
         <div class="block_mass_edit_el block_mass_edit_hour_el block_mass_edit_hour_{{i}}">{% if i < 10 %}0{% endif %}{{i}}</div>
@@ -646,6 +646,8 @@
         <span class="show_el show_add block_mass_edit_button_ok block_mass_edit_button block_mass_edit_other_button_delete">Usuń</span>
         <span class="show_el show_add block_mass_edit_button_ok block_mass_edit_button block_mass_edit_other_button_save">Zapisz</span>
         <span class="show_el show_del block_mass_edit_button block_mass_edit_other_button_undelete">Cofnij usunięcie</span>
+        <br/>
+        <span class="show_el show_mod block_mass_edit_button block_mass_edit_other_button_undo">Cofnij zmiany</span>
     </p>
     {% for i in 1..24 %}
         <div class="block_mass_edit_el block_mass_edit_hour_el block_mass_edit_hour_{{i}}">{% if i < 10 %}0{% endif %}{{i}}</div>
@@ -677,10 +679,11 @@
         });
         $('.main_content').on('click', '.block_mass_sun .block_mass_entry', function() {
           var data = {};
-          data['hour'] = $(this).find('.block_mass_hour').html();
-          data['min'] = $(this).find('.block_mass_min').html();
+          data['hours'] = $(this).find('.block_mass_hour').html();
+          data['minutes'] = $(this).find('.block_mass_min').html();
           data['desc'] = $(this).find('.block_mass_desc').html();            
           data['id'] = $.trim($(this).find('.mass_id').html());
+          data['mod'] = ($(this).find('.mass_mod').length > 0);
             
           showEditWindowSun(data);
         });
@@ -691,8 +694,8 @@
         
         $('.main_content').on('click', '.block_mass_other .block_mass_entry', function() {
           var data = {};
-          data['hour'] = $(this).find('.block_mass_hour').html();
-          data['min'] = $(this).find('.block_mass_min').html();
+          data['hours'] = $(this).find('.block_mass_hour').html();
+          data['minutes'] = $(this).find('.block_mass_min').html();
           data['desc'] = $(this).find('.block_mass_desc').html();  
           
           data['dmon'] = $(this).find('.bm_d_mon').length > 0;
@@ -703,6 +706,7 @@
           data['dsat'] = $(this).find('.bm_d_sat').length > 0;
           
           data['id'] = $.trim($(this).find('.mass_id').html());
+          data['mod'] = ($(this).find('.mass_mid').length > 0);
           
           showEditWindowOther(data);
         });
@@ -730,8 +734,17 @@
             win.fadeOut('fast', function() {
               hideWall();
             });
-        })
-        
+        });
+        $('.block_mass_edit_sun_button_save, .block_mass_edit_other_button_save').click(function() {
+            var win = $(this).closest('.block_mass_edit_win');
+            var mid = $.trim(win.find('.mass_id').html());
+            debugger;
+            $.oip.manager.markMassForChange(parseInt(mid), _get_mass_object_from_entry(win));
+            
+            win.fadeOut('fast', function() {
+              hideWall();
+            });
+        });
 
         $('.block_mass_edit_hour').focusout(hideHours);
         $('.block_mass_edit_hour').focus(showHours);
@@ -761,14 +774,16 @@
             wind.find('.block_mass_edit_hour').val('12');
             wind.find('.block_mass_edit_minute').val('00');
             wind.find('.block_mass_edit_textarea').val('');
+            wind.find('.mass_id').html($.oip.manager.getNewMassId());            
             wind.find('.show_el').hide(0, function(){
+                wind.find('.block_mass_edit_other_days_table_tr, .block_mass_edit_box_div, .block_mass_edit_textarea_div').removeAttr('readonly').oipLoading('hide');
                 wind.find('.show_add').show();
             });
         }
         else
         {
-            wind.find('.block_mass_edit_hour').val(data.hour);
-            wind.find('.block_mass_edit_minute').val(data.min);
+            wind.find('.block_mass_edit_hour').val(data.hours);
+            wind.find('.block_mass_edit_minute').val(data.minutes);
             wind.find('.block_mass_edit_textarea').val(data.desc);
             wind.find('.mass_id').html(data.id);            
             
@@ -778,8 +793,11 @@
                     wind.find('.block_mass_edit_other_days_table_tr, .block_mass_edit_box_div, .block_mass_edit_textarea_div').attr('readonly','readonly').oipLoading('show', true);
                     
                 } else {
-                    wind.find('.show_add').show();   
                     wind.find('.block_mass_edit_other_days_table_tr, .block_mass_edit_box_div, .block_mass_edit_textarea_div').removeAttr('readonly').oipLoading('hide');
+                    wind.find('.show_add').show();   
+                    if (data.mod) {
+                        wind.find('.show_mod').show();   
+                    }
                 }
             });
         }
@@ -795,14 +813,16 @@
             wind.find('.block_mass_edit_minute').val('00');
             wind.find('.block_mass_edit_textarea').val('');
             wind.find('input[name^=day]').attr('checked', true);
+            wind.find('.mass_id').html($.oip.manager.getNewMassId());            
             wind.find('.show_el').hide(0, function(){
+                wind.find('.block_mass_edit_other_days_table_tr, .block_mass_edit_box_div, .block_mass_edit_textarea_div').removeAttr('readonly').oipLoading('hide');
                 wind.find('.show_add').show();
             });
         }
         else
         {
-            wind.find('.block_mass_edit_hour').val(data.hour);
-            wind.find('.block_mass_edit_minute').val(data.min);
+            wind.find('.block_mass_edit_hour').val(data.hours);
+            wind.find('.block_mass_edit_minute').val(data.minutes);
             wind.find('.block_mass_edit_textarea').val(data.desc);
             wind.find('.mass_id').html(data.id);
 
@@ -818,8 +838,11 @@
                     wind.find('.show_del').show();
                     wind.find('.block_mass_edit_other_days_table_tr, .block_mass_edit_box_div, .block_mass_edit_textarea_div').attr('readonly','readonly').oipLoading('show', true);
                 } else {
-                    wind.find('.show_add').show(); 
                     wind.find('.block_mass_edit_other_days_table_tr, .block_mass_edit_box_div, .block_mass_edit_textarea_div').removeAttr('readonly').oipLoading('hide');
+                    wind.find('.show_add').show(); 
+                    if (data.mod) {
+                        wind.find('.show_mod').show();   
+                    }
                 }
             });
         }
@@ -885,32 +908,47 @@
         $('body').css('overflow', 'auto');
         //$('.back_wall').width($(window).width());
         //$('.back_wall').height($(window).height());
+        
         $('.back_wall').fadeOut('fast');
     }
 
     function showWall()
     {
         $('body').css('overflow', 'hidden');
-        $('.back_wall').fadeIn('fast');
+        $('.back_wall').css('width', $(window).width())
+                       .css('height', $(window).height())
+                       .fadeIn('fast');
     }
     
     function _get_mass_object_from_entry(elem)
     {
-       var ret = {};
-       ret['hour'] = elem.find('input[name="hour"]').val();
-       ret['minute'] = elem.find('input[name="minute"]').val();
-       
-       ret['day_mon'] = elem.find('input[name="day_mon"]').is(':checked');
-       ret['day_tue'] = elem.find('input[name="day_tue"]').is(':checked');
-       ret['day_wed'] = elem.find('input[name="day_wed"]').is(':checked');
-       ret['day_thu'] = elem.find('input[name="day_thu"]').is(':checked');
-       ret['day_fri'] = elem.find('input[name="day_fri"]').is(':checked');
-       ret['day_sat'] = elem.find('input[name="day_sat"]').is(':checked');
-       ret['day_sun'] = elem.find('input[name="day_sun"]').is(':checked');
-       
-       ret['details'] = elem.find('textarea[name="details"]').val();
-       
-       return ret;
+        var ret = {};
+        ret['hours'] = elem.find('input[name="hour"]').val();
+        ret['minutes'] = elem.find('input[name="minute"]').val();
+        ret['details'] = elem.find('textarea[name="details"]').val();
+        ret['id'] = $.trim(elem.find('.mass_id').html());
+        
+        if (elem.hasClass('block_mass_edit_sun'))
+        {
+            ret['day_mon'] = false;
+            ret['day_tue'] = false;
+            ret['day_wed'] = false;
+            ret['day_thu'] = false;
+            ret['day_fri'] = false;
+            ret['day_sat'] = false;
+            ret['day_sun'] = true;
+        }
+        else
+        {
+            ret['day_mon'] = elem.find('input[name="day_mon"]').is(':checked');
+            ret['day_tue'] = elem.find('input[name="day_tue"]').is(':checked');
+            ret['day_wed'] = elem.find('input[name="day_wed"]').is(':checked');
+            ret['day_thu'] = elem.find('input[name="day_thu"]').is(':checked');
+            ret['day_fri'] = elem.find('input[name="day_fri"]').is(':checked');
+            ret['day_sat'] = elem.find('input[name="day_sat"]').is(':checked');
+            ret['day_sun'] = false;
+        }
+        return ret;
     }
     
     var saved_pos;
@@ -1025,6 +1063,11 @@ $(document).ready(function() {
     }
     
     var tim = new oip_timer(search_fun);
+    
+    $(window).resize(function() {
+        $('.back_wall:visible').css('width', $(window).width())
+           .css('height', $(window).height());
+    });
     
     $('.block_city_name').keyup(function() {
         if ($(this).val() == '')

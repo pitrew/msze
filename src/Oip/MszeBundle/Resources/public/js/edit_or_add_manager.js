@@ -48,7 +48,8 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         _new_masses_list = {},
         _del_masses_list = {},
         _mod_masses_list = {},
-        _masses_all,
+        _smasses,
+        _wmasses,
         _new_mass_id_cnt = -1,
     
         _address_setup_allow = false,
@@ -79,8 +80,41 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             _new_masses_list = {};
             _del_masses_list = {};
             _mod_masses_list = {};
-            _masses_all = undefined;
-        };
+            _smasses = undefined;
+            _wmasses = undefined;
+        },
+        
+        _local_extract_time_and_id = function(p_masses) {
+            var p_ret = {};
+            p_masses.forEach(function(e, ind, ar){
+              var _tmp_date = new Date(e.start_time);
+              var _tmp_min = _tmp_date.getMinutes() < 10 ? '0' + _tmp_date.getMinutes() : _tmp_date.getMinutes();
+              
+              e['hours'] = _tmp_date.getHours();
+              e['minutes'] = _tmp_min;
+              
+              p_ret[e.id] = e;
+            });
+            return p_ret;
+        },
+        
+        _local_make_array = function(_obj) {
+            var ret = $.map(_obj, function(k,v) {
+                return [k];
+            });
+            var lcompare = function(a,b) {
+                var vala = parseInt(a.hours) * 100 + parseInt(a.minutes),
+                    valb = parseInt(b.hours) * 100 + parseInt(b.minutes);
+                if (vala < valb) { return -1; }
+                else if (vala > valb) { return 1; }
+                else return 0;
+             }
+        
+            ret.sort(lcompare);
+            
+            return ret;
+        }
+        ;
     
     self.setChurchAddress = function(address) {
         _cur_church_address = address;
@@ -122,6 +156,47 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             _ret += ', ' + _cur_church_address;
         }
         return _ret == '' ? undefined : _ret;
+    }
+    
+    self.renderMasses = function() {
+        var n_smasses = $.extend({}, _smasses),
+            n_wmasses = $.extend({}, _wmasses);
+        
+        for (var ind in n_smasses) {
+            n_smasses[ind]['del'] = false;
+            n_smasses[ind]['mod'] = false;
+           if (_del_masses_list[ind] != undefined) {
+               n_smasses[ind]['del'] = true;
+           } else if (_mod_masses_list[ind] != undefined) {
+               n_smasses[ind] = _mod_masses_list[ind];
+               n_smasses[ind]['mod'] = true;
+           }
+        }
+        
+        for (ind in n_wmasses) {
+            n_wmasses[ind]['del'] = false;
+            n_wmasses[ind]['mod'] = false;
+            if (_del_masses_list[ind] != undefined) {
+               n_wmasses[ind]['del'] = true;
+           } else if (_mod_masses_list[ind] != undefined) {
+               n_wmasses[ind] = _mod_masses_list[ind];
+               n_wmasses[ind]['mod'] = true;
+           }
+        }
+        
+        for (ind in _mod_masses_list)
+        {
+           if (ind < 0 && _mod_masses_list[ind]['day_sun'] == true) {
+               n_smasses[ind] = _mod_masses_list[ind];
+           } else if (ind < 0 && _mod_masses_list[ind]['day_sun'] == false) {
+               n_wmasses[ind] = _mod_masses_list[ind];
+           } 
+        }
+        
+        
+        fun_mass_hide();
+        fun_mass_fill(_local_make_array(n_smasses), _local_make_array(n_wmasses))
+        fun_mass_show();
     }
         
     self.setupCityId = function(id, isNew, newName, afterFun) {
@@ -271,7 +346,9 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 _pos_lng = data.longitude;
                 _address_setup_allow = true;
                 fun_church_select(data.name, data);
-                fun_mass_fill(data.smasses, data.wmasses)
+                _smasses = _local_extract_time_and_id(data.smasses);
+                _wmasses = _local_extract_time_and_id(data.wmasses);
+                fun_mass_fill(_local_make_array(_smasses), _local_make_array(_wmasses))
                 fun_mass_show();
                 if (afterFun != undefined) { afterFun(); }
                 fun_church_show_edit();
@@ -284,6 +361,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     }
     
     self.markMassForDeletion = function(id) {
+        debugger;
         if (id < 0)
         {
             delete _mod_masses_list[id];
@@ -292,18 +370,23 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         {
            _del_masses_list[id] = true; 
         }
+        self.renderMasses();
     }
     
     self.unmarkMassForDeletion = function(id) {
         delete _del_masses_list[id];
+        self.renderMasses();
     }
     
     self.markMassForChange = function(id, values) {
+        debugger;
         _mod_masses_list[id] = values;
+        self.renderMasses();
     }
     
     self.unmarkMassForChange = function(id) {
         delete _mod_masses_list[id];
+        self.renderMasses();
     }
     
     self.isAddressSetupAllowed = function() {
