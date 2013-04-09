@@ -222,3 +222,33 @@ table td { outline: 1px solid green; }
     /*margin: 0 auto;*/
     /*width: 300px;*/
 }
+
+#save_all
+{
+    position: fixed;
+    top: 0px;
+    left: 700px;
+    width: 400px;
+    height: 75px;
+    padding-top: 25px;
+    background-color: #FFC5C5;
+    color: #d70b0b;
+    font-size: 33px;
+    
+    -moz-border-bottom-left-radius:15px;
+    -webkit-border-bottom-left-radius:15px;
+    border-bottom-left-radius:15px;
+    -moz-border-bottom-right-radius:15px;
+    -webkit-border-bottom-right-radius:15px;
+    border-bottom-right-radius:15px;
+    
+    -webkit-box-shadow:  0px 0px 10px 5px rgba(0, 0, 0, .5);
+    box-shadow:  0px 0px 10px 5px rgba(0, 0, 0, .5);
+}
+   
+#save_all .save_all_info
+{
+    font-size: 11px;
+    color: #d75757;
+    
+}
