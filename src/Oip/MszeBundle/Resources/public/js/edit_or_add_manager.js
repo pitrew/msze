@@ -139,6 +139,8 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         }
         ;
     
+    self.addressTimer = undefined;
+    
     self.setChurchAddress = function(address) {
         _church["new_address"] = address;
         _local_show_hide_save();
@@ -353,7 +355,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         }
     }
     
-    self.setupChurchId = function(id, isNew, newName, afterFun) {
+    self.setupChurchId = function(id, isNew, newName, afterFun) {        
         _local_clear_church();
         _church.id = id;
         

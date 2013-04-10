@@ -436,8 +436,7 @@
         });
         $('.block_mass_edit_sun_button_save, .block_mass_edit_other_button_save').click(function() {
             var win = $(this).closest('.block_mass_edit_win');
-            var mid = $.trim(win.find('.mass_id').html());
-            debugger;
+            var mid = $.trim(win.find('.mass_id').html());            
             $.oip.manager.markMassForChange(parseInt(mid), _get_mass_object_from_entry(win));
             
             win.fadeOut('fast', function() {
@@ -647,15 +646,10 @@
         return ret;
     }
     
-    function setupMarker(pos, zoom, force_remember_pos)
+    function setupMarker(pos, zoom, dont_center)
     {        
-        var _sm_timer_obj = {
-            saved_pos: pos,
-            saved_zoom: zoom,
-            saved_force: (force_remember_pos == true)
-        }
-
-        if (_sm_timer_obj.saved_pos == null) {
+        debugger;
+        if (pos == null) {
             if (marker != null)
             {
                 marker.setMap(null);
@@ -667,23 +661,23 @@
             if (marker == null) {
                 marker = new google.maps.Marker({
                     map: map,
-                    position: _sm_timer_obj.saved_pos,
+                    position: pos,
                     draggable:true
                   }); 
                   google.maps.event.addListener(marker, "dragend", function(event) { 
                     $.oip.manager.setupPosition(event.latLng.lat(), event.latLng.lng());
                   }); 
             } else {
-                marker.setPosition(_sm_timer_obj.saved_pos);
+                marker.setPosition(pos);
             }
-            if (_sm_timer_obj.saved_force)
+
+            if (dont_center == undefined || dont_center == true)
             {
-                $.oip.manager.setupPosition(_sm_timer_obj.saved_pos.lat(), _sm_timer_obj.saved_pos.lng());
+                map.setCenter(marker.getPosition());           
             }
-            map.setCenter(marker.getPosition());           
-            if (_sm_timer_obj.saved_zoom != undefined)
+            if (zoom != undefined)
             {
-                map.setZoom(_sm_timer_obj.saved_zoom);
+                map.setZoom(zoom);
             }
         }
     }
@@ -847,16 +841,20 @@ $(document).ready(function() {
     {
         goToAddress($.oip.manager.getGoogleSearch(), _local_zoom, $.oip.manager.getGoogleGPSPos());   
     }
-    var addrTim = new oip_timer(_local_addr);
+    
     function _local_goToAddress(zoom)
     {
-        addrTim.stop();
+        if ($.oip.manager.addressTimer == undefined) {
+                $.oip.manager.addressTimer = new oip_timer(_local_addr);
+        } else {
+            $.oip.manager.addressTimer.stop();
+        }
         if (zoom != undefined) {
             _local_zoom = zoom;
         } else {
             _local_zoom = 16;
         }
-        addrTim.setup(500);
+        $.oip.manager.addressTimer.setup(500);
     }
     
     $('.block_church_address').keyup(function() {
@@ -887,7 +885,8 @@ $(document).ready(function() {
                 
       google.maps.event.addListener(map, 'click', function(event) {
             $.oip.manager.setupPosition(event.latLng.lat(), event.latLng.lng());
-            setupMarker(event.latLng); //remove center
+            debugger;
+            setupMarker(event.latLng, null, false); //remove center
             $.oip.manager.showHideSave();
       });
       
@@ -979,7 +978,7 @@ $(document).ready(function() {
               {
                   $('.block_church_description').val(data.description);
                   $('.block_church_address').val(data.address);
-                  debugger;
+                  $.oip.manager.addressTimer.stop();
                   setupMarker(new google.maps.LatLng(data.latitude, data.longitude), 17);
               }
               $('.block_church_form').hide();
