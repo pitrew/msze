@@ -647,12 +647,14 @@
         return ret;
     }
     
-    var _sm_timer_obj;
-    function _setupMarker()
-    {
-        if (_sm_timer_obj == undefined) {
-            return;
+    function setupMarker(pos, zoom, force_remember_pos)
+    {        
+        var _sm_timer_obj = {
+            saved_pos: pos,
+            saved_zoom: zoom,
+            saved_force: (force_remember_pos == true)
         }
+
         if (_sm_timer_obj.saved_pos == null) {
             if (marker != null)
             {
@@ -684,18 +686,6 @@
                 map.setZoom(_sm_timer_obj.saved_zoom);
             }
         }
-    }
-    
-    var markerTimer = new oip_timer(_setupMarker);
-    function setupMarker(pos, zoom, force_remember_pos)
-    {
-        markerTimer.stop();
-        _sm_timer_obj = {
-            saved_pos: pos,
-            saved_zoom: zoom,
-            saved_force: (force_remember_pos == true)
-        }
-        markerTimer.setup(300);
     }
    
     function goToAddress(address, zoom, gps)
@@ -860,12 +850,12 @@ $(document).ready(function() {
     var addrTim = new oip_timer(_local_addr);
     function _local_goToAddress(zoom)
     {
+        addrTim.stop();
         if (zoom != undefined) {
             _local_zoom = zoom;
         } else {
             _local_zoom = 16;
         }
-        addrTim.stop();
         addrTim.setup(500);
     }
     
@@ -896,11 +886,9 @@ $(document).ready(function() {
           mapOptions);
                 
       google.maps.event.addListener(map, 'click', function(event) {
-        if ($.oip.manager.isAddressSetupAllowed())
-        {
-            setupMarker(event.latLng);
-            showSaveAll();
-        }
+            $.oip.manager.setupPosition(event.latLng.lat(), event.latLng.lng());
+            setupMarker(event.latLng); //remove center
+            $.oip.manager.showHideSave();
       });
       
       return map;
@@ -991,6 +979,7 @@ $(document).ready(function() {
               {
                   $('.block_church_description').val(data.description);
                   $('.block_church_address').val(data.address);
+                  debugger;
                   setupMarker(new google.maps.LatLng(data.latitude, data.longitude), 17);
               }
               $('.block_church_form').hide();

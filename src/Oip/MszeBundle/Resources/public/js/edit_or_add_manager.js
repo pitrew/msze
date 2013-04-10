@@ -96,6 +96,16 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         },
         
         _local_show_hide_save = function() {
+            var dlist_empty = true, mlist_empty = true;
+            for (var tmp in _mass.del_list) {
+                dlist_empty = false;
+                break;
+            }
+            for (tmp in _mass.mod_list) {
+                mlist_empty = false;
+                break;
+            }
+            
             if (
                     (_city.id < 0 && _city.new_name != undefined) || //new city
                     (_city.id >= 0 && _city.cur_name != _city.new_name) || //name change
@@ -111,8 +121,12 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                     (_church.id >= 0 && _church.cur_address != _church.new_address) || //address change
                     (_church.id >= 0 && _church.cur_desc != _church.new_desc) || //desc change
                     
-                    (_church.id >= 0 && _mass.del_list.length > 0) || //something to delete
-                    (_church.id >= 0 && _mass.mod_list.length > 0) || //something to mod or add
+                    (_church.id >= 0 && !dlist_empty) || //something to delete
+                    (_church.id >= 0 && !mlist_empty) || //something to mod or add
+                    
+                    (_church.id >= 0 && 
+                        ((_church.new_pos != undefined && _church.cur_pos == undefined) ||
+                         (_church.new_pos != undefined && (_church.new_pos.lat != _church.cur_pos.lat || _church.new_pos.lng != _church.cur_pos.lng)))) ||
                     false
                 )
             {
@@ -127,19 +141,21 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     
     self.setChurchAddress = function(address) {
         _church["new_address"] = address;
-        //_new_church_address = address;
+        _local_show_hide_save();
     }
     self.setChurchDescription = function(desc) {
         _church["new_desc"] = desc;
-        //_new_church_desc = desc;
+        _local_show_hide_save();
     }
     self.setupPosition = function(lat, lng) {
         _church["new_pos"] = {};
         _church.new_pos["lat"] = lat;
         _church.new_pos["lng"] = lng;
+        _local_show_hide_save();
     }
     self.resetPosition = function() {
-        _church["new_pos"] = {};
+        delete _church["new_pos"];
+        _local_show_hide_save();
     }
     self.getGoogleGPSPos = function() {
         if (_church.new_pos == undefined)
@@ -153,6 +169,11 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     {
         _new_mass_id_cnt = _new_mass_id_cnt - 1;
         return _new_mass_id_cnt;
+    }
+    
+    self.showHideSave = function() 
+    {
+        _local_show_hide_save();
     }
     
     self.getCityId = function() { return _city.id; }
@@ -374,10 +395,13 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 _church.cur_desc = data.description;
                 _church.new_desc = data.description;
                 
-                _church.cur_pos = {};
-                _church.cur_pos.lat = data.latitude;
-                _church.cur_pos.lng = data.longitude;
-                self.setupPosition(data.latitude, data.longitude);
+                if (data.latitude != undefined && data.longitude != undefined)
+                {
+                    _church.cur_pos = {};
+                    _church.cur_pos.lat = data.latitude;
+                    _church.cur_pos.lng = data.longitude;
+                    self.setupPosition(data.latitude, data.longitude);
+                }
                 
                 _address_setup_allow = true;
                 fun_church_select(data.name, data);
@@ -405,25 +429,27 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         else
         {
            _mass.del_list[id] = true;
-           fun_show_save();
         }
         self.renderMasses();
+        _local_show_hide_save();
     }
     
     self.unmarkMassForDeletion = function(id) {
         delete _mass.del_list[id];
-        
         self.renderMasses();
+        _local_show_hide_save();
     }
     
     self.markMassForChange = function(id, values) {
         _mass.mod_list[id] = values;
         self.renderMasses();
+        _local_show_hide_save();
     }
     
     self.unmarkMassForChange = function(id) {
         delete _mass.mod_list[id];
         self.renderMasses();
+        _local_show_hide_save();
     }
     
     self.isAddressSetupAllowed = function() {
@@ -436,8 +462,8 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 'chid': _church.id, 'chname': _church.new_name,
                 'caddr': _church.new_address,
                 'cdesc': _church.new_desc,
-                'clat': _church.new_pos.lat,
-                'clng': _church.new_pos.lng,
+                'clat': (_church.new_pos == undefined ? undefined : _church.new_pos.lat),
+                'clng': (_church.new_pos == undefined ? undefined : _church.new_pos.lng),
                 'mmod': _mass.mod_list,
                 'mdel': _mass.del_list
               };

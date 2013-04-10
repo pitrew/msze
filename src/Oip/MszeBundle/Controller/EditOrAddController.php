@@ -24,13 +24,13 @@ class EditOrAddController extends Controller
                   ));
     }
     
-    private function getArrayElement($key, $data)
+    private function getArrayElement($key, $data, $default = null)
     {
-        $ret = null;
+        $ret = $default;
         if (array_key_exists($key, $data)) {
             $ret = $data[$key];
         } else {
-            $ret = null;
+            $ret = $default;
         }
         return $ret;
     }
@@ -78,8 +78,8 @@ class EditOrAddController extends Controller
         $dname = $this->getArrayElement('dname', $data);
         $chname = $this->getArrayElement('chname', $data);
         
-        $caddrress = $this->getArrayElement('caddr', $data);
-        $cdetails = $this->getArrayElement('cdesc', $data);
+        $caddrress = $this->getArrayElement('caddr', $data, '');
+        $cdetails = $this->getArrayElement('cdesc', $data, '');
         
         $clat = $this->getArrayElement('clat', $data);
         $clng = $this->getArrayElement('clng', $data);
