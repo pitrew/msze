@@ -140,7 +140,7 @@ table td { outline: 1px solid green; }
 }
 
 .block_list
-{ot
+{
     text-align: left;
 }
 
@@ -184,7 +184,10 @@ table td { outline: 1px solid green; }
     width: 280px;
     height: 50px;
 }
-
+.block_church_address
+{
+    width: 160px;
+}
 .block_church_address_td
 {
     text-align: left;
@@ -211,6 +214,7 @@ table td { outline: 1px solid green; }
 .main_add_division_table td
 {
     vertical-align: top;
+    padding: 0px;
 }
 .main_add_division_table td.map
 {
@@ -229,10 +233,10 @@ table td { outline: 1px solid green; }
     top: 0px;
     left: 700px;
     width: 400px;
-    height: 75px;
-    padding-top: 25px;
-    background-color: #FFC5C5;
-    color: #d70b0b;
+    height: 65px;
+    padding-top: 20px;
+    background-color: #a6eb95;
+    color: #4b853c;
     font-size: 33px;
     
     -moz-border-bottom-left-radius:15px;
@@ -245,10 +249,49 @@ table td { outline: 1px solid green; }
     -webkit-box-shadow:  0px 0px 10px 5px rgba(0, 0, 0, .5);
     box-shadow:  0px 0px 10px 5px rgba(0, 0, 0, .5);
 }
+
+#save_all:hover
+{
+    background-color: #d1ffc5;
+    -webkit-box-shadow:  0px 0px 10px 5px rgba(68, 219, 38, .5);
+    box-shadow:  0px 0px 10px 5px rgba(68, 219, 38, .5);
+}
    
 #save_all .save_all_info
 {
     font-size: 11px;
-    color: #d75757;
+    color: #4b853c;
     
+}
+
+#cancel_all
+{
+    position: fixed;
+    top: 85px;
+    width: 200px;
+    left: 800px;
+    height: 20px;
+    padding-top: 7px;
+    
+    background-color: #FFC5C5;
+    color: #d70b0b;
+    font-size: 14px;
+    
+    -moz-border-bottom-left-radius:10px;
+    -webkit-border-bottom-left-radius:10px;
+    border-bottom-left-radius:10px;
+    -moz-border-bottom-right-radius:10px;
+    -webkit-border-bottom-right-radius:10px;
+    border-bottom-right-radius:10px;
+    
+    -webkit-box-shadow:  0px 0px 10px 5px rgba(0, 0, 0, .5);
+    box-shadow:  0px 0px 10px 5px rgba(0, 0, 0, .5);
+    
+}
+
+#cancel_all:hover
+{
+    background-color: #feeaea;
+    -webkit-box-shadow:  0px 0px 10px 5px rgba(219, 38, 38, .5);
+    box-shadow:  0px 0px 10px 5px rgba(219, 38, 38, .5);
 }

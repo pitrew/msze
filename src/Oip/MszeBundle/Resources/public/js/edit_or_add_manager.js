@@ -391,6 +391,10 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         else if (id != -1)
         {
             $.oip.ajax.getJSON(('fast_church'), { id: id }, null, function(data) {
+                
+                _church.cur_name = data.name;
+                _church.new_name = data.name;
+            
                 _church.cur_address = data.address;
                 _church.new_address = data.address;
                 
@@ -458,6 +462,35 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         return _address_setup_allow;
     }
     
+    self.Reset = function() {
+        _city.new_name = _city.cur_name;
+        _district.new_name = _district.cur_name;
+        _church.new_name = _church.cur_name;
+        
+        _church.new_address = _church.cur_address;
+        _church.new_desc = _church.cur_desc;
+                
+        _church.new_pos = _church.cur_pos;
+        _mass.mod_list = {};
+        _mass.del_list = {};
+                
+        fun_city_select(_city.new_name);
+        fun_district_select(_district.new_name);
+        
+        
+        var data = { description: _church.new_desc, address: _church.new_address};
+        if (_church.new_pos != undefined) {
+            data.latitude = _church.new_pos.lat;
+            data.longitude = _church.new_pos.lng;
+        }       
+        
+        fun_church_select(_church.new_name, data);
+        
+        _local_show_hide_save();
+        
+        self.renderMasses();
+    }
+    
     self.Save = function(re_c, re_r) {
         var str = { 'cid': _city.id, 'cname': _city.new_name, 
                 'did': _district.id, 'dname': _district.new_name,
@@ -480,11 +513,14 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     }
     //construct
     if (city_id != -1) {
+        $('.main_add_division_table').oipLoading('show');
         self.setupCityId(city_id, undefined, undefined, function() {
             if (district_id != -1) {
                 self.setupDistrictId(district_id, undefined, undefined, function() {
                     if (church_id != -1) {
-                        self.setupChurchId(church_id);
+                        self.setupChurchId(church_id, null, null, function() {
+                            $('.main_add_division_table').oipLoading('hide');
+                        });
                     }
                 });
             }

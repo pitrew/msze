@@ -137,10 +137,16 @@
     </tr>
 </table>
 
+
+<div id="cancel_all" class="hidden pointer">
+    Cofnij zmiany
+</div>
+
 <div id="save_all" class="hidden pointer">
     Zapisz zmiany
     <div class="save_all_info hidden">Kliknij aby zapisać wprowadzone zmiany.</div>
 </div>
+
 
 
 
@@ -648,7 +654,6 @@
     
     function setupMarker(pos, zoom, dont_center)
     {        
-        debugger;
         if (pos == null) {
             if (marker != null)
             {
@@ -874,6 +879,10 @@ $(document).ready(function() {
         $.oip.manager.Save(re_c, re_r);
     });
     
+    $('#cancel_all').click(function() {
+        $.oip.manager.Reset();
+    });
+    
     function initialize() {
       var mapOptions = {
         center: new google.maps.LatLng(52.245461,21.007233),
@@ -885,7 +894,6 @@ $(document).ready(function() {
                 
       google.maps.event.addListener(map, 'click', function(event) {
             $.oip.manager.setupPosition(event.latLng.lat(), event.latLng.lng());
-            debugger;
             setupMarker(event.latLng, null, false); //remove center
             $.oip.manager.showHideSave();
       });
@@ -1020,10 +1028,15 @@ $(document).ready(function() {
           
           
           fun_hide_save: function() {
-              $('#save_all').slideUp();
+              $('#cancel_all').fadeOut('fast', function() {
+                    $('#save_all').slideUp();
+                })
           },
           fun_show_save: function() {
-                $('#save_all').slideDown();
+                $('#save_all').slideDown('fast', function() {
+                  $('#cancel_all').fadeIn();
+              });
+                ;
           }
         }
     );   
