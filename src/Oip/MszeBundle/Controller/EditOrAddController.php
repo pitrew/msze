@@ -135,6 +135,7 @@ class EditOrAddController extends Controller
             if ($church == null) {
                 return new Response($serializer->serialize(array('error' => '0005.Nie ma takiego kościoła!'), 'json'));
             }
+            $church->setName($chname);
             $church->setAddress($caddrress);
             $church->setDescription($cdetails);
             $church->setLatitude($clat);

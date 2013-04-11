@@ -784,6 +784,9 @@ $(document).ready(function() {
         
     });
     
+    $('.block_city').on('click', '.city_name_back', function() {
+        $.oip.manager.resetCityName();
+    });    
     
     //district
     $('.block_district_name').keyup(function() {
@@ -811,8 +814,11 @@ $(document).ready(function() {
     $('.block_district_selected_change').click(function() {
         $.oip.manager.setupDistrictId(-1);
     });
-   
     
+    $('.block_district').on('click', '.district_name_back', function() {
+        $.oip.manager.resetDistrictName();
+    });
+        
      //church
     $('.block_church_name').keyup(function() {
         if ($(this).val() == '')
@@ -838,6 +844,11 @@ $(document).ready(function() {
     $('.block_church_selected_change').click(function() {
          $.oip.manager.setupChurchId(-1);
     });
+    
+    $('.block_church').on('click', '.church_name_back', function() {
+        $.oip.manager.resetChurchName();
+    });
+   
     
     
     
@@ -986,8 +997,13 @@ $(document).ready(function() {
               {
                   $('.block_church_description').val(data.description);
                   $('.block_church_address').val(data.address);
-                  $.oip.manager.addressTimer.stop();
-                  setupMarker(new google.maps.LatLng(data.latitude, data.longitude), 17);
+                  if (data.latitude != undefined && data.longitude != undefined) {
+                    $.oip.manager.addressTimer.stop();
+                    setupMarker(new google.maps.LatLng(data.latitude, data.longitude), 17);
+                  } else if (data.address != undefined && data.address != '') {
+                      $.oip.manager.addressTimer.stop();
+                      _local_goToAddress(16);
+                  }
               }
               $('.block_church_form').hide();
               $('.block_church_selected').show();

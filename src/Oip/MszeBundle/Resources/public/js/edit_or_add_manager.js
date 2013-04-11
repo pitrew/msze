@@ -141,6 +141,42 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     
     self.addressTimer = undefined;
     
+    self.setCityName = function(newName) {
+        _city.new_name = newName;
+        _local_show_hide_save();
+        fun_city_select(_city.new_name + ' <sup class="small city_name_back">(cofnij zmianę)</sup>');
+    }
+    
+    self.resetCityName = function() {
+        _city.new_name = _city.cur_name;
+        _local_show_hide_save();
+        fun_city_select(_city.new_name);
+    }
+    
+    self.setDistrictName = function(newName) {
+        _district.new_name = newName;
+        _local_show_hide_save();
+        fun_district_select(_district.new_name + ' <sup class="small district_name_back">(cofnij zmianę)</sup>');
+    }
+    
+    self.resetDistrictName = function() {
+        _district.new_name = _district.cur_name;
+        _local_show_hide_save();
+        fun_district_select(_district.new_name);
+    }
+    
+    self.setChurchName = function(newName) {
+        _church.new_name = newName
+        _local_show_hide_save();
+        fun_church_select(_church.new_name + ' <sup class="small church_name_back">(cofnij zmianę)</sup>');
+    }
+    
+    self.resetChurchName = function() {
+        _church.new_name = _church.cur_name;
+        _local_show_hide_save();
+        fun_church_select(_church.new_name);
+    }
+    
     self.setChurchAddress = function(address) {
         _church["new_address"] = address;
         _local_show_hide_save();
