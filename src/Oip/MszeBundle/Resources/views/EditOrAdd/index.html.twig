@@ -33,10 +33,10 @@
             <div class="block_city_selected hidden">
                 <div class="block_city_selected_name"></div>
                 <div class="block_city_selected_name_edit hidden">Edytuj nazwę</div>
-                <input type="text" class="block_city_selected_name_edit_text hidden"/>
-                <div class="block_city_selected_name_edit_save hidden">Zapisz nazwę</div>
+                {#<input type="text" class="block_city_selected_name_edit_text hidden"/>
+                <div class="block_city_selected_name_edit_save hidden">Zapisz nazwę</div>#}
 
-                <div class="block_city_selected_change pointer">Wybierz inne</div>
+                <div class="block_city_selected_change pointer">Wybierz inne miasto</div>
             </div>
             </div>
 
@@ -66,10 +66,9 @@
             <div class="block_district_selected hidden">
                 <div class="block_district_selected_name"></div>
                 <div class="block_district_selected_name_edit hidden">Edytuj nazwę</div>
-                <input type="text" class="block_district_selected_name_edit_text hidden"/>
-                <div class="block_district_selected_name_edit_save hidden">Zapisz nazwę</div>
-
-                <div class="block_district_selected_change pointer">Wybierz inną</div>
+                {#<input type="text" class="block_district_selected_name_edit_text hidden"/>
+                <div class="block_district_selected_name_edit_save hidden">Zapisz nazwę</div>#}
+                <div class="block_district_selected_change pointer">Wybierz inną dzielnicę</div>
             </div>
             </div>
 
@@ -95,7 +94,8 @@
                 <input type="text" class="block_church_selected_name_edit_text hidden"/>
                 <div class="block_church_selected_name_edit_save hidden">Zapisz nazwę</div>
 
-                <div class="block_church_selected_change pointer">Wybierz inną</div>
+                <div class="block_church_district_select_another pointer">Przypisz inną dzielnicę</div>
+                <div class="block_church_selected_change pointer">Wybierz inną parafię</div>
             </div>
             </div>
                 
@@ -275,7 +275,7 @@
 
 <div class="back_wall"></div>
 <div class="block_mass_edit_win block_mass_edit_sun hidden">
-    <h3>Nowa msza</h3>
+    <h3>Msza</h3>
     <p>Niedziela</p>
     <p>
     <div class="block_mass_edit_box_div">
@@ -309,7 +309,7 @@
 </div>
 
 <div class="block_mass_edit_win block_mass_edit_other hidden">
-    <h3>Nowa msza</h3>
+    <h3>Msza</h3>
     <p>
     <table class="block_mass_edit_other_days_table">
         <tr><td>pn</td><td>wt</td><td>śr</td><td>czw</td><td>pt</td><td>so</td></tr>
@@ -354,6 +354,24 @@
         
     <span class="hidden mass_id">-1</span>
 </div>
+
+<div class="block_mass_edit_win block_name_edit_win hidden">
+    <h3>Zmiana nazwy</h3>
+    <p>
+        <div>Poprzednia</div>
+        <div class="block_name_edit_old_name"></div>
+        <br/>
+        <div>Nowa</div>
+        <input type="text" class="block_name_edit_box" name="new_name" value=""></input>
+    </p>
+    
+    <p>
+        <span class="show_el block_mass_edit_button block_name_edit_button_cancel">Anuluj</span>
+        <span class="show_el block_mass_edit_button block_name_edit_button_save">Zapisz</span>
+    </p>
+    <span class="hidden object_type">-1</span>
+</div>
+
 {% endblock %}
 
 
@@ -406,7 +424,7 @@
           showEditWindowOther(data);
         });
 
-        $('.block_mass_edit_sun_button_cancel, .block_mass_edit_other_button_cancel').click(function() {
+        $('.block_mass_edit_sun_button_cancel, .block_mass_edit_other_button_cancel, .block_name_edit_button_cancel').click(function() {
             $(this).closest('.block_mass_edit_win').fadeOut('fast', function() {
               hideWall();
             });
@@ -445,6 +463,30 @@
             var mid = $.trim(win.find('.mass_id').html());            
             $.oip.manager.markMassForChange(parseInt(mid), _get_mass_object_from_entry(win));
             
+            win.fadeOut('fast', function() {
+              hideWall();
+            });
+        });
+        
+        $('.block_name_edit_button_save').click(function() {
+            var win = $(this).closest('.block_mass_edit_win'),
+                objType = $.trim(win.find('.object_type').html()),
+                val = win.find('.block_name_edit_box').val();
+                
+            switch(objType)
+            {
+                case 'city':
+                    $.oip.manager.setCityName(val);
+                    break;
+                case 'district':
+                    $.oip.manager.setDistrictName(val);
+                    break;
+                case 'church':
+                    $.oip.manager.setChurchName(val);
+                    break;
+                default:
+                    break;
+            }
             win.fadeOut('fast', function() {
               hideWall();
             });
@@ -552,7 +594,21 @@
         }
         wind.fadeIn('fast');
     }
-
+    
+    //types: 'city', 'district', 'church'
+    function showEditWindowName(oldName, objType)
+    {
+        showWall();
+        var wind = $('.block_name_edit_win');
+        wind.find('.block_name_edit_old_name').html(oldName);
+        wind.find('.block_name_edit_box').val(oldName);
+        wind.find('.object_type').html($.trim(objType));
+        wind.find('.show_el').show();
+        
+        wind.fadeIn('fast');
+    }
+    
+    
     function showHours() {
         $('.block_mass_edit_hour_el').fadeIn();
     }
@@ -761,7 +817,7 @@ $(document).ready(function() {
         {
             $('.block_city_add').html('<span class="block_city_new common_border">' + $.oip.escape($('.block_city_name').val()) + '</span>');
             tim.stop();
-            tim.setup(300);
+            tim.setup(500);
         }
     });
     
@@ -781,7 +837,13 @@ $(document).ready(function() {
     });
     
     $('.block_city_selected_name_edit').click(function() {
-        
+        showEditWindowName($.oip.manager.getCityName(), 'city');
+    });
+    $('.block_district_selected_name_edit').click(function() {
+        showEditWindowName($.oip.manager.getDistrictName(), 'district');
+    });
+        $('.block_church_selected_name_edit').click(function() {
+        showEditWindowName($.oip.manager.getChurchName(), 'church');
     });
     
     $('.block_city').on('click', '.city_name_back', function() {

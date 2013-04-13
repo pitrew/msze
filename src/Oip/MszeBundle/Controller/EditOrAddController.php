@@ -93,6 +93,8 @@ class EditOrAddController extends Controller
             if ($city == null) {
                 return new Response($serializer->serialize(array('error' => '0001.Nie ma takiego miasta!'), 'json'));
             }
+            $city->setName($cname);
+            $em->flush();
         } else {
             if ($cname == null) {
                 return new Response($serializer->serialize(array('error' => '0002.Podaj nazwę miasta!'), 'json'));
@@ -117,6 +119,11 @@ class EditOrAddController extends Controller
             if ($district == null) {
                 return new Response($serializer->serialize(array('error' => '0003.Nie ma takiej dzielnicy!'), 'json'));
             }
+            if ($dname == '' && $district->getName() != '') {
+                return new Response($serializer->serialize(array('error' => '0004.Zła nazwa dzielnicy!'), 'json'));
+            }
+            $district->setName($dname);
+            $em->flush();
         } else {
             if ($dname != null && $city != null) {
                 //return new Response($serializer->serialize(array('error' => '0004.Podaj nazwę dzielnicy!'), 'json'));
