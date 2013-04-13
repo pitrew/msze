@@ -184,6 +184,21 @@
     </ul>
 </script>
 
+<script id="district_choose_template" type="text/template"> 
+    <ul class="block_district_choose_list block_list">
+        <% for (var x = 1; x < data.length; x++) { %>
+            <li class="block_district_choose_list_element">
+                <span class="sim_dc_name common_border">
+                    <%= data[x].name %>
+                </span>
+                <span class="hidden district_id">
+                    <%= data[x].id %>
+                </span>
+            </li>
+        <% } %>
+    </ul>
+</script>
+
 <script id="church_template" type="text/template"> 
     <ul class="block_church_list block_list">
         <% for (var x = 0; x < data.length; x++) { %>
@@ -372,6 +387,20 @@
     <span class="hidden object_type">-1</span>
 </div>
 
+
+<div class="block_district_choose_win hidden">
+    <h3>Wybierz nową dzielnicę dla "<span class="block_district_choose_church_name"></span>"</h3>
+    <div class="choose_font_small">Aktualnie: <span class="block_district_choose_cur_district">Brak przypisanej dzielnicy</span></div>        
+    <div class="spacer_10"></div>
+    <div class="block_district_none_element div_center">
+        <span class="block_district_choose_none sim_d_name common_border">Brak dzielnicy</span>
+    </div>
+    <span class="block_district_choose_default_district_id hidden">-100</span>
+    <div class="block_district_choose_content"></div>
+    <span class="hidden church_id">-1</span>
+    <span class="block_window_close">Zamknij</span>
+</div>
+
 {% endblock %}
 
 
@@ -424,8 +453,8 @@
           showEditWindowOther(data);
         });
 
-        $('.block_mass_edit_sun_button_cancel, .block_mass_edit_other_button_cancel, .block_name_edit_button_cancel').click(function() {
-            $(this).closest('.block_mass_edit_win').fadeOut('fast', function() {
+        $('.block_mass_edit_sun_button_cancel, .block_mass_edit_other_button_cancel, .block_name_edit_button_cancel, .block_window_close').click(function() {
+            $(this).closest('.block_mass_edit_win, .block_district_choose_win').fadeOut('fast', function() {
               hideWall();
             });
         });
@@ -608,6 +637,17 @@
         wind.fadeIn('fast');
     }
     
+    function showDistrictChooseWindow(churchId, churchName, curDistrict)
+    {
+        showWall();
+        var wind = $('.block_district_choose_win');
+        wind.find('.block_district_choose_church_name').html(churchName);
+        wind.find('.block_district_choose_cur_district').html(curDistrict);
+        wind.find('.church_id').html($.trim(churchId));
+        wind.find('.show_el').show();
+        
+        wind.fadeIn('fast');
+    }
     
     function showHours() {
         $('.block_mass_edit_hour_el').fadeIn();
@@ -880,7 +920,23 @@ $(document).ready(function() {
     $('.block_district').on('click', '.district_name_back', function() {
         $.oip.manager.resetDistrictName();
     });
+    
+    $('.block_district_choose_content').on('click', '.sim_dc_name', function() {
+        $.oip.manager.setDistrictNewId($.trim($(this).closest('.block_district_choose_list_element').find('.district_id').html()));
         
+        $(this).closest('.block_mass_edit_win, .block_district_choose_win').fadeOut('fast', function() {
+            hideWall();
+        });
+    });
+    
+    $('.block_district_choose_none').click(function() {
+        $.oip.manager.setDistrictNewId($.trim($(this).closest('.block_district_choose_win').find('.block_district_choose_default_district_id').html()));
+        
+        $(this).closest('.block_mass_edit_win, .block_district_choose_win').fadeOut('fast', function() {
+            hideWall();
+        });
+    });
+    
      //church
     $('.block_church_name').keyup(function() {
         if ($(this).val() == '')
@@ -911,6 +967,9 @@ $(document).ready(function() {
         $.oip.manager.resetChurchName();
     });
    
+   $('.block_church_district_select_another').click(function() {
+       showDistrictChooseWindow($.oip.manager.getCityId(), $.oip.manager.getChurchName(), $.oip.manager.getDistrictName());
+    });
     
     
     
@@ -996,16 +1055,24 @@ $(document).ready(function() {
           },
 
           fun_district_fill: function(data) {
-                $('.block_default_district_id').html(data[0].id);                
+                $('.block_default_district_id').html(data[0].id);    
+                $('.block_district_choose_default_district_id').html(data[0].id);
                 if (data.length > 0)
                 {
                     var found = new EJS({text: $('#district_template').html()}).render({data: data});
                     $('.block_district_more').html(found);
+                    
+                    var choose = new EJS({text: $('#district_choose_template').html()}).render({data: data});
+                    $('.block_district_choose_content').html(choose);
                 }
                 else
                 {
                     $('.block_district_more').html('Brak');
                 }
+                
+                
+                
+                
             }, //dist fill
           fun_district_show: function() {
                 $('.block_district_form').show();

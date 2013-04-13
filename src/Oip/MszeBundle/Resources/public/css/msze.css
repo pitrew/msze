@@ -38,3 +38,14 @@ body
 {
     display: none;
 }
+
+.div_center
+{
+    margin: 0 auto;
+}
+
+.spacer_10
+{
+    width: 10px;
+    height: 10px;
+}

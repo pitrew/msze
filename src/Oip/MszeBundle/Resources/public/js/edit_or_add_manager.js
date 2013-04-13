@@ -114,6 +114,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                     //addd district change
                     (_district.id < 0 && _district.new_name != undefined) || //new district
                     (_district.id >= 0 && _district.cur_name != _district.new_name) || //name change
+                    (_district.new_id != undefined) || //dist change
                         
                     (_church.id < 0 && _church.new_name != undefined) || // new church
                     (_church.id >= 0 && _church.cur_name != _church.new_name) || //name change
@@ -155,12 +156,38 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     
     self.setDistrictName = function(newName) {
         _district.new_name = newName;
+        delete _district.new_id;
         _local_show_hide_save();
         fun_district_select(_district.new_name + ' <sup class="small district_name_back">(cofnij zmianę)</sup>');
     }
     
+    self.setDistrictNewId = function(newId) {
+        var found = undefined;
+        for (var ob in _city.districts)
+        {
+            if (_city.districts[ob].id == newId) {
+                found = _city.districts[ob].name;
+                break;
+            }
+        }
+        if (found != undefined) {
+            if (found == '') {
+                fun_district_select('Brak dielnicy <sup class="small district_name_back">(cofnij zmianę)</sup>');
+                fun_district_hide_edit();
+            } else {
+                fun_district_select(found + ' <sup class="small district_name_back">(cofnij zmianę)</sup>');
+            }
+            
+            _district.new_id = newId;
+            _local_show_hide_save();
+        }
+       
+        
+    }
+    
     self.resetDistrictName = function() {
         _district.new_name = _district.cur_name;
+        delete _district["new_id"];
         _local_show_hide_save();
         fun_district_select(_district.new_name);
     }
@@ -325,6 +352,8 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             $.oip.ajax.getJSON(('fast_city'), { id: id }, null, function(data) {
                 _city.cur_name = data.name;
                 _city.new_name = data.name;
+                
+                _city.districts = data.districts;
                 
                 fun_city_select(data.name);
                 fun_district_fill(data.districts)
@@ -505,6 +534,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     self.Reset = function() {
         _city.new_name = _city.cur_name;
         _district.new_name = _district.cur_name;
+        delete _district["new_id"];
         _church.new_name = _church.cur_name;
         
         _church.new_address = _church.cur_address;
