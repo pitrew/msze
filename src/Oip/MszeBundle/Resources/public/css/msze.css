@@ -18,6 +18,7 @@ html
 body
 {
     margin: 0px;
+    background-color: #D9D9D9;
 }
 
 .main_content
@@ -27,6 +28,10 @@ body
     background-color: #EFEFEF;
     text-align: center;
     min-height: 600px;
+    background: url(../images/edit_back.png) #ffffdd no-repeat top left;
+    -webkit-box-shadow:  0px 0px 10px 5px rgba(0, 0, 0, .5);
+    box-shadow:  0px 0px 10px 5px rgba(0, 0, 0, .5);
+    padding-bottom: 1px;
 }
 
 .pointer

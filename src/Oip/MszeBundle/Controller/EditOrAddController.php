@@ -119,10 +119,10 @@ class EditOrAddController extends Controller
             if ($district == null) {
                 return new Response($serializer->serialize(array('error' => '0003.Nie ma takiej dzielnicy!'), 'json'));
             }
-            if ($dname == '' && $district->getName() != '') {
-                return new Response($serializer->serialize(array('error' => '0004.Zła nazwa dzielnicy!'), 'json'));
-            }
-            if ($dname != null) {
+            //if ($dname == '' && $district->getName() != '') {
+            //    return new Response($serializer->serialize(array('error' => '0004.Zła nazwa dzielnicy!'), 'json'));
+            //}
+            if ($dname != null && $dname != '' && $district->getName() != '') {
                 $district->setName($dname);
             }
             $em->flush();
@@ -144,6 +144,7 @@ class EditOrAddController extends Controller
             if ($church == null) {
                 return new Response($serializer->serialize(array('error' => '0005.Nie ma takiego kościoła!'), 'json'));
             }
+            $church->setDistrict($district);
             $church->setName($chname);
             $church->setAddress($caddrress);
             $church->setDescription($cdetails);

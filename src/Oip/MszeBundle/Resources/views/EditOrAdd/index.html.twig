@@ -10,7 +10,7 @@
 
 <div class="main_add_header">
     <div class="main_add_header_logo"></div>
-    <div class="main_add_header_action">Dodaj</div>
+    <div class="main_add_header_action">Edytuj</div>
 </div>
 
 
@@ -48,7 +48,7 @@
                     <tr>
                         <td class="block_district_form_td_left"><input type="text" placeholder="Nazwa nowej dzielnicy" class="block_district_name"/></td>
                         <td class="block_district_list_element block_district_none_element">                
-                            <span class="sim_d_name common_border">Brak dzielnicy</span>
+                            <span class="sim_d_name common_border">Brak dzielnicy lub nie wiem jaka</span>
                             <span class="block_default_district_id hidden district_id">-100</span>
                         </td>
                         <td><div class="block_district_add"></div></td>
@@ -105,10 +105,12 @@
             <div class="block_mass_form hidden">
                 <table>
                     <tr>
+                        <td>Adres:</td>
                         <td class="block_church_address_td">
-                            Adres:<br/>
                             <input type="text" placeholder="Adres" class="block_church_address"/>
                         </td>
+                    </tr><tr>
+                        <td>Opis:</td>
                         <td><textarea placeholder="Opis" class="block_church_description" placeholder="Opis"></textarea></td>
                         {#<td><input type="text" placeholder="Nazwa kościoła" class="block_church_name"/></td>
                         <td><div class="block_church_add"></div></td>
@@ -138,6 +140,15 @@
 </table>
 
 
+<div id="gps_map" class="gps_map">
+    <span class="action_no hidden">Wskaż pozycję na mapie. Kliknij lub przeciągnij.</span>
+    <span class="action_ok">Czy położenie kościoła na mapie jest poprawne?</span>
+    <br/>
+    <span class="pos_ok">TAK</span>
+    <div class="pos_fill"></div>
+    <span class="pos_no">NIE</span>
+</div>
+
 <div id="cancel_all" class="hidden pointer">
     Cofnij zmiany
 </div>
@@ -146,6 +157,7 @@
     Zapisz zmiany
     <div class="save_all_info hidden">Kliknij aby zapisać wprowadzone zmiany.</div>
 </div>
+
 
 
 
@@ -393,7 +405,7 @@
     <div class="choose_font_small">Aktualnie: <span class="block_district_choose_cur_district">Brak przypisanej dzielnicy</span></div>        
     <div class="spacer_10"></div>
     <div class="block_district_none_element div_center">
-        <span class="block_district_choose_none sim_d_name common_border">Brak dzielnicy</span>
+        <span class="block_district_choose_none sim_d_name common_border">Brak dzielnicy lub nie wiem jaka</span>
     </div>
     <span class="block_district_choose_default_district_id hidden">-100</span>
     <div class="block_district_choose_content"></div>
@@ -767,6 +779,7 @@
                   }); 
                   google.maps.event.addListener(marker, "dragend", function(event) { 
                     $.oip.manager.setupPosition(event.latLng.lat(), event.latLng.lng());
+                    hideGpsConfirm();
                   }); 
             } else {
                 marker.setPosition(pos);
@@ -805,6 +818,14 @@
                 });
             }
         }
+    }
+    
+    function showGpsConfirm() {
+        $('#gps_map').fadeIn('fast');
+    }
+    
+    function hideGpsConfirm() {
+        $('#gps_map').fadeOut('fast');
     }
     
 $(document).ready(function() {
@@ -997,13 +1018,44 @@ $(document).ready(function() {
     $('.block_church_address').keyup(function() {
         $.oip.manager.setChurchAddress($(this).val());
         _local_goToAddress(16);
+        //if ($.oip.manager.getGoogleGPSPos() == undefined) {
+            showGpsConfirm();
+        //}
+    });
+    
+    $('.pos_ok').click(function() {
+        if (marker != null)
+        {
+            var pos = marker.getPosition();
+            $.oip.manager.setupPosition(pos.lat(), pos.lng());
+            hideGpsConfirm();    
+        }
     });
     
     $('.block_church_description').keyup(function() {
         $.oip.manager.setChurchDescription($(this).val());
     });
     
-    
+    $('.pos_no').mouseenter(function() {
+        var par = $(this).closest('.gps_map'),
+            ac_ok = par.find('.action_ok'),
+            ac_no = par.find('.action_no');
+        //ac_ok.stop();
+        //ac_no.stop();
+        ac_ok.fadeOut('fast', function() {
+            ac_no.fadeIn('fast');
+        });
+    }).mouseleave(function() {
+         var par = $(this).closest('.gps_map'),
+            ac_ok = par.find('.action_ok'),
+            ac_no = par.find('.action_no');
+        ac_ok.stop();
+        ac_no.stop();
+        ac_no.fadeOut('fast', function() {
+            ac_ok.fadeIn('fast');
+        });
+    });
+          
     $('#save_all').click(function() {
         
         var re_c = $('#recaptcha_challenge_field').val();
@@ -1025,6 +1077,7 @@ $(document).ready(function() {
           mapOptions);
                 
       google.maps.event.addListener(map, 'click', function(event) {
+            hideGpsConfirm(); 
             $.oip.manager.setupPosition(event.latLng.lat(), event.latLng.lng());
             setupMarker(event.latLng, null, false); //remove center
             $.oip.manager.showHideSave();
@@ -1083,7 +1136,7 @@ $(document).ready(function() {
             }, //dist hide
           fun_district_select: function(name) {
                 if (name == '') {
-                  $('.block_district_selected_name').html('<span class="subname">Dzielnica:</span> Bez dzielnicy');
+                  $('.block_district_selected_name').html('<span class="subname">Dzielnica:</span> Bez dzielnicy lub nie wiem jaka');
                 } else {
                   $('.block_district_selected_name').html('<span class="subname">Dzielnica:</span> ' + name);
                 }
