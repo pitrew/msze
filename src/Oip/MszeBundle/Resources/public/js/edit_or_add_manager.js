@@ -449,7 +449,6 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         {
             _address_setup_allow = false;
             fun_church_hide_edit();
-            fun_hide_save();
             fun_church_unselect();
             fun_mass_hide();
             fun_mass_clear();
@@ -532,38 +531,54 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     }
     
     self.Reset = function() {
-        _city.new_name = _city.cur_name;
-        _district.new_name = _district.cur_name;
-        delete _district["new_id"];
-        _church.new_name = _church.cur_name;
-        
-        _church.new_address = _church.cur_address;
-        _church.new_desc = _church.cur_desc;
-                
-        _church.new_pos = _church.cur_pos;
-        _mass.mod_list = {};
-        _mass.del_list = {};
-                
-        fun_city_select(_city.new_name);
-        fun_district_select(_district.new_name);
-        
-        
-        var data = { description: _church.new_desc, address: _church.new_address};
-        if (_church.new_pos != undefined) {
-            data.latitude = _church.new_pos.lat;
-            data.longitude = _church.new_pos.lng;
-        }       
-        
-        fun_church_select(_church.new_name, data);
-        
+        if (_city.id < 0) {
+            self.setupChurchId(-1);
+            self.setupDistrictId(-1);
+            self.setupCityId(-1);
+        } else {
+            _city.new_name = _city.cur_name;
+            if (_district.id < 0) {
+                self.setupDistrictId(-1);
+                self.setupChurchId(-1);
+            } else {
+                _district.new_name = _district.cur_name;
+                delete _district["new_id"];
+                if (_church.id < 0) {
+                    self.setupChurchId(-1);
+                } else {
+                    _church.new_name = _church.cur_name;
+
+                    _church.new_address = _church.cur_address;
+                    _church.new_desc = _church.cur_desc;
+
+                    _church.new_pos = _church.cur_pos;
+                    _mass.mod_list = {};
+                    _mass.del_list = {};
+
+                    fun_city_select(_city.new_name);
+                    fun_district_select(_district.new_name);
+
+                    var data = { description: _church.new_desc, address: _church.new_address};
+                    if (_church.new_pos != undefined) {
+                        data.latitude = _church.new_pos.lat;
+                        data.longitude = _church.new_pos.lng;
+                    }       
+
+                    fun_church_select(_church.new_name, data);
+                    
+                    
+                    self.renderMasses();
+                }
+            }
+        }
         _local_show_hide_save();
         
-        self.renderMasses();
     }
     
     self.Save = function(re_c, re_r) {
         var str = { 'cid': _city.id, 'cname': _city.new_name, 
-                'did': _district.id, 'dname': _district.new_name,
+                'did': (_district.new_id == undefined ? _district.id : _district.new_id), 
+                'dname': (_district.new_id == undefined ? _district.new_name : undefined),
                 'chid': _church.id, 'chname': _church.new_name,
                 'caddr': _church.new_address,
                 'cdesc': _church.new_desc,

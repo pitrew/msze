@@ -122,7 +122,9 @@ class EditOrAddController extends Controller
             if ($dname == '' && $district->getName() != '') {
                 return new Response($serializer->serialize(array('error' => '0004.Zła nazwa dzielnicy!'), 'json'));
             }
-            $district->setName($dname);
+            if ($dname != null) {
+                $district->setName($dname);
+            }
             $em->flush();
         } else {
             if ($dname != null && $city != null) {
