@@ -62,7 +62,7 @@ textarea:focus, input:focus
 
 input, textarea
 {
-    background-color: #FFFFC8;
+    background-color: #ffffe8;
     border: 1px solid #BEBE95;
     border-radius: 5px;
 }
