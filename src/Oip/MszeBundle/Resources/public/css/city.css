@@ -133,6 +133,8 @@ table td { outline: 1px solid green; }
 {
     border: 0px solid red;
     width: 100%;
+    height: 270px;
+    overflow: auto;
 }
 
 .block_district_form_td_left, .block_church_form_td_left
@@ -157,6 +159,8 @@ table td { outline: 1px solid green; }
 .block_district_more
 {
     width: 450px;
+    height: 270px;
+    overflow: auto;
 }
 
 .block_district_none_element
@@ -181,14 +185,35 @@ table td { outline: 1px solid green; }
     height: 20px;
 }
 
+.block_church_more
+{
+    border: 0px solid red;
+    width: 100%;
+    height: 270px;
+    overflow: auto;
+}
+
+
+.block_church_details_title_top
+{
+    vertical-align: top;
+    text-align: right;
+}
+
+.block_church_details_title_mid
+{
+    vertical-align: middle;
+    text-align: right;
+}
+
 .block_church_description
 {
-    width: 400px;
+    width: 406px;
     height: 32px;
 }
 .block_church_address
 {
-    width: 400px;
+    width: 410px;
 }
 .block_church_address_td
 {
@@ -205,6 +230,11 @@ table td { outline: 1px solid green; }
     /*height: 300px;*/
     height: 330px;
     width: 500px;
+    border: 2px solid #dadabd;
+    
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
 }
 
 /********************/
@@ -309,14 +339,13 @@ sup.small
 	-webkit-box-shadow: 0px 0px 54px 5px rgba(0, 0, 0, .5);
         box-shadow: 0px 0px 54px 5px rgba(0, 0, 0, .5);
 
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
-	background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
-	background-color:#ededed;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ffffdd), color-stop(1, #ffffdd) );
+	background:-moz-linear-gradient( center top, #ffffdd 5%, #ffffdd 100% );	
+	background-color:#ffffdd;
 	-moz-border-radius:140px;
 	-webkit-border-radius:140px;
 	border-radius:140px;
-	border:1px solid #dcdcdc;
+	border:1px solid #ddffdf;
 	color:#777777;
 	font-family:Verdana;
 	font-size:12px;
@@ -355,10 +384,9 @@ sup.small
     -webkit-box-shadow: 0px 0px 54px 5px rgba(0, 0, 0, .5);
     box-shadow: 0px 0px 54px 5px rgba(0, 0, 0, .5);
 
-    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
-    background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
-    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
-    background-color:#ededed;
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ffffdd), color-stop(1, #ffffdd) );
+    background:-moz-linear-gradient( center top, #ffffdd 5%, #ffffdd 100% );
+    background-color:#ffffdd;
     -moz-border-radius:40px;
     -webkit-border-radius:40px;
     border-radius:30px;

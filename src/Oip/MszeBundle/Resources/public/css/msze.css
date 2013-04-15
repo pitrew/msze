@@ -54,3 +54,15 @@ body
     width: 10px;
     height: 10px;
 }
+
+textarea:focus, input:focus
+{
+    outline: none;
+}
+
+input, textarea
+{
+    background-color: #FFFFC8;
+    border: 1px solid #BEBE95;
+    border-radius: 5px;
+}
