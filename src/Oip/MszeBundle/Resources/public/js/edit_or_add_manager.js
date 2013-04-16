@@ -172,7 +172,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         }
         if (found != undefined) {
             if (found == '') {
-                fun_district_select('Brak dielnicy <sup class="small district_name_back">(cofnij zmianę)</sup>');
+                fun_district_select('Brak dzielnicy <sup class="small district_name_back">(cofnij zmianę)</sup>');
                 fun_district_hide_edit();
             } else {
                 fun_district_select(found + ' <sup class="small district_name_back">(cofnij zmianę)</sup>');

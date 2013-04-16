@@ -9,7 +9,7 @@
 {% block body %}
 
 <div class="main_add_header">
-    <div class="main_add_header_logo"></div>
+    <a class="main_add_header_logo" href="{{ path('oip_msze_homepage') }}"></a>
     <div class="main_add_header_action">Edytuj</div>
 </div>
 
@@ -21,7 +21,9 @@
             <div class="block_city_form">
                 <table class="block_city_form_table">
                     <tr>
-                        <td class="block_city_form_td_left">Nazwa miasta:<br/><input type="text" placeholder="Nazwa miasta" class="block_city_name"/></td>
+                        <td class="block_city_form_td_left">Nazwa miejscowości:<br/>
+                            <input type="text" placeholder="Nazwa miejscowości" class="block_city_name"
+                                   title="Wpisz nazwę miejscowości do wyszukania lub dodania."/></td>
                         <td><div class="block_city_add"></div></td>
                     </tr>
                     <tr>
@@ -32,11 +34,11 @@
 
             <div class="block_city_selected hidden">
                 <div class="block_city_selected_name"></div>
-                <div class="block_city_selected_name_edit hidden">Edytuj nazwę</div>
+                <div class="block_city_selected_name_edit hidden" title="Kliknij aby zmienić nazwę tej miejscowości.">Edytuj nazwę</div>
                 {#<input type="text" class="block_city_selected_name_edit_text hidden"/>
                 <div class="block_city_selected_name_edit_save hidden">Zapisz nazwę</div>#}
 
-                <div class="block_city_selected_change pointer">Wybierz inne miasto</div>
+                <div class="block_city_selected_change pointer" title="Kliknij aby wybrać inną miejscowość. Niezapisane zmiany zostaną anulowane.">Wybierz inną miejscowość</div>
             </div>
             </div>
 
@@ -46,16 +48,19 @@
             <div class="block_district_form hidden">
                 <table class="block_district_form_table">
                     <tr>
-                        <td class="block_district_form_td_left"><input type="text" placeholder="Nazwa nowej dzielnicy" class="block_district_name"/></td>
+                        <td class="block_district_form_td_left">
+                            Nazwa dzielnicy:<br/>
+                            <input type="text" placeholder="Nazwa nowej dzielnicy" class="block_district_name"
+                                   title="Wpisz nazwę dzielnicy do dodania."/></td>
                         <td class="block_district_list_element block_district_none_element">                
-                            <span class="sim_d_name common_border">Brak dzielnicy lub nie wiem jaka</span>
+                            <span class="sim_d_name common_border" title="Kliknij jeżeli nie wiesz w jakiej dzielnicy jest kościół, nie należy do żadnej lub miejscowość nie jest podzielona na dzielnice.">Brak dzielnicy lub nie wiem jaka</span>
                             <span class="block_default_district_id hidden district_id">-100</span>
                         </td>
                         <td><div class="block_district_add"></div></td>
                     </tr>
                     <tr class="block_district_spacer"><td colspan="4"></td></tr>
                     <tr>
-                        <td colspan="4"><span class="block_district_use">Dzielnice już dodane do tego miasta:</span></td>
+                        <td colspan="4"><span class="block_district_use">Dzielnice już dodane do tej miejscowości:</span></td>
                     </tr>
                     <tr>
                         <td colspan="4"><div class="block_district_more">Brak</div></td>
@@ -65,10 +70,10 @@
 
             <div class="block_district_selected hidden">
                 <div class="block_district_selected_name"></div>
-                <div class="block_district_selected_name_edit hidden">Edytuj nazwę</div>
+                <div class="block_district_selected_name_edit hidden" title="Kliknij aby zmienić nazwę tej dzielnicy.">Edytuj nazwę</div>
                 {#<input type="text" class="block_district_selected_name_edit_text hidden"/>
                 <div class="block_district_selected_name_edit_save hidden">Zapisz nazwę</div>#}
-                <div class="block_district_selected_change pointer">Wybierz inną dzielnicę</div>
+                <div class="block_district_selected_change pointer" title="Kliknij aby wybrać inną dzielnicę. Niezapisane zmiany zostaną anulowane.">Wybierz inną dzielnicę</div>
             </div>
             </div>
 
@@ -77,7 +82,10 @@
             <div class="block_church_form hidden">
                 <table class="block_church_form_table">
                     <tr>
-                        <td class="block_church_form_td_left"><input type="text" placeholder="Nazwa nowej parafii" class="block_church_name"/></td>
+                        <td class="block_church_form_td_left">
+                            Nazwa parafii:<br/>
+                            <input type="text" placeholder="Nazwa nowej parafii" class="block_church_name"
+                                   title="Wpisz nazwę parafii do dodania."/></td>
                         <td><div class="block_church_add"></div></td>
                         <td><span class="block_church_use hidden">lub użyj isniejącego kościoła:</span></td>
                     </tr>
@@ -90,12 +98,12 @@
 
             <div class="block_church_selected hidden">
                 <div class="block_church_selected_name"></div>
-                <div class="block_church_selected_name_edit hidden">Edytuj nazwę</div>
+                <div class="block_church_selected_name_edit hidden" title="Kliknij aby zmienić nazwę tej parafii.">Edytuj nazwę</div>
                 <input type="text" class="block_church_selected_name_edit_text hidden"/>
                 <div class="block_church_selected_name_edit_save hidden">Zapisz nazwę</div>
 
                 <div class="block_church_district_select_another pointer">Przypisz inną dzielnicę</div>
-                <div class="block_church_selected_change pointer">Wybierz inną parafię</div>
+                <div class="block_church_selected_change pointer" title="Kliknij aby wybrać inną parafię. Niezapisane zmiany zostaną anulowane.">Wybierz inną parafię</div>
             </div>
             </div>
                 
@@ -167,7 +175,7 @@
     <ul class="block_city_list block_list">
         <% for(var x = 0; x < data.length && x < max_city_search; x++) { %>
             <li class="block_city_list_element">
-                <span class="sim_c_name common_border">
+                <span class="sim_c_name common_border" title="Kliknij aby wybrać">
                     <%= data[x].name %>
                 </span>
                 <span class="hidden city_id">
@@ -185,7 +193,7 @@
     <ul class="block_district_list block_list">
         <% for (var x = 1; x < data.length; x++) { %>
             <li class="block_district_list_element">
-                <span class="sim_d_name common_border">
+                <span class="sim_d_name common_border" title="Kliknij aby wybrać">
                     <%= data[x].name %>
                 </span>
                 <span class="hidden district_id">
@@ -199,7 +207,7 @@
 <script id="district_choose_template" type="text/template"> 
     <ul class="block_district_choose_list block_list">
         <% for (var x = 1; x < data.length; x++) { %>
-            <li class="block_district_choose_list_element">
+            <li class="block_district_choose_list_element" title="Kliknij aby zmienić na tą dzielnicę">
                 <span class="sim_dc_name common_border">
                     <%= data[x].name %>
                 </span>
@@ -215,7 +223,7 @@
     <ul class="block_church_list block_list">
         <% for (var x = 0; x < data.length; x++) { %>
             <li class="block_church_list_element">
-                <div class="sim_ch_name common_border">
+                <div class="sim_ch_name common_border" title="Kliknij aby wybrać">
                     <%= data[x].name %>
                 </div>
                 <span class="hidden church_id">
@@ -876,7 +884,7 @@ $(document).ready(function() {
         }
         else
         {
-            $('.block_city_add').html('<span class="block_city_new common_border">' + $.oip.escape($('.block_city_name').val()) + '</span>');
+            $('.block_city_add').html('<span class="block_city_new common_border" title="Kliknij aby dodać tę miejscowość.">' + $.oip.escape($('.block_city_name').val()) + '</span>');
             tim.stop();
             tim.setup(500);
         }
@@ -920,7 +928,7 @@ $(document).ready(function() {
         }
         else
         {
-            $('.block_district_add').html('<span class="block_district_new common_border">' + $.oip.escape($('.block_district_name').val()) + '</span>');
+            $('.block_district_add').html('<span class="block_district_new common_border" title="Kliknij aby dodać tą dzielnicę.">' + $.oip.escape($('.block_district_name').val()) + '</span>');
             //$('.block_district_use').show();
         }
     });
@@ -967,7 +975,7 @@ $(document).ready(function() {
         }
         else
         {
-            $('.block_church_add').html('<span class="block_church_new common_border">' + $.oip.escape($('.block_church_name').val()) + '</span>');
+            $('.block_church_add').html('<span class="block_church_new common_border" title="Kliknij aby dodać tę parafię.">' + $.oip.escape($('.block_church_name').val()) + '</span>');
         }
     });
     
@@ -1087,10 +1095,26 @@ $(document).ready(function() {
     }
     map = initialize();    
     
+    
+    $( document ).tooltip({
+      position: {
+        my: "center bottom-20",
+        at: "center top",
+        using: function( position, feedback ) {
+          $( this ).css( position );
+          $( "<div>" )
+            .addClass( "arrow" )
+            .addClass( feedback.vertical )
+            .addClass( feedback.horizontal )
+            .appendTo( this );
+        }
+      }
+    });
+    
     $.oip.manager = new $.oip.managerDef({{ city_id }}, {{ district_id }}, {{ church_id }},                 
         {
           fun_city_select: function(name) {
-                $('.block_city_selected_name').html('<span class="subname">Miasto:</span> ' + name);
+                $('.block_city_selected_name').html('<span class="subname">Miejscowość:</span> ' + name);
                 $('.block_city_form').hide();
                 $('.block_city_selected').show();
                 _local_goToAddress(11);
