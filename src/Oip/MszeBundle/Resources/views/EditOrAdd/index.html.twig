@@ -10,7 +10,7 @@
 
 <div class="main_add_header">
     <a class="main_add_header_logo" href="{{ path('oip_msze_homepage') }}"></a>
-    <div class="main_add_header_action">Edytuj</div>
+    <div class="main_add_header_action">Msze</div>
 </div>
 
 
@@ -1129,6 +1129,10 @@ $(document).ready(function() {
           },
           fun_city_hide_edit: function() {
               $('.block_city_selected_name_edit').hide();
+          },
+          
+          fun_district_default_set: function(id) {
+                $('.block_default_district_id').html(id);    
           },
 
           fun_district_fill: function(data) {

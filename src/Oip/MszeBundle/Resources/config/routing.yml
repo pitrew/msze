@@ -1,6 +1,21 @@
+#oip_msze_homepage:
+#    pattern:  /
+#    defaults: { _controller: OipMszeBundle:Default:index }
+
 oip_msze_homepage:
     pattern:  /
-    defaults: { _controller: OipMszeBundle:Default:index }
+    defaults: { _controller: OipMszeBundle:EditOrAdd:index, city_id: -1, district_id: -1, church_id: -1 }
+
+          
+edit_or_add:
+    pattern: /edit_or_add/{city_id}/{district_id}/{church_id}
+    defaults: { _controller: OipMszeBundle:EditOrAdd:index, city_id: -1, district_id: -1, church_id: -1 }
+    requirements:
+      city_id: \d+
+      district_id: \d+
+      church_id: \d+
+    options:
+      expose: true
     
 show_cities:
     pattern: /show/cities.{_format}
@@ -36,16 +51,7 @@ save_all:
       _method: POST
     options:
       expose: true
-      
-edit_or_add:
-    pattern: /edit_or_add/{city_id}/{district_id}/{church_id}
-    defaults: { _controller: OipMszeBundle:EditOrAdd:index, city_id: -1, district_id: -1, church_id: -1 }
-    requirements:
-      city_id: \d+
-      district_id: \d+
-      church_id: \d+
-    options:
-      expose: true
+
 
 
         

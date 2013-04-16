@@ -69,6 +69,7 @@ class EditOrAddController extends Controller
         $city = null;
         $district = null;
         $church = null;
+        $defDist = null;
         
         $city_id = $data['cid'];
         $district_id = $data['did'];
@@ -115,17 +116,24 @@ class EditOrAddController extends Controller
         
         $drepo = $this->getDoctrine()->getRepository('OipMszeBundle:District');
         if ($district_id != -1) {
-            $district = $drepo->findOrDef($city->getId(), $district_id);
-            if ($district == null) {
-                return new Response($serializer->serialize(array('error' => '0003.Nie ma takiej dzielnicy!'), 'json'));
+            if ($district_id == -100)
+            {
+                $district = $defDist;
             }
-            //if ($dname == '' && $district->getName() != '') {
-            //    return new Response($serializer->serialize(array('error' => '0004.Zła nazwa dzielnicy!'), 'json'));
-            //}
-            if ($dname != null && $dname != '' && $district->getName() != '') {
-                $district->setName($dname);
+            else
+            {
+                $district = $drepo->findOrDef($city->getId(), $district_id);
+                if ($district == null) {
+                    return new Response($serializer->serialize(array('error' => '0003.Nie ma takiej dzielnicy!'), 'json'));
+                }
+                //if ($dname == '' && $district->getName() != '') {
+                //    return new Response($serializer->serialize(array('error' => '0004.Zła nazwa dzielnicy!'), 'json'));
+                //}
+                if ($dname != null && $dname != '' && $district->getName() != '') {
+                    $district->setName($dname);
+                }
+                $em->flush();
             }
-            $em->flush();
         } else {
             if ($dname != null && $city != null) {
                 //return new Response($serializer->serialize(array('error' => '0004.Podaj nazwę dzielnicy!'), 'json'));

@@ -10,6 +10,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         fun_city_show_edit = fn["fun_city_show_edit"],
         fun_city_hide_edit = fn["fun_city_hide_edit"],
         
+        fun_district_default_set = fn["fun_district_default_set"],
         fun_district_fill = fn["fun_district_fill"],
         fun_district_show = fn["fun_district_show"],
         fun_district_hide = fn["fun_district_hide"],
@@ -320,6 +321,8 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             fun_district_show();
             fun_district_clear();
             
+            fun_district_default_set(-100);
+            
             fun_church_unselect();
             fun_church_hide();
             fun_church_clear();
@@ -343,6 +346,8 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             fun_district_unselect();
             fun_district_hide();
             fun_city_unselect();
+            
+            fun_district_default_set(-100);        
             if (afterFun != undefined) { afterFun(); }
             
             _local_show_hide_save();
@@ -354,6 +359,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 _city.new_name = data.name;
                 
                 _city.districts = data.districts;
+                _city.district_default = data.districts[0].id;
                 
                 fun_city_select(data.name);
                 fun_district_fill(data.districts)
@@ -372,7 +378,21 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         _local_clear_church();
         _district.id = id;
         
-        if (id == -1 && isNew == true)
+        if (id == -100) 
+        {
+            fun_district_hide_edit();
+            fun_church_hide_edit();
+            fun_district_select('');
+            fun_church_unselect();
+            fun_church_show();
+            fun_church_clear();
+            fun_mass_hide();
+            fun_mass_clear();
+            if (afterFun != undefined) { afterFun(); }
+            
+            _local_show_hide_save();
+        }
+        else if (id == -1 && isNew == true)
         {
             _district.new_name = newName;
             _district.cur_name = newName;
