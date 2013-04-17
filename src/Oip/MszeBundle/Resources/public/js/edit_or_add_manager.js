@@ -68,10 +68,12 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         _local_extract_time_and_id = function(p_masses) {
             var p_ret = {};
             p_masses.forEach(function(e, ind, ar){
-              var _tmp_date = new Date(e.start_time);
-              var _tmp_min = _tmp_date.getMinutes() < 10 ? '0' + _tmp_date.getMinutes() : _tmp_date.getMinutes();
+              var _tmp_date = e.start_time,
+                  _tmp_m = parseInt(_tmp_date % 100),
+                  _tmp_h = parseInt(_tmp_date / 100);
+              var _tmp_min = _tmp_m < 10 ? '0' + _tmp_m : _tmp_m;
               
-              e['hours'] = _tmp_date.getHours();
+              e['hours'] = _tmp_h;
               e['minutes'] = _tmp_min;
               
               p_ret[e.id] = e;

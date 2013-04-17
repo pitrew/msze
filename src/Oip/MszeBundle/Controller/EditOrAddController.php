@@ -192,34 +192,17 @@ class EditOrAddController extends Controller
             }
         }
         if ($mmod != null && $church != null) {
-            $dt = new \DateTime();
             foreach($mmod as $mid => $mpar)
             {
-                if ($mid < 0)
+                if (intval($mpar['hours']) >=0 && intval($mpar['hours']) < 24 &&
+                    intval($mpar['minutes'] >= 0 && intval($mpar['minutes']) < 60))
                 {
-                    $mass = new \Oip\MszeBundle\Entity\Mass();
-                    $mass->setChurch($church);
-                    
-                    $dt->setTime($mpar['hours'], $mpar['minutes'], 0);
-                    $mass->setStartTime($dt);
-                    $mass->setDetails($mpar['details']);
-                    $mass->setDayMon(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_mon']));
-                    $mass->setDayTue(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_tue']));
-                    $mass->setDayWed(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_wed']));
-                    $mass->setDayThu(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_thu']));
-                    $mass->setDayFri(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_fri']));
-                    $mass->setDaySat(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_sat']));
-                    $mass->setDaySun(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_sun']));
-                    $em->persist($mass);
-                    $em->flush();
-                }
-                else
-                {
-                    $mass = $mrepo->find($mid);
-                    if ($mass != null)
+                    if ($mid < 0)
                     {
-                        $dt->setTime($mpar['hours'], $mpar['minutes'], 0);
-                        $mass->setStartTime($dt);
+                        $mass = new \Oip\MszeBundle\Entity\Mass();
+                        $mass->setChurch($church);
+
+                        $mass->setStartTime(intval($mpar['hours']) * 100 + intval($mpar['minutes']));
                         $mass->setDetails($mpar['details']);
                         $mass->setDayMon(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_mon']));
                         $mass->setDayTue(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_tue']));
@@ -228,7 +211,25 @@ class EditOrAddController extends Controller
                         $mass->setDayFri(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_fri']));
                         $mass->setDaySat(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_sat']));
                         $mass->setDaySun(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_sun']));
+                        $em->persist($mass);
                         $em->flush();
+                    }
+                    else
+                    {
+                        $mass = $mrepo->find($mid);
+                        if ($mass != null)
+                        {
+                            $mass->setStartTime(intval($mpar['hours']) * 100 + intval($mpar['minutes']));
+                            $mass->setDetails($mpar['details']);
+                            $mass->setDayMon(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_mon']));
+                            $mass->setDayTue(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_tue']));
+                            $mass->setDayWed(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_wed']));
+                            $mass->setDayThu(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_thu']));
+                            $mass->setDayFri(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_fri']));
+                            $mass->setDaySat(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_sat']));
+                            $mass->setDaySun(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_sun']));
+                            $em->flush();
+                        }
                     }
                 }
             }
