@@ -69,8 +69,8 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             var p_ret = {};
             p_masses.forEach(function(e, ind, ar){
               var _tmp_date = e.start_time,
-                  _tmp_m = parseInt(_tmp_date % 100),
-                  _tmp_h = parseInt(_tmp_date / 100);
+                  _tmp_m = parseInt(_tmp_date % 100, 10),
+                  _tmp_h = parseInt(_tmp_date / 100, 10);
               var _tmp_min = _tmp_m < 10 ? '0' + _tmp_m : _tmp_m;
               
               e['hours'] = _tmp_h;
@@ -86,8 +86,8 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 return [k];
             });
             var lcompare = function(a,b) {
-                var vala = parseInt(a.hours) * 100 + parseInt(a.minutes),
-                    valb = parseInt(b.hours) * 100 + parseInt(b.minutes);
+                var vala = parseInt(a.hours, 10) * 100 + parseInt(a.minutes, 10),
+                    valb = parseInt(b.hours, 10) * 100 + parseInt(b.minutes, 10);
                 if (vala < valb) { return -1; }
                 else if (vala > valb) { return 1; }
                 else return 0;
