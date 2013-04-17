@@ -614,28 +614,35 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 alert('Error' + data.error);
                 Recaptcha.reload();
             } else {
-                location.href = Routing.generate('edit_or_add', {city_id: data.city_id, district_id: data.district_id, church_id: data.church_id});
+                self.Reset();
+                self.SetupAll(data.city_id, data.district_id, data.church_id);
+                //location.href = Routing.generate('edit_or_add', {city_id: data.city_id, district_id: data.district_id, church_id: data.church_id});
             }
         });
     }
-    //construct
-    if (city_id != -1) {
-        $('.main_add_division_table').oipLoading('show');
-        self.setupCityId(city_id, undefined, undefined, function() {
-            if (district_id != -1) {
-                self.setupDistrictId(district_id, undefined, undefined, function() {
-                    if (church_id != -1) {
-                        self.setupChurchId(church_id, null, null, function() {
+    
+    self.SetupAll = function(city_id, district_id, church_id) {
+        //construct
+        if (city_id != -1) {
+            $('.main_add_division_table').oipLoading('show');
+            self.setupCityId(city_id, undefined, undefined, function() {
+                if (district_id != -1) {
+                    self.setupDistrictId(district_id, undefined, undefined, function() {
+                        if (church_id != -1) {
+                            self.setupChurchId(church_id, null, null, function() {
+                                $('.main_add_division_table').oipLoading('hide');
+                            });
+                        } else {
                             $('.main_add_division_table').oipLoading('hide');
-                        });
-                    } else {
-                        $('.main_add_division_table').oipLoading('hide');
-                    }
-                });
-            } else {
-                $('.main_add_division_table').oipLoading('hide');
-            }
-        });
+                        }
+                    });
+                } else {
+                    $('.main_add_division_table').oipLoading('hide');
+                }
+            });
+        }
     }
+    
+    self.SetupAll(city_id, district_id, church_id);
 }
 

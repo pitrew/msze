@@ -1256,28 +1256,22 @@ $(document).ready(function() {
           fun_hide_save: function() {
             var save_all = $('#save_all'),
                 cancel_all = $('#cancel_all');
-            save_all.stop();
-            cancel_all.stop();
-            if (save_all.is(':visible'))
-            {
-                cancel_all.fadeOut('fast', function() {
-                    save_all.slideUp();
-                })
-            }
-                
-              
+            //save_all.stop();
+            //cancel_all.stop();
+            
+            cancel_all.fadeOut('fast', function() {
+                save_all.slideUp();
+            })
           },
           fun_show_save: function() {
                 var save_all = $('#save_all'),
                     cancel_all = $('#cancel_all');
-                save_all.stop();
-                cancel_all.stop();
-                if (!save_all.is(':visible'))
-                {
-                  save_all.slideDown('fast', function() {
-                    cancel_all.fadeIn();
-                  });
-                }
+               // save_all.stop();
+               // cancel_all.stop();
+                
+                save_all.slideDown('fast', function() {
+                  cancel_all.fadeIn();
+                });
           }
         }
     );   
