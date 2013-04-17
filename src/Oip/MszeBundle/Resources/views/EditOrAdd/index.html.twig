@@ -1254,15 +1254,30 @@ $(document).ready(function() {
           
           
           fun_hide_save: function() {
-              $('#cancel_all').fadeOut('fast', function() {
-                    $('#save_all').slideUp();
+            var save_all = $('#save_all'),
+                cancel_all = $('#cancel_all');
+            save_all.stop();
+            cancel_all.stop();
+            if (save_all.is(':visible'))
+            {
+                cancel_all.fadeOut('fast', function() {
+                    save_all.slideUp();
                 })
+            }
+                
+              
           },
           fun_show_save: function() {
-                $('#save_all').slideDown('fast', function() {
-                  $('#cancel_all').fadeIn();
-              });
-                ;
+                var save_all = $('#save_all'),
+                    cancel_all = $('#cancel_all');
+                save_all.stop();
+                cancel_all.stop();
+                if (!save_all.is(':visible'))
+                {
+                  save_all.slideDown('fast', function() {
+                    cancel_all.fadeIn();
+                  });
+                }
           }
         }
     );   
