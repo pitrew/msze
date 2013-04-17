@@ -1,6 +1,6 @@
 parameters:
     database_driver: pdo_mysql
-    database_host: 127.0.0.1
+    database_host: mysql.serversfree.com
     database_port: null
     database_name: u598475631_msze
     database_user: u598475631_msze
