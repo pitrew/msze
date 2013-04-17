@@ -482,7 +482,7 @@
         $('.block_mass_edit_sun_button_delete, .block_mass_edit_other_button_delete').click(function() {
             var win = $(this).closest('.block_mass_edit_win');
             var mid = $.trim(win.find('.mass_id').html());
-            $.oip.manager.markMassForDeletion(parseInt(mid));
+            $.oip.manager.markMassForDeletion(parseInt(mid, 10));
             
             win.fadeOut('fast', function() {
               hideWall();
@@ -491,7 +491,7 @@
         $('.block_mass_edit_sun_button_undo, .block_mass_edit_other_button_undo').click(function() {
             var win = $(this).closest('.block_mass_edit_win');
             var mid = $.trim(win.find('.mass_id').html());
-            $.oip.manager.unmarkMassForChange(parseInt(mid));
+            $.oip.manager.unmarkMassForChange(parseInt(mid, 10));
             
             win.fadeOut('fast', function() {
               hideWall();
@@ -501,7 +501,7 @@
         $('.block_mass_edit_sun_button_undelete, .block_mass_edit_other_button_undelete').click(function() {
             var win = $(this).closest('.block_mass_edit_win');
             var mid = $.trim(win.find('.mass_id').html());
-            $.oip.manager.unmarkMassForDeletion(parseInt(mid));
+            $.oip.manager.unmarkMassForDeletion(parseInt(mid, 10));
             
             win.fadeOut('fast', function() {
               hideWall();
@@ -510,7 +510,7 @@
         $('.block_mass_edit_sun_button_save, .block_mass_edit_other_button_save').click(function() {
             var win = $(this).closest('.block_mass_edit_win');
             var mid = $.trim(win.find('.mass_id').html());            
-            $.oip.manager.markMassForChange(parseInt(mid), _get_mass_object_from_entry(win));
+            $.oip.manager.markMassForChange(parseInt(mid, 10), _get_mass_object_from_entry(win));
             
             win.fadeOut('fast', function() {
               hideWall();
