@@ -1,10 +1,10 @@
-#oip_msze_homepage:
-#    pattern:  /
-#    defaults: { _controller: OipMszeBundle:Default:index }
-
 oip_msze_homepage:
     pattern:  /
-    defaults: { _controller: OipMszeBundle:EditOrAdd:index, city_id: -1, district_id: -1, church_id: -1 }
+    defaults: { _controller: OipMszeBundle:Default:index }
+
+#oip_msze_homepage:
+#    pattern:  /
+#    defaults: { _controller: OipMszeBundle:EditOrAdd:index, city_id: -1, district_id: -1, church_id: -1 }
 
           
 edit_or_add:
