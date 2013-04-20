@@ -46,6 +46,7 @@ class ShowController extends Controller
         $id = $this->getRequest()->query->get('id');
         $repo = $this->getDoctrine()->getRepository('OipMszeBundle:City');
         $city = $repo->find($id);
+        
         $days = array('Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela');
         $hours = array();
         $hours[1] = $repo->findAllHours($id, 'mon');
@@ -85,15 +86,26 @@ class ShowController extends Controller
             $pattern = $this->getRequest()->query->get('s');
         }
         
-        if ($city_id == -1)
-        {
+        $repoCity = $this->getDoctrine()->getRepository('OipMszeBundle:City');
+        $city = $repoCity->findOneById($city_id);
+        if ($city == null) {
             throw $this->createNotFoundException("City not found");
         }
+        $districts = $city->getDistricts();
+        $districtsArray = array();
+        foreach ($districts as $district)
+        {
+            $churchesArray = array();
+            foreach ($district->getChurches() as $church) {
+                $churchesArray[$church->getId()] = array( 
+                    'name' => $church->getName(),
+                    'address' => $church->getAddress()
+                );
+            }
+            $districtsArray[$district->getId()] = array('name' => $district->getName(), 'churches' => $churchesArray);
+        }
         
-        $repo = $this->getDoctrine()->getRepository('OipMszeBundle:Church');
-        $churches = $repo->findByCity($city_id);
-        
-        return $this->render('OipMszeBundle:Show:churches.html.twig', array('churches' => $churches, 'pattern' => $pattern ));
+        return $this->render('OipMszeBundle:Show:churches.html.twig', array('result' => $districtsArray, 'pattern' => $pattern ));
     }
     
     public function churchAction($city_id, $id)

@@ -9,8 +9,8 @@
 {% block body %}
 
 <div class="main_add_header">
-    <a class="main_add_header_logo" href="{{ path('oip_msze_homepage') }}"></a>
-    <div class="main_add_header_action">Msze</div>
+    <a class="main_add_header_logo" href="{{ path('oip_msze_homepage') }}" title="Powrót do strony głównej"></a>
+    <div class="main_add_header_action">Dodaj/Zmień</div>
 </div>
 
 
@@ -472,6 +472,27 @@
           
           showEditWindowOther(data);
         });
+        
+        $('.block_mass_edit_box').keydown(function() {
+            if (event.which == 13) { //enter
+                var win = $(this).closest('.block_mass_edit_win');
+                var mid = $.trim(win.find('.mass_id').html());            
+                $.oip.manager.markMassForChange(parseInt(mid, 10), _get_mass_object_from_entry(win));
+
+                win.fadeOut('fast', function() {
+                    hideWall();
+                });
+                event.preventDefault();
+            } else if (event.which == 27) {
+                $(this).closest('.block_mass_edit_win, .block_district_choose_win').fadeOut('fast', function() {
+                    hideWall();
+                });  
+            }
+        });
+        
+        $("input[type=text].block_mass_edit_box").click(function() {
+            $(this).select();
+         });
 
         $('.block_mass_edit_sun_button_cancel, .block_mass_edit_other_button_cancel, .block_name_edit_button_cancel, .block_window_close').click(function() {
             $(this).closest('.block_mass_edit_win, .block_district_choose_win').fadeOut('fast', function() {
@@ -596,7 +617,10 @@
                 }
             });
         }
-        wind.fadeIn('fast');
+
+        wind.fadeIn('fast', function() {
+            wind.find('.block_mass_edit_box').first().focus().select();
+        });
     }
     function showEditWindowOther(data)
     {
@@ -641,7 +665,9 @@
                 }
             });
         }
-        wind.fadeIn('fast');
+        wind.fadeIn('fast', function() {
+            wind.find('.block_mass_edit_box').first().focus().select();
+        });
     }
     
     //types: 'city', 'district', 'church'
@@ -1257,7 +1283,7 @@ $(document).ready(function() {
             var save_all = $('#save_all'),
                 cancel_all = $('#cancel_all');
             //save_all.stop();
-            //cancel_all.stop();
+            //cancel_all.stop()
             
             cancel_all.fadeOut('fast', function() {
                 save_all.slideUp();

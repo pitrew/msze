@@ -342,7 +342,6 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             fun_city_hide_edit();
             fun_district_hide_edit();
             fun_church_hide_edit();
-            fun_hide_save();
             fun_mass_clear();
             fun_mass_hide();
             fun_church_unselect();
@@ -418,8 +417,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         else if (id == -1 && isNew !== true)
         {
             fun_district_hide_edit();
-            fun_church_hide_edit();
-            fun_hide_save();
+            fun_church_hide_edit();            
             fun_mass_hide();
             fun_mass_clear();
             fun_church_unselect();

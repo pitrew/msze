@@ -2,22 +2,18 @@
 
 {% block body %}
 <center>
+<div class="main_add_new">
+    <a href="{{ path('edit_or_add') }}" class="main_add_button">
+    + Dodaj miasto lub parafię
+    </a>
+</div>
+<div class="main_search">
+    <form action="{{ path('show_city') }}" method="get" >
+        <input type="text" name="id" id="search_dst"/>
+        <input type="button" value="Pokaż" id="search_show"/>
+    </form>
+</div>
 
-<img src="{{ asset('bundles/oipmsze/images/edit_back.png') }}" alt="img test">
-<br/>
-<br/>
-
-<form action="{{ path('show_city') }}" method="get" >
-    <input type="text" name="id" id="search_dst"/>
-    <input type="button" value="Pokaż" id="search_show"/>
-</form>
-
-
-<br/><br/>
-
-<a href="{{ path('edit_or_add') }}">
-+ Dodaj...
-</a>
 
 
 </center>
@@ -61,6 +57,8 @@
             {
                 $(this).parent().find("#search_dst").val($("#search_dst").select2("val"));
                 $(this).parent().submit();
+                
+                //TODO: add city fetch
             }
         });
         

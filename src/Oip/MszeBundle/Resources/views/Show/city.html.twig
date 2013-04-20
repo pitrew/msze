@@ -1,11 +1,13 @@
+
 {% extends "::base_all.html.twig" %}
+
 
 
 {% block body %}
 <h2>{{ city.name }}</h2>
 <ul>
 
-{% render url('show_churches', {'city_id': city.id }) %}
+{% render url('show_churches', {'city_id': city.id, 'full': true }) %}
 
     <hr>
     
@@ -14,7 +16,7 @@
     <h3>{{ days[i] }}</h3>
     <ul>        
             {% for hour in hour_tab %}
-                <li>{{ hour.start_time|date('H:i') }}</li>
+                <li>{{ '%d'|format(hour.start_time / 100) }}:{{ '%02d'|format(hour.start_time % 100) }}</li>
             {% endfor %}
     </ul>
 {% set i = i + 1 %}

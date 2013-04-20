@@ -1,16 +1,30 @@
-{% extends "::base_all.html.twig" %}
+{# {% extends "::base_all.html.twig" %} #}
 
 {% block body %}
 
-Church: {{ pattern }}
+{#Church: {{ pattern }}#}
+
+{% for entry in result %}
 
 <ul>
-
-{% for church in churches %}
-    <li>{{ church.name }} - {{ church.address }} <a href="{{ path('show_church', {'city_id': church.city.id, 'id': church.id }) }}">go</a> </li>
-{% endfor %}
-
-
+    <li>
+        <div>Dzielnica: {% if entry['name'] == '' %} Nie przypisane {% else %} {{ entry['name'] }} {% endif %}</div>
+        <ul>
+            {% for church in entry['churches'] %}
+                <li>{{ church.name }} - 
+                    {% if church.address == '' %}
+                        Brak
+                    {% else %}
+                        {{ church.address }} 
+                    {% endif %}
+                    {# <a href="{{ path('show_church', {'city_id': church.city.id, 'id': church.id }) }}">go</a> #}
+                </li>
+            {% endfor %}
+        </ul>
+        <br/><br/>
+    </li>
 </ul>
+
+{% endfor %}
 
 {%endblock%}
