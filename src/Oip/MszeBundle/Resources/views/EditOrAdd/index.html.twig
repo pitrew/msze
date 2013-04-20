@@ -490,6 +490,19 @@
             }
         });
         
+        //XXXXXXXXXX
+        
+        $('.block_name_edit_box').keydown(function() {
+            if (event.which == 13) { //enter
+                var win = $(this).closest('.block_mass_edit_win');
+                win.find('.block_name_edit_button_save').click();
+                event.preventDefault();
+            } else if (event.which == 27) {
+                var win = $(this).closest('.block_mass_edit_win');
+                win.find('.block_name_edit_button_cancel').click();
+            }
+        });
+        
         $("input[type=text].block_mass_edit_box").click(function() {
             $(this).select();
          });
@@ -680,7 +693,9 @@
         wind.find('.object_type').html($.trim(objType));
         wind.find('.show_el').show();
         
-        wind.fadeIn('fast');
+        wind.fadeIn('fast', function() {
+            wind.find('.block_name_edit_box').focus().select();
+        });
     }
     
     function showDistrictChooseWindow(churchId, churchName, curDistrict)
