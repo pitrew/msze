@@ -115,7 +115,7 @@
 
 .block_mass_edit_sun
 {
-    background-color: red;
+    background-color: #ffffdd;
     top: 50%;
     left: 50%;
     margin-left: -125px;
@@ -124,7 +124,7 @@
 
 .block_mass_edit_other
 {
-    background-color: red;
+    background-color: #ffffdd;
     top: 50%;
     left: 50%;
     margin-left: -110px;
