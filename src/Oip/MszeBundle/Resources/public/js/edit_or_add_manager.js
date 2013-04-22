@@ -150,20 +150,20 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     self.setCityName = function(newName) {
         _city.new_name = newName;
         _local_show_hide_save();
-        fun_city_select(_city.new_name + ' <sup class="small city_name_back">(cofnij zmianę)</sup>');
+        fun_city_select($.oip.escape(_city.new_name) + ' <sup class="small city_name_back">(cofnij zmianę)</sup>');
     }
     
     self.resetCityName = function() {
         _city.new_name = _city.cur_name;
         _local_show_hide_save();
-        fun_city_select(_city.new_name);
+        fun_city_select($.oip.escape(_city.new_name));
     }
     
     self.setDistrictName = function(newName) {
         _district.new_name = newName;
         delete _district.new_id;
         _local_show_hide_save();
-        fun_district_select(_district.new_name + ' <sup class="small district_name_back">(cofnij zmianę)</sup>');
+        fun_district_select($.oip.escape(_district.new_name) + ' <sup class="small district_name_back">(cofnij zmianę)</sup>');
     }
     
     self.setDistrictNewId = function(newId) {
@@ -180,7 +180,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 fun_district_select('Brak dzielnicy <sup class="small district_name_back">(cofnij zmianę)</sup>');
                 fun_district_hide_edit();
             } else {
-                fun_district_select(found + ' <sup class="small district_name_back">(cofnij zmianę)</sup>');
+                fun_district_select($.oip.escape(found) + ' <sup class="small district_name_back">(cofnij zmianę)</sup>');
             }
             
             _district.new_id = newId;
@@ -194,19 +194,20 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         _district.new_name = _district.cur_name;
         delete _district["new_id"];
         _local_show_hide_save();
-        fun_district_select(_district.new_name);
+        fun_district_select($.oip.escape(_district.new_name));
     }
     
     self.setChurchName = function(newName) {
         _church.new_name = newName
         _local_show_hide_save();
-        fun_church_select(_church.new_name + ' <sup class="small church_name_back">(cofnij zmianę)</sup>');
+        fun_church_select($.oip.escape(_church.new_name) + ' <sup class="small church_name_back">(cofnij zmianę)</sup>');
     }
     
     self.resetChurchName = function() {
         _church.new_name = _church.cur_name;
         _local_show_hide_save();
-        fun_church_select(_church.new_name);
+        fun_church_select($.oip.escape(_church.new_name));
+    );
     }
     
     self.setChurchAddress = function(address) {
@@ -320,7 +321,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             fun_district_hide_edit();
             fun_church_hide_edit();
             
-            fun_city_select(newName);
+            fun_city_select($.oip.escape(newName));
             fun_district_unselect();
             fun_district_show();
             fun_district_clear();
@@ -365,7 +366,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 _city.districts = data.districts;
                 _city.district_default = data.districts[0].id;
                 
-                fun_city_select(data.name);
+                fun_city_select($.oip.escape(data.name));
                 fun_district_fill(data.districts)
                 fun_district_show();
                 
@@ -404,7 +405,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             
             fun_district_hide_edit();
             fun_church_hide_edit();
-            fun_district_select(newName);
+            fun_district_select($.oip.escape(newName));
             fun_church_unselect();
             fun_church_show();
             fun_church_clear();
@@ -434,7 +435,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 _district.cur_name = data.name;
                 _district.new_name = data.name;
                 
-                fun_district_select(data.name);
+                fun_district_select($.oip.escape(data.name));
                 fun_church_fill(data.churches)
                 fun_church_show();
                 
@@ -461,7 +462,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
             
             _address_setup_allow = true;
             fun_church_hide_edit();
-            fun_church_select(newName);
+            fun_church_select($.oip.escape(newName));
             fun_mass_clear();
             fun_mass_show();
             if (afterFun != undefined) { afterFun(); }
@@ -505,7 +506,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 }
                 
                 _address_setup_allow = true;
-                fun_church_select(data.name, data);
+                fun_church_select($.oip.escape(data.name), data);
                 _mass.smasses = _local_extract_time_and_id(data.smasses);
                 _mass.wmasses = _local_extract_time_and_id(data.wmasses);
                 fun_mass_fill(_local_make_array(_mass.smasses), _local_make_array(_mass.wmasses))
@@ -583,8 +584,8 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                     _mass.mod_list = {};
                     _mass.del_list = {};
 
-                    fun_city_select(_city.new_name);
-                    fun_district_select(_district.new_name);
+                    fun_city_select($.oip.escape(_city.new_name));
+                    fun_district_select($.oip.escape(_district.new_name));
 
                     var data = { description: _church.new_desc, address: _church.new_address};
                     if (_church.new_pos != undefined) {
@@ -592,7 +593,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                         data.longitude = _church.new_pos.lng;
                     }       
 
-                    fun_church_select(_church.new_name, data);
+                    fun_church_select($.oip.escape(_church.new_name), data);
                     
                     
                     self.renderMasses();

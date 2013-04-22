@@ -1,4 +1,57 @@
 {# {% extends "::base_all.html.twig" %} #}
+{% block stylesheets %}
+<style type="text/css">
+.ch_district
+{
+    -moz-border-radius:10px;
+    -webkit-border-radius:10px;
+    border-radius:10px;
+    background-color: #e3ffe3;
+    border: 1px solid #75ff75;
+    margin: 0px;
+    padding-bottom: 1px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+}
+
+.ch_district_name {
+	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	box-shadow:inset 0px 1px 0px 0px #ffffff;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #b9ffab), color-stop(1, #93de8c) );
+	background:-moz-linear-gradient( center top, #b9ffab 5%, #93de8c 100% );
+	background-color:#b9ffab;
+	-moz-border-radius:16px;
+	-webkit-border-radius:16px;
+	border-radius:16px;
+	border:1px solid #dcdcdc;
+	display:inline-block;
+	color:#202020;
+	font-family:arial;
+	font-size:11px;
+	font-weight:bold;
+	padding:4px 56px;
+	text-decoration:none;
+        display: inline-block;
+        width: 165px;
+        overflow: hidden;
+}
+.ch_churches li
+{
+    list-style-type: none;
+    /*background-color: green;*/
+    text-align: left;
+}
+.ch_address
+{
+    font-size: 10px;
+    color: #555;
+    padding-left: 5px;
+}
+
+</style>
+{% endblock %}
+
 
 {% block body %}
 
@@ -6,24 +59,27 @@
 
 {% for entry in result %}
 
-<ul>
-    <li>
-        <div>Dzielnica: {% if entry['name'] == '' %} Nie przypisane {% else %} {{ entry['name'] }} {% endif %}</div>
-        <ul>
+<div class="ch_district">
+    <div class="ch_district_name">
+            {% if entry['name'] == '' %}
+                Bez dzielnicy
+            {% else %}
+                {{ entry['name'] }}
+            {% endif %}
+    </div>
+    <ul class="ch_churches">
             {% for church in entry['churches'] %}
-                <li>{{ church.name }} - 
-                    {% if church.address == '' %}
-                        Brak
-                    {% else %}
-                        {{ church.address }} 
+                <li class="ch_church_elem">{{ church.name }} 
+                    {% if church.address != '' %}
+                        <br/>
+                        <span class="ch_address">{{ church.address }}</span> 
                     {% endif %}
                     {# <a href="{{ path('show_church', {'city_id': church.city.id, 'id': church.id }) }}">go</a> #}
                 </li>
             {% endfor %}
         </ul>
-        <br/><br/>
-    </li>
-</ul>
+</div>
+
 
 {% endfor %}
 

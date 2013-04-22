@@ -176,7 +176,7 @@
         <% for(var x = 0; x < data.length && x < max_city_search; x++) { %>
             <li class="block_city_list_element">
                 <span class="sim_c_name common_border" title="Kliknij aby wybrać">
-                    <%= data[x].name %>
+                    <%= $.oip.escape(data[x].name) %>
                 </span>
                 <span class="hidden city_id">
                     <%= data[x].id %>
@@ -194,7 +194,7 @@
         <% for (var x = 1; x < data.length; x++) { %>
             <li class="block_district_list_element">
                 <span class="sim_d_name common_border" title="Kliknij aby wybrać">
-                    <%= data[x].name %>
+                    <%= $.oip.escape(data[x].name) %>
                 </span>
                 <span class="hidden district_id">
                     <%= data[x].id %>
@@ -209,7 +209,7 @@
         <% for (var x = 1; x < data.length; x++) { %>
             <li class="block_district_choose_list_element" title="Kliknij aby zmienić na tą dzielnicę">
                 <span class="sim_dc_name common_border">
-                    <%= data[x].name %>
+                    <%= $.oip.escape(data[x].name) %>
                 </span>
                 <span class="hidden district_id">
                     <%= data[x].id %>
@@ -224,7 +224,7 @@
         <% for (var x = 0; x < data.length; x++) { %>
             <li class="block_church_list_element">
                 <div class="sim_ch_name common_border" title="Kliknij aby wybrać">
-                    <%= data[x].name %>
+                    <%= $.oip.escape(data[x].name) %>
                 </div>
                 <span class="hidden church_id">
                     <%= data[x].id %>
@@ -252,7 +252,7 @@
                                 :
                                 <span class="block_mass_min"><%= sdata[x].minutes %></span>
                             </div>
-                            <div class="block_mass_desc"><%= sdata[x].details %></div>
+                            <div class="block_mass_desc"><%= $.oip.escape(sdata[x].details) %></div>
                             <span class="hidden mass_id">
                                 <%= sdata[x].id %>
                             </span>
@@ -287,7 +287,7 @@
                                 <% if (wdata[x].day_fri) { %>pt <span class="bm_d_fri hidden"></span><% } %>
                                 <% if (wdata[x].day_sat) { %>so<span class="bm_d_sat hidden"></span><% } %>
                             </div>
-                            <div class="block_mass_desc"><%= wdata[x].details %></div>
+                            <div class="block_mass_desc"><%= $.oip.escape(wdata[x].details) %></div>
                             <span class="hidden mass_id">
                                 <%= wdata[x].id %>
                             </span>
@@ -443,7 +443,7 @@
           var data = {};
           data['hours'] = $(this).find('.block_mass_hour').html();
           data['minutes'] = $(this).find('.block_mass_min').html();
-          data['desc'] = $(this).find('.block_mass_desc').html();            
+          data['desc'] = $.trim($(this).find('.block_mass_desc').text());
           data['id'] = $.trim($(this).find('.mass_id').html());
           data['mod'] = ($(this).find('.mass_mod').length > 0);
             
@@ -458,7 +458,7 @@
           var data = {};
           data['hours'] = $(this).find('.block_mass_hour').html();
           data['minutes'] = $(this).find('.block_mass_min').html();
-          data['desc'] = $(this).find('.block_mass_desc').html();  
+          data['desc'] = $.trim($(this).find('.block_mass_desc').text());  
           
           data['dmon'] = $(this).find('.bm_d_mon').length > 0;
           data['dtue'] = $(this).find('.bm_d_tue').length > 0;
@@ -688,8 +688,8 @@
     {
         showWall();
         var wind = $('.block_name_edit_win');
-        wind.find('.block_name_edit_old_name').html(oldName);
-        wind.find('.block_name_edit_box').val(oldName);
+        wind.find('.block_name_edit_old_name').html($.oip.escape(oldName));
+        wind.find('.block_name_edit_box').val($.oip.escape(oldName));
         wind.find('.object_type').html($.trim(objType));
         wind.find('.show_el').show();
         
@@ -702,8 +702,8 @@
     {
         showWall();
         var wind = $('.block_district_choose_win');
-        wind.find('.block_district_choose_church_name').html(churchName);
-        wind.find('.block_district_choose_cur_district').html(curDistrict);
+        wind.find('.block_district_choose_church_name').html($.oip.escape(churchName));
+        wind.find('.block_district_choose_cur_district').html($.oip.escape(curDistrict));
         wind.find('.church_id').html($.trim(churchId));
         wind.find('.show_el').show();
         

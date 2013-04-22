@@ -89,6 +89,8 @@ table td { outline: 1px solid green; }
 {
     font-size: 20px;
     font-weight: bold;
+    max-width: 450px;
+    overflow: auto;
 }
 .block_city_selected_name .subname, .block_district_selected_name .subname, .block_church_selected_name .subname
 {
@@ -374,6 +376,9 @@ sup.small
 {
     font-size: 15px;
     font-weight: bold;
+    max-width: 210px;
+    overflow: auto;
+    margin-left: 20px;
 }
 
 .block_name_edit_box

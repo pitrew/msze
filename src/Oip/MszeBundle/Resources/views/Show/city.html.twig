@@ -1,27 +1,69 @@
 
 {% extends "::base_all.html.twig" %}
+{% block stylesheets %}
+<style type="text/css">
+.city_name
+{
+    font-size: 40px;
+    height: 100px;
+    vertical-align: middle;
+    border: 0px solid red;
+    padding-top: 50px;
+    padding-left: 40px;
+}
 
+.city_table, .city_table td
+{
+    border-collapse: collapse;
+    vertical-align: top;
+}
+.city_table
+{
+    width: 970px;
+    border: 0px solid red;
+}
+.city_table .city_td_left
+{
+   width: 300px; 
+}
+.city_table .city_td_right
+{
+   width: auto; 
+}
+.city_table .city_td_middle
+{
+    width: 30px;
+    outline: 0px solid green;
+}
+</style>
+{% endblock %}
 
 
 {% block body %}
-<h2>{{ city.name }}</h2>
-<ul>
+<div class="city_name">{{ city.name }}</div>
 
-{% render url('show_churches', {'city_id': city.id, 'full': true }) %}
-
-    <hr>
-    
-{% set i = 0 %}
-{% for hour_tab in hours %}
-    <h3>{{ days[i] }}</h3>
-    <ul>        
-            {% for hour in hour_tab %}
-                <li>{{ '%d'|format(hour.start_time / 100) }}:{{ '%02d'|format(hour.start_time % 100) }}</li>
+<table class="city_table">
+    <tr>
+        <td class="city_td_left">
+            Parafie
+            {% render url('show_churches', {'city_id': city.id, 'full': true }) %}
+        </td>
+        <td class="city_td_middle"></td>
+        <td class="city_td_right">
+            {% set i = 0 %}
+            {% for hour_tab in hours %}
+                <h3>{{ days[i] }}</h3>
+                <ul>        
+                        {% for hour in hour_tab %}
+                            <li>{{ '%d'|format(hour.start_time / 100) }}:{{ '%02d'|format(hour.start_time % 100) }}</li>
+                        {% endfor %}
+                </ul>
+            {% set i = i + 1 %}
             {% endfor %}
-    </ul>
-{% set i = i + 1 %}
-{% endfor %}
+        </td>
+    </tr>
+</table>
 
-</ul>
+
 
 {% endblock %}
