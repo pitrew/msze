@@ -119,11 +119,24 @@ ul.city_churches_hours li:hover
     font-size: 13px;
     font-weight: bold;
 }
+
+.goto_main_page
+{
+    background-color: #fff;
+    opacity: 0.001;
+    position: absolute;
+    top:0px;
+    left:0px;
+    width:120px;
+    height: 120px;
+    cursor: pointer;
+}
 </style>
 {% endblock %}
 
 
 {% block body %}
+<a class="goto_main_page" href="{{ path('oip_msze_homepage') }}" title="Powrót do strony głównej"></a>
 <div class="city_name">{{ city.name }}</div>
 
 <table class="city_table">
@@ -165,6 +178,18 @@ ul.city_churches_hours li:hover
     </tr>
 </table>
 
+{% endblock %}
 
 
+{% block javascripts %}
+
+<script type="text/javascript">    
+
+{#
+$(document).ready(function() {
+    $('.goto_main_page').click(function() {
+
+    });
+});#}
+</script>
 {% endblock %}
