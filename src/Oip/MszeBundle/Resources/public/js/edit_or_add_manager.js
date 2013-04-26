@@ -207,7 +207,6 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         _church.new_name = _church.cur_name;
         _local_show_hide_save();
         fun_church_select($.oip.escape(_church.new_name));
-    );
     }
     
     self.setChurchAddress = function(address) {

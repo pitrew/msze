@@ -810,7 +810,11 @@
     }
     
     function setupMarker(pos, zoom, dont_center)
-    {        
+    {   
+        if (map == undefined)
+        {
+            return;
+        }
         if (pos == null) {
             if (marker != null)
             {
@@ -847,6 +851,10 @@
    
     function goToAddress(address, zoom, gps)
     {
+        if (map == undefined)
+        {
+            return;
+        }
         if (gps != undefined)
         {
             setupMarker(new google.maps.LatLng(gps.lat, gps.lng), zoom);
@@ -1117,22 +1125,30 @@ $(document).ready(function() {
     });
     
     function initialize() {
-      var mapOptions = {
-        center: new google.maps.LatLng(52.245461,21.007233),
-        zoom: 8,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      };
-      var map = new google.maps.Map(document.getElementById("map-canvas"),
-          mapOptions);
-                
-      google.maps.event.addListener(map, 'click', function(event) {
-            hideGpsConfirm(); 
-            $.oip.manager.setupPosition(event.latLng.lat(), event.latLng.lng());
-            setupMarker(event.latLng, null, false); //remove center
-            $.oip.manager.showHideSave();
-      });
-      
-      return map;
+        try
+        {
+            var mapOptions = {
+              center: new google.maps.LatLng(52.245461,21.007233),
+              zoom: 8,
+              mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            var map = new google.maps.Map(document.getElementById("map-canvas"),
+                mapOptions);
+
+            google.maps.event.addListener(map, 'click', function(event) {
+                  hideGpsConfirm(); 
+                  $.oip.manager.setupPosition(event.latLng.lat(), event.latLng.lng());
+                  setupMarker(event.latLng, null, false); //remove center
+                  $.oip.manager.showHideSave();
+            });
+
+            return map;
+        }
+        catch(e)
+        {
+            
+        }
+        return undefined;
     }
     map = initialize();    
     
@@ -1250,7 +1266,9 @@ $(document).ready(function() {
                   $('.block_church_address').val(data.address);
                   if (data.latitude != undefined && data.longitude != undefined) {
                     $.oip.manager.addressTimer.stop();
-                    setupMarker(new google.maps.LatLng(data.latitude, data.longitude), 17);
+                    if (map != undefined) {
+                        setupMarker(new google.maps.LatLng(data.latitude, data.longitude), 17);
+                    }
                   } else if (data.address != undefined && data.address != '') {
                       $.oip.manager.addressTimer.stop();
                       _local_goToAddress(16);
