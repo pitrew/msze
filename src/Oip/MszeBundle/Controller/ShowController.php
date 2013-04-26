@@ -102,10 +102,18 @@ class ShowController extends Controller
                     'address' => $church->getAddress()
                 );
             }
-            $districtsArray[$district->getId()] = array('name' => $district->getName(), 'churches' => $churchesArray);
+            if (sizeof($churchesArray) > 0) {
+                $districtsArray[$district->getId()] = 
+                        array('id' => $district->getId(), 
+                            'name' => $district->getName(), 
+                            'churches' => $churchesArray);
+            }
         }
         
-        return $this->render('OipMszeBundle:Show:churches.html.twig', array('result' => $districtsArray, 'pattern' => $pattern ));
+        return $this->render('OipMszeBundle:Show:churches.html.twig', 
+                array(  'city_id' => $city->getId(),
+                        'result' => $districtsArray, 
+                        'pattern' => $pattern ));
     }
     
     public function churchAction($city_id, $id)

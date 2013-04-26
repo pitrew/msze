@@ -62,9 +62,9 @@
 <div class="ch_district">
     <div class="ch_district_name">
             {% if entry['name'] == '' %}
-                Bez dzielnicy
+                Bez dzielnicy (<a href="{{ path('edit_or_add', {'city_id': city_id, 'district_id': entry['id']}) }}">+ Dodaj/Zmień</a>)
             {% else %}
-                {{ entry['name'] }}
+                {{ entry['name'] }} (<a href="{{ path('edit_or_add', {'city_id': city_id, 'district_id': entry['id']}) }}">+ Dodaj/Zmień</a>)
             {% endif %}
     </div>
     <ul class="ch_churches">
@@ -79,7 +79,6 @@
             {% endfor %}
         </ul>
 </div>
-
 
 {% endfor %}
 
