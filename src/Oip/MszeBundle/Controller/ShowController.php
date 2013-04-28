@@ -116,25 +116,37 @@ class ShowController extends Controller
                         'pattern' => $pattern ));
     }
     
-    public function churchAction($city_id, $id)
+    public function churchAction($_format, $church_id)
     {
-        if ($city_id == -1 || $id == -1)
+        if ($church_id == -1)
         {
             throw $this->createNotFoundException("City or curch not found");
         }
         
         $repo = $this->getDoctrine()->getRepository('OipMszeBundle:Church');
-        $church = $repo->find($id);
+        $church = $repo->find($church_id);
         if ($church != null)
         {
             //$church->getMasses(); //load them for now only
         }
         else
         {
-            return $this->forward('OipMszeBundle:Show:churches');
+            //return $this->forward('OipMszeBundle:Show:churches');
         }
         
-        return $this->render('OipMszeBundle:Show:church.html.twig', array('church' => $church ));
+        
+        if ($_format == 'json' || $_format == 'xml')
+        {
+            throw $this->createNotFoundException("Format not impl");
+            //$serializer = $this->container->get('serializer');
+            //return new Response($serializer->serialize(array('city' => $city, 'hours' => $hours ), $_format));
+        }
+        else
+        {
+            return $this->render('OipMszeBundle:Show:church.html.twig', array('church' => $church ));
+        }
+        
+        
     }
     
     public function massesAction($church_id)

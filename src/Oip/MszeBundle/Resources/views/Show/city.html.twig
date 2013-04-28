@@ -156,49 +156,62 @@ ul.city_churches_hours li:hover
         </td>
         <td class="city_td_middle"></td>
         <td class="city_td_right">
-            
-            <table class="city_days_masses">
-                <thead>
-                    {% for i in [6,0,1,2,3,4,5] %}
-                        <th {% if i == 6 %}
-                            class="sunday"
-                            {% endif %}
-                            >{{ days[i] }}</th>
-                    {% endfor %}
-                </thead>
-                <tbody>
-                    {% for i in [6,0,1,2,3,4,5] %}
-                    <td {% if i == 6 %}
-                        class="sunday"
-                        {% endif %}
-                        >
-                        <ul class="city_churches_hours">        
-                        {% for hour in hours[i] %}
-                            <li class="block_city_mass_time">{{ '%d'|format(hour.start_time / 100) }}:{{ '%02d'|format(hour.start_time % 100) }}</li>
-                        {% endfor %}
-                        </ul>
-                    </td>
-                    {% endfor %}
-                </tbody>
-            </table>
-            
-            
         </td>
     </tr>
 </table>
 
+<script id="hours_template" type="text/template">
+    <% var dTab = [6,0,1,2,3,4,5]; %>
+    <table class="city_days_masses">
+        <thead>
+            <% for (var i in dTab) { %>
+                <th <% if (dTab[i] == 6) { %>
+                    class="sunday"
+                    <% } %>
+                    ><%= days[dTab[i]] %></th>
+            <% } %>
+        </thead>
+        <tbody>
+            <% for (var i in dTab) { %>
+            <td <% if (dTab[i] == 6) { %>
+                class="sunday"
+                <% } %>
+                >
+                <ul class="city_churches_hours">        
+                <% for (var hour in hours[dTab[i]]) { %>
+                    <li class="block_city_mass_time">
+                        <%= sprintf("%d:%02d", (hours[dTab[i]][hour].start_time / 100), (hours[dTab[i]][hour].start_time % 100)) %>
+                    </li>
+                <% } %>
+                </ul>
+            </td>
+            <% } %>
+        </tbody>
+    </table>
+</script>
 {% endblock %}
 
 
 {% block javascripts %}
 
 <script type="text/javascript">   
+function massesRender()
+{
+    var rendered = new EJS({text: $('#hours_template').html()}).render(
+    {
+     days: {{ days | json_encode | raw }}, 
+     hours: {{ hours | json_encode | raw }}
+    });
+    $('.city_td_right').html(rendered);    
+}    
 $(document).ready(function() {
     resizeView();
     $(window).resize(function() {
         resizeView();
     }); 
+    
     churches_render('');
+    massesRender();
     $('input[name=church_search]').keyup(function() {
         churches_render($(this).val());
     });

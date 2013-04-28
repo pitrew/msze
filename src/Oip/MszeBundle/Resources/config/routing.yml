@@ -39,8 +39,8 @@ show_churches:
     defaults: { _controller: OipMszeBundle:Show:churches, city_id: -1 }
     
 show_church:
-    pattern: /show/church/{city_id}/{id}
-    defaults: { _controller: OipMszeBundle:Show:church, city_id: -1, id: -1 }
+    pattern: /show/church/{church_id}.{_format}
+    defaults: { _controller: OipMszeBundle:Show:church, _format: html }
     
 show_masses:
     pattern: /show/masses/{church_id}
