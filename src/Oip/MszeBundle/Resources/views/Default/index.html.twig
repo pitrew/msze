@@ -52,7 +52,7 @@
 </script>
 
 <script id="main_city_template_empty" type="text/template">
-    <span>Nie znaleziono miejscowości o takiej nazwie. Użyj przycisku na górze strony aby dodać to miasto.</span>
+    <span>Nie znaleziono miejscowości o takiej nazwie. Użyj przycisku na górze strony aby dodać tę miejscowość.</span>
 </script>
 
 {% endblock %}
@@ -85,11 +85,11 @@
     
     function resizeView()
     {
-        var minVal = 500;
-        if ($(window).height() - 200 < minVal) {
+        var minVal = 450, diff = 200;
+        if ($(window).height() - diff < minVal) {
             $('.main_search_result').height(minVal);
         } else {
-            $('.main_search_result').height($(window).height() - 200);
+            $('.main_search_result').height($(window).height() - diff);
         }   
     }
     

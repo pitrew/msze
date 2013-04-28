@@ -12,6 +12,7 @@
     padding-bottom: 1px;
     margin-bottom: 10px;
     margin-left: 10px;
+    width: 282px;
 }
 
 div.ch_district:nth-of-type(2n+1) { background-color: #f2f2ab; }
@@ -33,10 +34,10 @@ div.ch_district:nth-of-type(2n) { background-color: #dede9d; }
 	font-family:arial;
 	font-size:11px;
 	font-weight:bold;
-	padding:4px 56px;
+	padding:4px 10px;
 	text-decoration:none;
         display: inline-block;
-        width: 165px;
+        width: 260px;
         overflow: hidden;
 }
 .ch_churches li
@@ -60,6 +61,54 @@ div.ch_district:nth-of-type(2n) { background-color: #dede9d; }
     overflow: auto;
 }
 
+.ch_churches
+{
+    padding: 1px 17px;
+}
+
+#churches_destination a,
+#churches_destination a:link,
+#churches_destination a:visited,
+#churches_destination a:hover
+{
+    color: #5c6104;
+}
+
+.ch_church_elem_place
+{
+    display: block;
+}
+
+.ch_church_elem:hover .ch_church_elem_place
+{
+    display: none;
+}
+
+.ch_church_elem_add
+{
+    font-size: 10px;
+    display: none;
+}
+
+.ch_church_elem:hover .ch_church_elem_add
+{
+    display: block;
+}
+
+
+.ch_church_elem
+{
+    padding: 2px 20px 0px 5px;
+    cursor: pointer;
+}
+
+.ch_church_elem:hover
+{
+    padding: 2px 5px 1px 5px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.4) url({{ asset('bundles/oipmsze/images/go.png') }}) center right no-repeat;
+}
+
 </style>
 {% endblock %}
 
@@ -76,11 +125,12 @@ div.ch_district:nth-of-type(2n) { background-color: #dede9d; }
                                  district_id: dkey}); %>
                 <% if (data[dkey]['name'] == '') { %>
                     Bez dzielnicy 
-                
-                    (<a href=<%= dst %>>+ Dodaj/Zmień</a>)
+                    <br/>
+                    (<a href=<%= dst %>>+ Dodaj parafię</a>)
                 <% } else { %>
                     <%= data[dkey]['name'] %>
-                    (<a href=<%= dst %>>+ Dodaj/Zmień</a>)
+                    <br/>
+                    (<a href=<%= dst %>>+ Dodaj parafię/Edytuj dzielnicę</a>)
                 <% } %>
         </div>
         <ul class="ch_churches">
@@ -90,11 +140,13 @@ div.ch_district:nth-of-type(2n) { background-color: #dede9d; }
                                  district_id: dkey,
                                  church_id: ckey}); %>
                     <li class="ch_church_elem"><%= data[dkey]['churches'][ckey]['name'] %>
-                        (<a href=<%= dstAll %>>+ Dodaj/Zmień</a>)
                         <% if (data[dkey]['churches'][ckey]['address'] != '') { %>
                             <br/>
                             <span class="ch_address"><%= data[dkey]['churches'][ckey]['address'] %></span> 
                         <% } %>
+                        <br/>
+                        <a class="ch_church_elem_place">&nbsp;</a>
+                        <span class="ch_church_elem_add"><a href=<%= dstAll %>>(+ Dodaj/Zmień msze lub parafię)</a></span>
                         
                         {# <a href="{{ path('show_church', {'city_id': church.city.id, 'id': church.id }) }}">go</a> #}
                     </li>
@@ -142,11 +194,11 @@ function churches_render(filter)
 
 function resizeView()
 {
-    var minVal = 500;
-    if ($(window).height() - 200 < minVal) {
+    var minVal = 400, diff = 240;
+    if ($(document).height() - diff < minVal) {
         $('#churches_destination').height(minVal);
     } else {
-        $('#churches_destination').height($(window).height() - 200);
+        $('#churches_destination').height($(document).height() - diff);
     }   
 }
 

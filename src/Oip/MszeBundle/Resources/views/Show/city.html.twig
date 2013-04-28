@@ -134,6 +134,10 @@ ul.city_churches_hours li:hover
     height: 120px;
     cursor: pointer;
 }
+.block_mass_button
+{
+    margin: 5px 0;
+}
 </style>
 {% endblock %}
 
@@ -147,7 +151,7 @@ ul.city_churches_hours li:hover
         <td class="city_td_left">
             <label for="church_search">Szukaj parafii</label> <input type="text" name="church_search" placeholder="Szukaj" />
             <br/>
-            <a href="{{ path('edit_or_add', {'city_id': city.id}) }}">+ Dodaj nową dzielnicę</a>
+            <a href="{{ path('edit_or_add', {'city_id': city.id}) }}" class="block_mass_button">+ Dodaj nową dzielnicę</a>
             {% render url('show_churches', {'city_id': city.id, 'full': true }) %}
         </td>
         <td class="city_td_middle"></td>

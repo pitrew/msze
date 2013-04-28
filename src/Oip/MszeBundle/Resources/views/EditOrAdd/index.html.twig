@@ -207,8 +207,8 @@
 <script id="district_choose_template" type="text/template"> 
     <ul class="block_district_choose_list block_list">
         <% for (var x = 1; x < data.length; x++) { %>
-            <li class="block_district_choose_list_element" title="Kliknij aby zmienić na tą dzielnicę">
-                <span class="sim_dc_name common_border">
+            <li class="block_district_choose_list_element">
+                <span class="sim_dc_name common_border" title="Kliknij aby zmienić na tą dzielnicę">
                     <%= $.oip.escape(data[x].name) %>
                 </span>
                 <span class="hidden district_id">
