@@ -1,107 +1,114 @@
 {% extends "::base_start.html.twig" %}
 
+{% block stylesheets %}
+<link href="{{ asset('bundles/oipmsze/css/city.css') }}" rel="stylesheet"/>
+<style type="text/css">
+.main_search_result
+{
+    width: 860px;
+    outline: 0px solid red;
+    padding: 10px 40px;
+    overflow: hidden;
+    margin: 20px 0px;
+    
+    -webkit-box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, 0.3);
+    
+    background-color: rgba(255,255,255,0.5);
+}
+.main_search_result:hover
+{
+    overflow: auto;
+}
+</style>
+{% endblock %}
+
 {% block body %}
 <center>
 <div class="main_add_new">
     <a href="{{ path('edit_or_add') }}" class="main_add_button">
-    + Dodaj miasto lub parafię
+    + Dodaj miejscowość lub parafię
     </a>
 </div>
 <div class="main_search">
-    <form action="{{ path('show_city') }}" method="get" >
-        <input type="text" name="id" id="search_dst"/>
-        <input type="button" value="Pokaż" id="search_show"/>
-    </form>
+    <label for="cityName">Szukaj miejscowości:</label> <input type="text" name="cityName" placeholder="Nazwa miejscowości"/>
+    <div class="main_search_result">
+        
+    </div>
 </div>
 
-
-
 </center>
+
+
+<script id="main_city_template" type="text/template">
+    <ul class="block_city_list block_list">
+    <% for (var key in data) { %>
+        <li class="block_city_list_element">
+            <span class="common_border"><%= data[key].name %></span>
+            <span class="hidden city_id"><%= data[key].id %></span>
+        </li>
+    <% } %>
+    </ul>
+</script>
+
+<script id="main_city_template_empty" type="text/template">
+    <span>Nie znaleziono miejscowości o takiej nazwie. Użyj przycisku na górze strony aby dodać to miasto.</span>
+</script>
 
 {% endblock %}
 
 {% block javascripts %}
 <script type="text/javascript">
-      
-    
-      function movieFormatResult(city) {
-        var markup = "<table class='movie-result'><tr>";
-        /*if (movie.posters !== undefined && movie.posters.thumbnail !== undefined) {
-            markup += "<td class='movie-image'><img src='" + movie.posters.thumbnail + "'/></td>";
-        }
-        markup += "<td class='movie-info'><div class='movie-title'>" + movie.title + "</div>";
-        if (movie.critics_consensus !== undefined) {
-            markup += "<div class='movie-synopsis'>" + movie.critics_consensus + "</div>";
-        }
-        else if (movie.synopsis !== undefined) {
-            markup += "<div class='movie-synopsis'>" + movie.synopsis + "</div>";
-        }
-        markup += "</td></tr></table>"
-        */
-        markup += "<div class='search_city_result'>" +
-            "<table><tr><td class='search_city_name'>" + city.name + "</td></tr>" +
-                   "<tr><td class='search_city_dist'>" + (city.district == undefined ? '' : city.district) + "</td></tr>" +
-            "</table></div>";
-        return markup;
-    }
-
-    function movieFormatSelection(city) {
-        return city.name + " " + (city.district == undefined ? '' : '(' + city.district + ')');
-    }
-    
-    $(document).ready(function() {        
-        $('#search_show').button();
-        $('#search_show').click(function() {
-  //          alert($("#search_dst").select2("val"));
-            if ($("#search_dst").select2("val") != '')
+    var allCities = {% render url('show_cities', {'_format': 'json' }) %};
+          
+    function render_cities(filter) {
+        filter = filter.toLowerCase();
+        var filteredData = jQuery.extend(true, {}, allCities);
+        
+        if (filter != '') {
+            for (var key in filteredData)
             {
-                $(this).parent().find("#search_dst").val($("#search_dst").select2("val"));
-                $(this).parent().submit();
-                
-                //TODO: add city fetch
+                if (!filteredData[key].name.toLowerCase().contains(filter))
+                {
+                    delete filteredData[key];
+                }       
             }
+        }
+        var rendered = undefined;
+        if ($.isEmptyObject(filteredData)) {
+            rendered = new EJS({text: $('#main_city_template_empty').html()}).render({});
+        } else {
+            rendered = new EJS({text: $('#main_city_template').html()}).render({data: filteredData});
+        }
+        $('.main_search_result').html(rendered);   
+    }
+    
+    function resizeView()
+    {
+        var minVal = 500;
+        if ($(window).height() - 200 < minVal) {
+            $('.main_search_result').height(minVal);
+        } else {
+            $('.main_search_result').height($(window).height() - 200);
+        }   
+    }
+    
+    $(document).ready(function() {    
+        resizeView();
+        $(window).resize(function() {
+            resizeView();
         });
         
-        $("#search_dst").val('');
-        $("#search_dst").select2(
-            {
-                width: '350px',
-                placeholder: "Szukaj miasta",
-                minimumInputLength: 2,
-                ajax: {
-                    url: Routing.generate('show_cities', { _format: 'json' }),
-                    dataType: 'json',
-                    quietMillis: 100,
-                    data: function (term, page) { // page is the one-based page number tracked by Select2
-                        return {
-                            s: term, //search term
-                            page_limit: 10, // page size
-                            page: page // page number
-                            //apikey: "ju6z9mjyajq2djue3gbvv26p" // please do not use so this example keeps working
-                        };
-                },
-                results: function (data, page) {
-                    var more = (page * 10) < data.total; // whether or not there are more results available
-
-                    // notice we return the value of more so Select2 knows if more results can be loaded
-                    return {results: data, more: more};
-                }
-                },
-                formatResult: movieFormatResult, // omitted for brevity, see the source of this page
-                formatSelection: movieFormatSelection, // omitted for brevity, see the source of this page
-                dropdownCssClass: "bigdrop", // apply css that makes the dropdown taller
-                escapeMarkup: function (m) { return m; }, // we do not want to escape markup since we are displaying html in results
-                selectOnBlur: true,
-                id: function(object)
-                {
-                    return object.id;
-                },
-                formatInputTooShort: function (input, min) { var n = min - input.length; return "Wpisz jeszcze " + n + " znak" + (n == 1? "" : "i"); },
-                formatInputTooLong: function (input, max) { var n = input.length - max; return "Wpisz o " + n + "znak " + (n == 1? "" : n < 5?"i":"ów") + " mniej "; },
-                formatLoadMore: function (pageNumber) { return "Wczytuję. Proszę czekać..."; },
-                formatSearching: function () { return "Szukam..."; },
-            }
-        );
+        render_cities($('input[name=cityName]').val());
+        $('input[name=cityName]').keyup(function() {
+            render_cities($(this).val());
+        });
+        
+        $('.main_search_result').on('click', '.block_city_list_element', function() {
+            var city_id = $(this).find('.city_id').html();
+            city_id = parseInt($.trim(city_id));
+            location.href = Routing.generate('show_city', {id: city_id });
+        });
     });
 </script>
 {% endblock %}

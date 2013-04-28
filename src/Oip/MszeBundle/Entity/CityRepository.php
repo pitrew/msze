@@ -19,7 +19,7 @@ class CityRepository extends EntityRepository
         $pattern = str_replace('%', '\\%', $pattern);
         
         return $this->getEntityManager()
-                ->createQuery("select c from OipMszeBundle:City c where c.name like :pattern or c.slug like :pattern")
+                ->createQuery("select c from OipMszeBundle:City c where c.name like :pattern or c.slug like :pattern order by c.name")
                 ->setParameter('pattern', '%'.$pattern.'%')
                 ->getResult();
     }

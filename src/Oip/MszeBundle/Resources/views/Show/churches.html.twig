@@ -3,16 +3,19 @@
 <style type="text/css">
 .ch_district
 {
-    -moz-border-radius:10px;
-    -webkit-border-radius:10px;
-    border-radius:10px;
-    background-color: #e3ffe3;
+    -moz-border-radius: 40px / 10px 25px;
+    -webkit-border-radius: 40px / 10px 25px;
+    border-radius: 40px / 10px 25px;
+    /*background-color: #e3ffe3;*/
     border: 1px solid #75ff75;
     margin: 0px;
     padding-bottom: 1px;
     margin-bottom: 10px;
     margin-left: 10px;
 }
+
+div.ch_district:nth-of-type(2n+1) { background-color: #f2f2ab; }
+div.ch_district:nth-of-type(2n) { background-color: #dede9d; }
 
 .ch_district_name {
 	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
@@ -21,9 +24,9 @@
 	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #b9ffab), color-stop(1, #93de8c) );
 	background:-moz-linear-gradient( center top, #b9ffab 5%, #93de8c 100% );
 	background-color:#b9ffab;
-	-moz-border-radius:16px;
-	-webkit-border-radius:16px;
-	border-radius:16px;
+        -moz-border-radius: 40px / 10px 25px;
+        -webkit-border-radius: 40px / 10px 25px;
+        border-radius: 40px / 10px 25px;
 	border:1px solid #dcdcdc;
 	display:inline-block;
 	color:#202020;
@@ -48,38 +51,104 @@
     color: #555;
     padding-left: 5px;
 }
+#churches_destination
+{
+    overflow: hidden;
+}
+#churches_destination:hover
+{
+    overflow: auto;
+}
 
 </style>
 {% endblock %}
 
 
 {% block body %}
+<div id="churches_destination"></div>
 
-{#Church: {{ pattern }}#}
-
-{% for entry in result %}
-
-<div class="ch_district">
-    <div class="ch_district_name">
-            {% if entry['name'] == '' %}
-                Bez dzielnicy (<a href="{{ path('edit_or_add', {'city_id': city_id, 'district_id': entry['id']}) }}">+ Dodaj/Zmień</a>)
-            {% else %}
-                {{ entry['name'] }} (<a href="{{ path('edit_or_add', {'city_id': city_id, 'district_id': entry['id']}) }}">+ Dodaj/Zmień</a>)
-            {% endif %}
+<script id="churches_template" type="text/template">
+    <% for (var dkey in data) { %>
+    <div class="ch_district">
+        <div class="ch_district_name">
+                <% var dst = Routing.generate('edit_or_add', 
+                                {city_id: {{city_id}}, 
+                                 district_id: dkey}); %>
+                <% if (data[dkey]['name'] == '') { %>
+                    Bez dzielnicy 
+                
+                    (<a href=<%= dst %>>+ Dodaj/Zmień</a>)
+                <% } else { %>
+                    <%= data[dkey]['name'] %>
+                    (<a href=<%= dst %>>+ Dodaj/Zmień</a>)
+                <% } %>
+        </div>
+        <ul class="ch_churches">
+                <% for (var ckey in data[dkey]['churches']) { %>
+                    <% var dstAll = Routing.generate('edit_or_add', 
+                                {city_id: {{city_id}}, 
+                                 district_id: dkey,
+                                 church_id: ckey}); %>
+                    <li class="ch_church_elem"><%= data[dkey]['churches'][ckey]['name'] %>
+                        (<a href=<%= dstAll %>>+ Dodaj/Zmień</a>)
+                        <% if (data[dkey]['churches'][ckey]['address'] != '') { %>
+                            <br/>
+                            <span class="ch_address"><%= data[dkey]['churches'][ckey]['address'] %></span> 
+                        <% } %>
+                        
+                        {# <a href="{{ path('show_church', {'city_id': church.city.id, 'id': church.id }) }}">go</a> #}
+                    </li>
+                <% } %>
+         </ul>
     </div>
-    <ul class="ch_churches">
-            {% for church in entry['churches'] %}
-                <li class="ch_church_elem">{{ church.name }} 
-                    {% if church.address != '' %}
-                        <br/>
-                        <span class="ch_address">{{ church.address }}</span> 
-                    {% endif %}
-                    {# <a href="{{ path('show_church', {'city_id': church.city.id, 'id': church.id }) }}">go</a> #}
-                </li>
-            {% endfor %}
-        </ul>
-</div>
+    <% } %>
+</script>
 
-{% endfor %}
 
 {%endblock%}
+
+{% block javascripts %}
+
+<script type="text/javascript">    
+var churchDistrict = {{ result|json_encode|raw }};
+
+function churches_render(filter)
+{
+    filter = filter.toLowerCase();
+    var filteredData = jQuery.extend(true, {}, churchDistrict);
+    if (filter != '')
+    {
+        for (var key in filteredData)
+        {
+            if (!filteredData[key]['name'].toLowerCase().contains(filter))
+            {
+                var fdata = filteredData[key]['churches'];
+                for (var ckey in fdata)
+                {
+                    if (!fdata[ckey]['name'].toLowerCase().contains(filter) && 
+                        !fdata[ckey]['address'].toLowerCase().contains(filter)) {
+                        delete fdata[ckey];
+                    }
+                }
+                if ($.isEmptyObject(fdata)) {
+                    delete filteredData[key];
+                }
+            }
+        }
+    }
+    var rendered = new EJS({text: $('#churches_template').html()}).render({data: filteredData});
+    $('#churches_destination').html(rendered);   
+}
+
+function resizeView()
+{
+    var minVal = 500;
+    if ($(window).height() - 200 < minVal) {
+        $('#churches_destination').height(minVal);
+    } else {
+        $('#churches_destination').height($(window).height() - 200);
+    }   
+}
+
+</script>
+{% endblock %}

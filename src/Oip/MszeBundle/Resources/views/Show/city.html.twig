@@ -24,7 +24,7 @@
 }
 .city_table .city_td_left
 {
-   width: 300px; 
+   width: 310px; 
 }
 .city_table .city_td_right
 {
@@ -46,7 +46,10 @@ table.city_days_masses th,
 table.city_days_masses td
 {
     border-collapse: collapse;
+    -moz-border-radius: 40px / 10px 25px;
+    -webkit-border-radius: 40px / 10px 25px;
     border-radius: 40px / 10px 25px;
+    
     
     -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
     -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
@@ -185,13 +188,16 @@ ul.city_churches_hours li:hover
 
 {% block javascripts %}
 
-<script type="text/javascript">    
-
-{#
+<script type="text/javascript">   
 $(document).ready(function() {
-    $('.goto_main_page').click(function() {
-
+    resizeView();
+    $(window).resize(function() {
+        resizeView();
+    }); 
+    churches_render('');
+    $('input[name=church_search]').keyup(function() {
+        churches_render($(this).val());
     });
-});#}
+});
 </script>
 {% endblock %}
