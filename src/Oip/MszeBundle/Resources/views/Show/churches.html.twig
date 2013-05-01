@@ -198,7 +198,7 @@ function resizeView()
     if ($(document).height() - diff < minVal) {
         $('#churches_destination').height(minVal);
     } else {
-        $('#churches_destination').height($(document).height() - diff);
+        $('#churches_destination').height($(document).height() - diff - 2);
     }   
 }
 

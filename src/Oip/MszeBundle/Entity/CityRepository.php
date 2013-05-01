@@ -62,7 +62,7 @@ class CityRepository extends EntityRepository
         }
         
         return $this->getEntityManager()
-                ->createQuery('select m.start_time from OipMszeBundle:Mass m, OipMszeBundle:Church c, OipMszeBundle:District d where '
+                ->createQuery('select m.start_time as st from OipMszeBundle:Mass m, OipMszeBundle:Church c, OipMszeBundle:District d where '
                         . 'm.church = c.id and c.district = d.id and d.city = :city_id '
                         . ' and (' .
                         $str

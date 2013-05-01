@@ -99,7 +99,9 @@ class ShowController extends Controller
             foreach ($district->getChurches() as $church) {
                 $churchesArray[$church->getId()] = array( 
                     'name' => $church->getName(),
-                    'address' => $church->getAddress()
+                    'address' => $church->getAddress(),
+                    'lat' => $church->getLatitude(),
+                    'lng' => $church->getLongitude()
                 );
             }
             if (sizeof($churchesArray) > 0) {

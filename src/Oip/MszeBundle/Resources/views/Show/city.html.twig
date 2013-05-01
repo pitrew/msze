@@ -32,24 +32,25 @@
 }
 .city_table .city_td_middle
 {
-    width: 30px;
+    width: 10px;
     outline: 0px solid green;
 }
 table.city_days_masses
 {
-    width: 600px;
+    /*width: auto;*/
     outline: 0px solid red;
-    border-spacing: 0px;
+    border-spacing: 2px;
 }
 
 table.city_days_masses th,
 table.city_days_masses td
 {
+    width: 100px;
+    
     border-collapse: collapse;
     -moz-border-radius: 40px / 10px 25px;
     -webkit-border-radius: 40px / 10px 25px;
     border-radius: 40px / 10px 25px;
-    
     
     -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
     -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
@@ -57,12 +58,6 @@ table.city_days_masses td
     
     border:1px solid #dcdcdc;
 }
-
-table.city_days_masses th.sunday
-{
-    width: 120px;
-}
-
 
 table.city_days_masses th:nth-of-type(2n+1),
 table.city_days_masses td:nth-of-type(2n) { background-color: #f2f2ab; }
@@ -73,12 +68,18 @@ table.city_days_masses td.sunday { background-color: #97ff87; }
 
 table.city_days_masses th
 {
-    width: 70px;
     text-align: center;
     font-family: verdana sans;
     font-size: 14px;
     font-weight: bold;
-    padding: 10px 8px;
+    padding: 10px 0px;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+table.city_days_masses th:hover
+{
+    background-color: #fffd63;
 }
 
 table.city_days_masses td
@@ -138,6 +139,37 @@ ul.city_churches_hours li:hover
 {
     margin: 5px 0;
 }
+#city_hours
+{
+    float: left;
+    width: 102px;
+    overflow: hidden;
+}
+#map-canvas
+{
+    width: 516px;
+    height: 516px;
+    float: right;
+}
+
+.city_hours_over
+{
+    width: 730px !important;
+    position: absolute;
+    z-index: 999;
+    background-color: #FFFFDE;
+    border: 1px solid #dede9d;
+    border-radius: 7px;
+}
+.filler
+{
+    height: 1px;
+    display: block;
+    width: 100px;
+    padding: 0px;
+    margin: 0px;
+    border-width: 0px;
+}
 </style>
 {% endblock %}
 
@@ -156,6 +188,8 @@ ul.city_churches_hours li:hover
         </td>
         <td class="city_td_middle"></td>
         <td class="city_td_right">
+            <div id="city_hours"></div>
+            <div id="map-canvas"></div>
         </td>
     </tr>
 </table>
@@ -168,7 +202,10 @@ ul.city_churches_hours li:hover
                 <th <% if (dTab[i] == 6) { %>
                     class="sunday"
                     <% } %>
-                    ><%= days[dTab[i]] %></th>
+                    ><%= days[dTab[i]] %>
+                    <div class="filler"></div>
+                    <div class="hidden cnt_elem"><%= i %></div>
+                    </th>
             <% } %>
         </thead>
         <tbody>
@@ -180,10 +217,11 @@ ul.city_churches_hours li:hover
                 <ul class="city_churches_hours">        
                 <% for (var hour in hours[dTab[i]]) { %>
                     <li class="block_city_mass_time">
-                        <%= sprintf("%d:%02d", (hours[dTab[i]][hour].start_time / 100), (hours[dTab[i]][hour].start_time % 100)) %>
+                        <%= sprintf("%d:%02d", (hours[dTab[i]][hour].st / 100), (hours[dTab[i]][hour].st % 100)) %>
                     </li>
                 <% } %>
                 </ul>
+                <div class="hidden cnt_elem"><%= i %></div>
             </td>
             <% } %>
         </tbody>
@@ -193,7 +231,9 @@ ul.city_churches_hours li:hover
 
 
 {% block javascripts %}
-
+<script type="text/javascript"
+    src="https://maps.googleapis.com/maps/api/js?sensor=false">
+</script>
 <script type="text/javascript">   
 function massesRender()
 {
@@ -202,19 +242,149 @@ function massesRender()
      days: {{ days | json_encode | raw }}, 
      hours: {{ hours | json_encode | raw }}
     });
-    $('.city_td_right').html(rendered);    
+    $('#city_hours').html(rendered);    
 }    
+
+function initialize() {
+    try
+    {
+        var mapOptions = {
+          center: new google.maps.LatLng(52.245461,21.007233),
+          zoom: 8,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById("map-canvas"),
+            mapOptions);
+
+        geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ 'address': '{{city.name}}' }, function(results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+              map.setCenter(results[0].geometry.location);
+              map.setZoom(12);
+          }
+        });
+        /*google.maps.event.addListener(map, 'click', function(event) {
+              hideGpsConfirm(); 
+              $.oip.manager.setupPosition(event.latLng.lat(), event.latLng.lng());
+              setupMarker(event.latLng, null, false); //remove center
+              $.oip.manager.showHideSave();
+        });*/
+
+        return map;
+    }
+    catch(e)
+    {
+
+    }
+    return undefined;
+}
+
+function setupMarkers(map, filter)
+{
+    var markers = [], force;
+    filter = filter.toLowerCase();
+    var filteredData = jQuery.extend(true, {}, churchDistrict);
+    for (var key in filteredData)
+    {
+        force = false;
+        if (filteredData[key]['name'].toLowerCase().contains(filter))
+        {
+            force = true;
+        }
+        
+        var fdata = filteredData[key]['churches'];
+        for (var ckey in fdata)
+        {
+            if (filter == '' || fdata[ckey]['name'].toLowerCase().contains(filter) ||
+                fdata[ckey]['address'].toLowerCase().contains(filter) || force) {
+                    if (fdata[ckey]['lat'] != null && fdata[ckey]['lng'] != null) {
+                        var marker = new google.maps.Marker({
+                            map: map,
+                            position: new google.maps.LatLng(fdata[ckey]['lat'],fdata[ckey]['lng']),
+                            draggable:false
+                          }); 
+                        markers.push(marker);
+                }
+            }
+        }
+    }
+    return markers;
+   // var rendered = new EJS({text: $('#churches_template').html()}).render({data: filteredData});
+   // $('#churches_destination').html(rendered);  
+}
+
+function clearMarkers(markers)
+{
+    for (var i = 0; i < markers.length; i++ ) {
+        markers[i].setMap(null);
+    }
+    markers.length = 0;
+}
+
+function resizeMap()
+{
+    var minVal = 400, diff = 180;
+    if ($(document).height() - diff < minVal) {
+        $('#map-canvas').height(minVal);
+    } else {
+        $('#map-canvas').height($(document).height() - diff);
+    }   
+}
+
+function showDay(cnt)
+{
+    $('.city_days_masses th').show();
+    $('.city_days_masses td').show();
+    for (var i = 0; i < cnt; i++) {
+        $('.city_days_masses th').eq(i).hide();
+        $('.city_days_masses td').eq(i).hide();
+    }
+}
+
 $(document).ready(function() {
     resizeView();
+    resizeMap();
     $(window).resize(function() {
         resizeView();
+        resizeMap();
     }); 
     
-    churches_render('');
     massesRender();
+    var map = initialize(),
+        markers = [];
+    
+    churches_render('');
+    markers = setupMarkers(map, '');
     $('input[name=church_search]').keyup(function() {
         churches_render($(this).val());
+        clearMarkers(markers);
+        markers = setupMarkers(map, $(this).val());
     });
+    
+    var cnt_prev = 0, orig_left = parseFloat($('#city_hours').position().left);
+    
+    $('#city_hours').on('mouseenter', '.city_days_masses th', function() {
+        $('#city_hours td').show();
+        $('#city_hours th').show();
+        
+        $('#city_hours').addClass('city_hours_over');
+        /*if (orig_left - 100*cnt_prev < 0) {
+            $('#city_hours').css('left', 0);
+        } else {
+            $('#city_hours').css('left', orig_left - 100*cnt_prev);
+        }*/
+        $('#city_hours').css('left', orig_left - 100*cnt_prev);
+    }).on('mouseleave', '.city_days_masses', function() {
+        showDay(cnt_prev);
+        $('#city_hours').removeClass('city_hours_over');
+        
+    }).on('click', '.city_days_masses th, .city_days_masses td', function() {
+        var cnt = parseInt($.trim($(this).find('.cnt_elem').html()));
+        showDay(cnt);
+        cnt_prev = cnt;
+        $('#city_hours').removeClass('city_hours_over');
+    });
+    //co 104
 });
 </script>
 {% endblock %}
