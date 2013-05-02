@@ -22,9 +22,9 @@ class Mass
     private $id;
 
     /**
-     * @var \DateTime
+     * @var integer
      *
-     * @ORM\Column(name="start_time", type="time")
+     * @ORM\Column(name="start_time", type="integer")
      */
     private $start_time;
 
@@ -104,7 +104,7 @@ class Mass
     /**
      * Set start_time
      *
-     * @param \DateTime $startTime
+     * @param integer $startTime
      * @return Mass
      */
     public function setStartTime($startTime)

@@ -1,10 +1,10 @@
-#oip_msze_homepage:
-#    pattern:  /
-#    defaults: { _controller: OipMszeBundle:Default:index }
-
 oip_msze_homepage:
     pattern:  /
-    defaults: { _controller: OipMszeBundle:EditOrAdd:index, city_id: -1, district_id: -1, church_id: -1 }
+    defaults: { _controller: OipMszeBundle:Default:index }
+
+#oip_msze_homepage:
+#    pattern:  /
+#    defaults: { _controller: OipMszeBundle:EditOrAdd:index, city_id: -1, district_id: -1, church_id: -1 }
 
           
 edit_or_add:
@@ -31,14 +31,16 @@ show_city:
     requirements:
       _format: html|json|xml
       id: \d+
+    options:
+      expose: true
     
 show_churches:
     pattern: /show/churches/{city_id}
     defaults: { _controller: OipMszeBundle:Show:churches, city_id: -1 }
     
 show_church:
-    pattern: /show/church/{city_id}/{id}
-    defaults: { _controller: OipMszeBundle:Show:church, city_id: -1, id: -1 }
+    pattern: /show/church/{church_id}.{_format}
+    defaults: { _controller: OipMszeBundle:Show:church, _format: html }
     
 show_masses:
     pattern: /show/masses/{church_id}
@@ -72,5 +74,21 @@ fast_church:
     defaults: { _controller: "OipMszeBundle:Fast:church", id: -1 }
     options:
       expose: true
+      
+fast_church_masses:
+    pattern:  /fast/churchMasses/{id}
+    defaults: { _controller: "OipMszeBundle:Fast:churchMasses", id: -1 }
+    options:
+      expose: true
+      
+fast_church_in_city_and_mass:
+    pattern:  /fast/churchInCityAndMass/{city_id}/{day}/{hour}
+    defaults: { _controller: "OipMszeBundle:Fast:churchInCityAndMass" }
+    requirements:
+      city_id: \d+
+      day: \d+
+      hour: \d+
+    options:
+      expose: true      
       
       

@@ -136,7 +136,7 @@ class City
     }
 
     /**
-     * Get churches
+     * Get districts
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
@@ -151,7 +151,7 @@ class City
      * @param \Oip\MszeBundle\Entity\Church $districts
      * @return City
      */
-    public function addDistrict(\Oip\MszeBundle\Entity\Church $districts)
+    public function addDistrict(\Oip\MszeBundle\Entity\District $districts)
     {
         $this->districts[] = $districts;
     
@@ -163,7 +163,7 @@ class City
      *
      * @param \Oip\MszeBundle\Entity\Church $districts
      */
-    public function removeDistrict(\Oip\MszeBundle\Entity\Church $districts)
+    public function removeDistrict(\Oip\MszeBundle\Entity\District $districts)
     {
         $this->districts->removeElement($districts);
     }

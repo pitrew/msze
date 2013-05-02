@@ -46,15 +46,17 @@ class ShowController extends Controller
         $id = $this->getRequest()->query->get('id');
         $repo = $this->getDoctrine()->getRepository('OipMszeBundle:City');
         $city = $repo->find($id);
-        $days = array('Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela');
+        
+        $days = array('Niedziela', 'Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota');
         $hours = array();
+        $hours[0] = $repo->findAllHours($id, 'sun');
         $hours[1] = $repo->findAllHours($id, 'mon');
         $hours[2] = $repo->findAllHours($id, 'tue');
         $hours[3] = $repo->findAllHours($id, 'wed');
         $hours[4] = $repo->findAllHours($id, 'thu');
         $hours[5] = $repo->findAllHours($id, 'fri');
         $hours[6] = $repo->findAllHours($id, 'sat');
-        $hours[7] = $repo->findAllHours($id, 'sun');
+        
         
         if ($city != null)
         {
@@ -85,36 +87,70 @@ class ShowController extends Controller
             $pattern = $this->getRequest()->query->get('s');
         }
         
-        if ($city_id == -1)
-        {
+        $repoCity = $this->getDoctrine()->getRepository('OipMszeBundle:City');
+        $city = $repoCity->findOneById($city_id);
+        if ($city == null) {
             throw $this->createNotFoundException("City not found");
         }
+        $districts = $city->getDistricts();
+        $districtsArray = array();
+        foreach ($districts as $district)
+        {
+            $churchesArray = array();
+            foreach ($district->getChurches() as $church) {
+                $churchesArray[$church->getId()] = array( 
+                    'name' => $church->getName(),
+                    'address' => $church->getAddress(),
+                    'lat' => $church->getLatitude(),
+                    'lng' => $church->getLongitude(),
+                    'desc' => $church->getDescription(),
+                );
+            }
+            if (sizeof($churchesArray) > 0) {
+                $districtsArray[$district->getId()] = 
+                        array('id' => $district->getId(), 
+                            'name' => $district->getName(), 
+                            'churches' => $churchesArray);
+            }
+        }
         
-        $repo = $this->getDoctrine()->getRepository('OipMszeBundle:Church');
-        $churches = $repo->findByCity($city_id);
-        
-        return $this->render('OipMszeBundle:Show:churches.html.twig', array('churches' => $churches, 'pattern' => $pattern ));
+        return $this->render('OipMszeBundle:Show:churches.html.twig', 
+                array(  'city_id' => $city->getId(),
+                        'result' => $districtsArray, 
+                        'pattern' => $pattern ));
     }
     
-    public function churchAction($city_id, $id)
+    public function churchAction($_format, $church_id)
     {
-        if ($city_id == -1 || $id == -1)
+        if ($church_id == -1)
         {
             throw $this->createNotFoundException("City or curch not found");
         }
         
         $repo = $this->getDoctrine()->getRepository('OipMszeBundle:Church');
-        $church = $repo->find($id);
+        $church = $repo->find($church_id);
         if ($church != null)
         {
             //$church->getMasses(); //load them for now only
         }
         else
         {
-            return $this->forward('OipMszeBundle:Show:churches');
+            //return $this->forward('OipMszeBundle:Show:churches');
         }
         
-        return $this->render('OipMszeBundle:Show:church.html.twig', array('church' => $church ));
+        
+        if ($_format == 'json' || $_format == 'xml')
+        {
+            throw $this->createNotFoundException("Format not impl");
+            //$serializer = $this->container->get('serializer');
+            //return new Response($serializer->serialize(array('city' => $city, 'hours' => $hours ), $_format));
+        }
+        else
+        {
+            return $this->render('OipMszeBundle:Show:church.html.twig', array('church' => $church ));
+        }
+        
+        
     }
     
     public function massesAction($church_id)

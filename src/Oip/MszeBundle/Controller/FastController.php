@@ -137,4 +137,64 @@ class FastController extends Controller
         }
         return new Response($serializer->serialize(array( id => -1, masses => array()), 'json'));
     }
+    
+    public function churchMassesAction($id) {
+        $em = $this->getDoctrine()->getManager();
+        $repo = $em->getRepository('OipMszeBundle:Church');
+
+        //$days = array('Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela');
+        $hours = array();
+        $hours[0] = $repo->findAllHours($id, 'sun');
+        $hours[1] = $repo->findAllHours($id, 'mon');
+        $hours[2] = $repo->findAllHours($id, 'tue');
+        $hours[3] = $repo->findAllHours($id, 'wed');
+        $hours[4] = $repo->findAllHours($id, 'thu');
+        $hours[5] = $repo->findAllHours($id, 'fri');
+        $hours[6] = $repo->findAllHours($id, 'sat');
+        
+        $serializer = $this->container->get('serializer');
+        return new Response($serializer->serialize(array('hours' => $hours ), 'json'));
+    }
+    
+    public function churchInCityAndMassAction($city_id, $day, $hour) {
+        $repoCity = $this->getDoctrine()->getRepository('OipMszeBundle:City');
+        $repoChurch = $this->getDoctrine()->getRepository('OipMszeBundle:Church');
+
+        $city = $repoCity->findOneById($city_id);
+        if ($city == null) {
+            throw $this->createNotFoundException("City not found");
+        }
+        $districts = $city->getDistricts();
+        $districtsArray = array();
+        foreach ($districts as $district)
+        {
+            $churchesArray = array();
+            foreach ($district->getChurches() as $church) {
+                
+                //todo hour
+                $ret = $repoChurch->hasMassAtHourAndDay($church->getId(), $day, $hour);
+                
+                if ($ret)
+                {        
+                    $churchesArray[$church->getId()] = array( 
+                        'name' => $church->getName(),
+                        'address' => $church->getAddress(),
+                        'lat' => $church->getLatitude(),
+                        'lng' => $church->getLongitude(),
+                        'desc' => $church->getDescription(),
+                    );
+                }
+                
+                
+            }
+            if (sizeof($churchesArray) > 0) {
+                $districtsArray[$district->getId()] = 
+                        array('id' => $district->getId(), 
+                            'name' => $district->getName(), 
+                            'churches' => $churchesArray);
+            }
+        }
+        $serializer = $this->container->get('serializer');
+        return new Response($serializer->serialize(array('result' => $districtsArray ), 'json'));
+    }
 }

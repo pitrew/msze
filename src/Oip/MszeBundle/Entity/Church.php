@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Church
  *
  * @ORM\Table()
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Oip\MszeBundle\Entity\ChurchRepository")
  */
 class Church
 {
