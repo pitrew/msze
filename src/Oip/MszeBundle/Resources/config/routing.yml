@@ -75,4 +75,10 @@ fast_church:
     options:
       expose: true
       
+fast_church_masses:
+    pattern:  /fast/churchMasses/{id}
+    defaults: { _controller: "OipMszeBundle:Fast:churchMasses", id: -1 }
+    options:
+      expose: true
+      
       

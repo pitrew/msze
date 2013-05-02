@@ -70,7 +70,7 @@ table.city_days_masses th
 {
     text-align: center;
     font-family: verdana sans;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: bold;
     padding: 10px 0px;
     cursor: pointer;
@@ -85,6 +85,7 @@ table.city_days_masses th:hover
 table.city_days_masses td
 {
     padding-top: 10px;
+    vertical-align: top;
 }
 
 table.city_days_masses:hover td
@@ -120,7 +121,7 @@ ul.city_churches_hours li:hover
 
 .block_city_mass_time
 {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: bold;
 }
 
@@ -170,6 +171,63 @@ ul.city_churches_hours li:hover
     margin: 0px;
     border-width: 0px;
 }
+
+.city_church_details
+{
+    position: absolute;
+    top: 112px;
+    width: 1200px;
+    /*height: 500px;*/
+    background-color: #ffffdd;
+    
+    margin: 0px auto;
+    left: 50%;
+    margin-left: -600px;
+    border: 0px solid rgba(100,100,100,0.2);
+    
+    -webkit-box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, .5);
+    box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, .5);
+    padding: 5px;
+    
+    display: none;
+}
+#church_title
+{
+    margin: 0 auto;
+    text-align: center;
+    font-size: 20px;
+}
+#church_address,
+.mass_details
+{
+    margin: 0 auto;
+    text-align: center;
+    font-size: 10px;
+    color: #6b6b6b;
+    margin-bottom: 10px;
+}
+#church_hours
+{
+    text-align: center;
+    float: left;
+}
+#church_map
+{
+    float: right;
+    width: 450px;
+    height: 450px;
+}
+.city_church_close
+{
+    position: absolute;
+    top:-15px;
+    right: -15px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    background: url({{asset('bundles/oipmsze/images/no.png')}}) no-repeat center center;
+}
+
 </style>
 {% endblock %}
 
@@ -218,6 +276,8 @@ ul.city_churches_hours li:hover
                 <% for (var hour in hours[dTab[i]]) { %>
                     <li class="block_city_mass_time">
                         <%= sprintf("%d:%02d", (hours[dTab[i]][hour].st / 100), (hours[dTab[i]][hour].st % 100)) %>
+                        <br/>
+                        <span class="mass_details"><%= hours[dTab[i]][hour]['dt'] %></span>
                     </li>
                 <% } %>
                 </ul>
@@ -229,12 +289,25 @@ ul.city_churches_hours li:hover
 </script>
 {% endblock %}
 
+{% block lastBlock %}
+<div class="city_church_details details_window">
+    <div id="church_title">Nazwa kościoła</div>
+    <div id="church_address">ul. adres</div>
+    <div id="church_hours"></div>
+    <div id="church_map"></div>
+    <div class="city_church_close"></div>
+</div>
+<div class="city_hours_details"></div>
+{% endblock %}
 
 {% block javascripts %}
 <script type="text/javascript"
     src="https://maps.googleapis.com/maps/api/js?sensor=false">
 </script>
 <script type="text/javascript">   
+    
+var church_details_map, church_details_marker;
+    
 function massesRender()
 {
     var rendered = new EJS({text: $('#hours_template').html()}).render(
@@ -243,9 +316,10 @@ function massesRender()
      hours: {{ hours | json_encode | raw }}
     });
     $('#city_hours').html(rendered);    
+    
 }    
 
-function initialize() {
+function initialize(map_id, auto_address) {
     try
     {
         var mapOptions = {
@@ -253,16 +327,19 @@ function initialize() {
           zoom: 8,
           mapTypeId: google.maps.MapTypeId.ROADMAP
         };
-        var map = new google.maps.Map(document.getElementById("map-canvas"),
+        var map = new google.maps.Map(document.getElementById(map_id),
             mapOptions);
 
-        geocoder = new google.maps.Geocoder();
-        geocoder.geocode({ 'address': '{{city.name}}' }, function(results, status) {
-          if (status == google.maps.GeocoderStatus.OK) {
-              map.setCenter(results[0].geometry.location);
-              map.setZoom(12);
-          }
-        });
+        if (auto_address != undefined && auto_address === true)
+        {
+            geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ 'address': '{{city.name}}' }, function(results, status) {
+              if (status == google.maps.GeocoderStatus.OK) {
+                  map.setCenter(results[0].geometry.location);
+                  map.setZoom(12);
+              }
+            });
+        }
         /*google.maps.event.addListener(map, 'click', function(event) {
               hideGpsConfirm(); 
               $.oip.manager.setupPosition(event.latLng.lat(), event.latLng.lng());
@@ -295,22 +372,71 @@ function setupMarkers(map, filter)
         var fdata = filteredData[key]['churches'];
         for (var ckey in fdata)
         {
-            if (filter == '' || fdata[ckey]['name'].toLowerCase().contains(filter) ||
-                fdata[ckey]['address'].toLowerCase().contains(filter) || force) {
-                    if (fdata[ckey]['lat'] != null && fdata[ckey]['lng'] != null) {
-                        var marker = new google.maps.Marker({
-                            map: map,
-                            position: new google.maps.LatLng(fdata[ckey]['lat'],fdata[ckey]['lng']),
-                            draggable:false
-                          }); 
-                        markers.push(marker);
+            (function(){
+                var ldata = fdata[ckey],
+                    lkey = ckey;
+                if (filter == '' || ldata['name'].toLowerCase().contains(filter) ||
+                    ldata['address'].toLowerCase().contains(filter) || force) {
+                        if (ldata['lat'] != null && ldata['lng'] != null) {
+                            var marker = new google.maps.Marker({
+                                map: map,
+                                position: new google.maps.LatLng(ldata['lat'],ldata['lng']),
+                                draggable:false
+                              }); 
+
+                              google.maps.event.addListener(marker, 'click', function() {
+                                var id = lkey,
+                                    name = ldata['name'],
+                                    desc = ldata['desc'],
+                                    address = ldata['address'],
+                                    lat = parseFloat(ldata['lat']),
+                                    lng = parseFloat(ldata['lng']);
+                                showChurchDetails({
+                                    name: name,
+                                    address: address,
+                                    id: id,
+                                    lat: lat,
+                                    lng: lng
+                                });
+                              });
+                              
+                                var infowindow =  new google.maps.InfoWindow({
+                                      content: ldata['name'] + '<br/>' + ldata['address'],
+                                      map: map,
+                                      marker: marker
+                                });
+                              
+                                google.maps.event.addListener(marker, 'mouseover', function() {
+                                    infowindow.open(map, this);
+                                });
+
+                                // assuming you also want to hide the infowindow when user mouses-out
+                                google.maps.event.addListener(marker, 'mouseout', function() {
+                                    infowindow.close();
+                                });
+
+                              markers.push(marker); 
+                    }
                 }
-            }
+            })();
         }
     }
     return markers;
    // var rendered = new EJS({text: $('#churches_template').html()}).render({data: filteredData});
    // $('#churches_destination').html(rendered);  
+}
+
+function setupMarker(map, opt)
+{
+    var pos = new google.maps.LatLng(opt.lat, opt.lng);
+    var marker = new google.maps.Marker({
+        map: map,
+        position: pos,
+        draggable:false
+    }); 
+    map.setCenter(pos);
+    
+    return marker;
 }
 
 function clearMarkers(markers)
@@ -341,6 +467,55 @@ function showDay(cnt)
     }
 }
 
+function showChurchDetails(opt)
+{
+    $("#church_title").text(opt.name);
+    $("#church_address").text(opt.address);
+    
+    $('#church_hours').oipLoading('hide');
+    $('#church_hours').oipLoading('show');
+    $.oip.ajax.getJSON('fast_church_masses', { id: opt.id }, null, function(data) {
+        var rendered = new EJS({text: $('#hours_template').html()}).render(
+        {
+         days: {{ days | json_encode | raw }}, 
+         hours: data.hours
+        });
+
+        $('#church_hours').html(rendered);
+        $('#church_hours').oipLoading('hide');
+    });
+    
+    
+    
+    if(church_details_marker != undefined)
+    {
+        church_details_marker.setMap(null);
+    }
+    $('.city_church_details').fadeIn();
+    if (church_details_map == undefined)
+    {
+        church_details_map = initialize("church_map");
+    }
+    if (opt.lat != null && opt.lng != null)
+    {
+        church_details_marker = setupMarker(church_details_map, opt);
+    }
+    else if (opt.address != null)
+    {
+        geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ 'address': '{{city.name}} ' +  opt.address }, function(results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+              church_details_map.setCenter(results[0].geometry.location);
+              church_details_marker = setupMarker(church_details_map, 
+                {lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng()});
+          }
+        });
+     }
+     church_details_map.setZoom(14);
+     
+     
+}
+
 $(document).ready(function() {
     resizeView();
     resizeMap();
@@ -350,7 +525,7 @@ $(document).ready(function() {
     }); 
     
     massesRender();
-    var map = initialize(),
+    var map = initialize("map-canvas", true),
         markers = [];
     
     churches_render('');
@@ -384,7 +559,33 @@ $(document).ready(function() {
         cnt_prev = cnt;
         $('#city_hours').removeClass('city_hours_over');
     });
-    //co 104
+    
+    $('.city_church_close').click(function() {
+        $(this).closest('.details_window').fadeOut('fast');
+    });
+    
+    
+    $('#churches_destination').on('click', '.ch_church_elem', function() {
+        var id = parseInt($.trim($(this).find('.ch_id').text())),
+            name = $.trim($(this).find('.ch_name').text()),
+            desc = $.trim($(this).find('.ch_desc').text()),
+            address = $.trim($(this).find('.ch_address').text()),
+            lat = parseFloat($.trim($(this).find('.ch_lat').text())),
+            lng = parseFloat($.trim($(this).find('.ch_lng').text()));
+        showChurchDetails({
+            name: name,
+            address: address,
+            id: id,
+            lat: lat,
+            lng: lng
+        });
+    });
+    
+    var d = new Date();
+    var n = d.getDay();
+    showDay(n);
+    cnt_prev = n;
+    
 });
 </script>
 {% endblock %}

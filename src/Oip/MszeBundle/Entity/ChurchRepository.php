@@ -12,5 +12,44 @@ use Doctrine\ORM\EntityRepository;
  */
 class ChurchRepository extends EntityRepository
 {
-
+    public function findAllHours($church_id, $day)
+    {
+        $str = '1=1 ';
+        switch ($day)
+        {
+            case 'mon':
+                $str = 'm.day_mon = 1';
+                break;
+            case 'tue':
+                $str = 'm.day_tue = 1';
+                break;
+            case 'wed':
+                $str = 'm.day_wed = 1';
+                break;
+            case 'thu':
+                $str = 'm.day_thu = 1';
+                break;
+            case 'fri':
+                $str = 'm.day_fri = 1';
+                break;
+            case 'sat':
+                $str = 'm.day_sat = 1';
+                break;
+            case 'sun':
+                $str = 'm.day_sun = 1';
+                break;
+        }
+        
+        return $this->getEntityManager()
+                ->createQuery('select m.start_time as st, m.details as dt from OipMszeBundle:Mass m where '
+                        . 'm.church = :church_id '
+                        . ' and (' .
+                        $str
+                        . ') group by m.start_time')
+                        //m.day_mon = :d_mon and m.day_tue = :d_tue and m.day_wed = :d_wed '
+                        //. ' and m.day_thu = :d_thu and m.day_fri = :d_fri and m.day_sat = :d_sat and m.day_sun = :d_sun)'
+                        //. ' group by m.start_time')
+                ->setParameters(array('church_id' => $church_id))
+                ->getResult();
+    }
 }

@@ -139,7 +139,8 @@ div.ch_district:nth-of-type(2n) { background-color: #dede9d; }
                                 {city_id: {{city_id}}, 
                                  district_id: dkey,
                                  church_id: ckey}); %>
-                    <li class="ch_church_elem"><%= data[dkey]['churches'][ckey]['name'] %>
+                    <li class="ch_church_elem">
+                            <span class="ch_name"><%= data[dkey]['churches'][ckey]['name'] %></span>
                         <% if (data[dkey]['churches'][ckey]['address'] != '') { %>
                             <br/>
                             <span class="ch_address"><%= data[dkey]['churches'][ckey]['address'] %></span> 
@@ -147,7 +148,10 @@ div.ch_district:nth-of-type(2n) { background-color: #dede9d; }
                         <br/>
                         <a class="ch_church_elem_place">&nbsp;</a>
                         <span class="ch_church_elem_add"><a href=<%= dstAll %>>(+ Dodaj/Zmień msze lub parafię)</a></span>
-                        
+                        <span class="ch_id hidden"><%= ckey %></span>
+                        <span class="ch_desc hidden"><%= data[dkey]['churches'][ckey]['desc'] %></span>
+                        <span class="ch_lat hidden"><%= data[dkey]['churches'][ckey]['lat'] %></span>
+                        <span class="ch_lng hidden"><%= data[dkey]['churches'][ckey]['lng'] %></span>
                         {# <a href="{{ path('show_church', {'city_id': church.city.id, 'id': church.id }) }}">go</a> #}
                     </li>
                 <% } %>

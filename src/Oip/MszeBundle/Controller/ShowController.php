@@ -101,7 +101,8 @@ class ShowController extends Controller
                     'name' => $church->getName(),
                     'address' => $church->getAddress(),
                     'lat' => $church->getLatitude(),
-                    'lng' => $church->getLongitude()
+                    'lng' => $church->getLongitude(),
+                    'desc' => $church->getDescription(),
                 );
             }
             if (sizeof($churchesArray) > 0) {
