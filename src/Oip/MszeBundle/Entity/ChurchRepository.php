@@ -52,4 +52,44 @@ class ChurchRepository extends EntityRepository
                 ->setParameters(array('church_id' => $church_id))
                 ->getResult();
     }
+    
+    public function hasMassAtHourAndDay($church_id, $day, $hour)
+    {
+        $str = '1=1';
+        switch ($day)
+        {
+            case 0:
+                $str = 'm.day_sun = 1';
+                break;
+            case 1:
+                $str = 'm.day_mon = 1';
+                break;
+            case 2:
+                $str = 'm.day_tue = 1';
+                break;
+            case 3:
+                $str = 'm.day_wed = 1';
+                break;
+            case 4:
+                $str = 'm.day_thu = 1';
+                break;
+            case 5:
+                $str = 'm.day_fri = 1';
+                break;
+            case 6:
+                $str = 'm.day_sat = 1';
+                break;
+            
+        }
+        
+        return $this->getEntityManager()
+                ->createQuery('select count(m.id) from OipMszeBundle:Mass m where '
+                        . 'm.church = :church_id '
+                        . ' and (' .
+                        $str
+                        . ') and m.start_time = '. 
+                        $hour)
+                ->setParameters(array('church_id' => $church_id))
+                ->getSingleScalarResult() > 0;
+    }
 }

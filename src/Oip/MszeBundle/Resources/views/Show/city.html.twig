@@ -172,8 +172,7 @@ ul.city_churches_hours li:hover
     border-width: 0px;
 }
 
-.city_church_details,
-.city_hours_details
+.city_church_details
 {
     position: absolute;
     top: 112px;
@@ -192,6 +191,26 @@ ul.city_churches_hours li:hover
     
     display: none;
 }
+.city_hours_details
+{
+    position: absolute;
+    top: 112px;
+    width: 1000px;
+    /*height: 500px;*/
+    background-color: #ffffdd;
+    
+    margin: 0px auto;
+    left: 50%;
+    margin-left: -500px;
+    border: 0px solid rgba(100,100,100,0.2);
+    
+    -webkit-box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, .5);
+    box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, .5);
+    padding: 5px;
+    
+    display: none;
+}
+
 #church_title,
 #churches_day
 {
@@ -221,11 +240,16 @@ ul.city_churches_hours li:hover
     text-align: center;
     float: left;
 }
-#church_map,
-#churches_map
+#church_map
 {
     float: right;
     width: 450px;
+    height: 450px;
+}
+#churches_map
+{
+    float: right;
+    width: 680px;
     height: 450px;
 }
 .city_church_close
@@ -237,6 +261,41 @@ ul.city_churches_hours li:hover
     height: 30px;
     cursor: pointer;
     background: url({{asset('bundles/oipmsze/images/no.png')}}) no-repeat center center;
+}
+
+.city_church_edit
+{
+    position: absolute;
+    top:5px;
+    left: 15px;
+}
+
+.city_church_edit a,
+.city_church_edit a:hover,
+.city_church_edit a:link,
+.city_church_edit a:visited
+{
+    color: #5c6104;
+}
+
+#churches_list
+{
+    overflow: hidden;
+    float: left;
+    width: 310px;
+    text-align: center;
+}
+#churches_list:hover
+{
+    overflow: auto;
+}
+
+#churches_list a,
+#churches_list a:link,
+#churches_list a:visited,
+#churches_list a:hover
+{
+    color: #5c6104;
 }
 
 </style>
@@ -317,6 +376,7 @@ ul.city_churches_hours li:hover
     <div id="church_hours"></div>
     <div id="church_map"></div>
     <div class="city_church_close"></div>
+    <div class="city_church_edit"><a href="#" class="block_mass_button">Edytuj</a></div>
 </div>
 
 {% endblock %}
@@ -328,6 +388,7 @@ ul.city_churches_hours li:hover
 <script type="text/javascript">   
     
 var church_details_map, church_details_marker;
+var hours_details_map, hours_details_markers;
 
 var days = {{ days | json_encode | raw }};
     
@@ -338,7 +399,7 @@ function massesRender()
      days: {{ days | json_encode | raw }}, 
      hours: {{ hours | json_encode | raw }}
     });
-    $('#city_hours').html(rendered);    
+    $('#city_hours').html('<span>Wybierz dzień</span><br/>' + rendered);    
     
 }    
 
@@ -379,11 +440,11 @@ function initialize(map_id, auto_address) {
     return undefined;
 }
 
-function setupMarkers(map, filter)
+function setupMarkers(map, filter, data)
 {
     var markers = [], force;
     filter = filter.toLowerCase();
-    var filteredData = jQuery.extend(true, {}, churchDistrict);
+    var filteredData = jQuery.extend(true, {}, data);
     for (var key in filteredData)
     {
         force = false;
@@ -464,10 +525,13 @@ function setupMarker(map, opt)
 
 function clearMarkers(markers)
 {
-    for (var i = 0; i < markers.length; i++ ) {
-        markers[i].setMap(null);
+    if (markers != undefined)
+    {    
+        for (var i = 0; i < markers.length; i++ ) {
+            markers[i].setMap(null);
+        }
+        markers.length = 0;
     }
-    markers.length = 0;
 }
 
 function resizeMap()
@@ -508,7 +572,9 @@ function showChurchDetails(opt)
         $('#church_hours').oipLoading('hide');
     });
     
-    
+    $('.city_church_edit a').attr('href',  
+        Routing.generate('edit_or_add', {city_id: {{city.id}}, district_id: opt.did, church_id: opt.id})
+    );
     
     if(church_details_marker != undefined)
     {
@@ -539,38 +605,42 @@ function showChurchDetails(opt)
      
 }
 
+function hourStrToInt(hour)
+{
+    var t = hour.split(':');
+    return parseInt(t[0]) * 100 + parseInt(t[1]);
+}
 
 function showHoursDetails(opt)
 {
-    $("#churches_day").text(opt.day);
+    
+    
+    $("#churches_day").text(opt.day_str);
     $("#churches_hour").text(opt.hour);
     
-    /*$('#church_hours').oipLoading('hide');
-    $('#church_hours').oipLoading('show');
-    $.oip.ajax.getJSON('fast_church_masses_hour', { id: opt.id }, null, function(data) {
-        var rendered = new EJS({text: $('#hours_template').html()}).render(
-        {
-         days: {{ days | json_encode | raw }}, 
-         hours: data.hours
-        });
+    $('.city_hours_details').fadeIn();
+    
+    $('#churches_list').height($('.city_hours_details').height() - 50);
+    
+    if (hours_details_map == undefined)
+    {
+        hours_details_map = initialize("churches_map", true);
+    }
+    
+    $('#churches_list').oipLoading('hide');
+    $('#churches_list').oipLoading('show');
+    $.oip.ajax.getJSON('fast_church_in_city_and_mass', 
+        { city_id: {{city.id}}, day: opt.day, hour: hourStrToInt(opt.hour) }, null, function(data) {
 
-        $('#church_hours').html(rendered);
-        $('#church_hours').oipLoading('hide');
+        var rendered = new EJS({text: $('#churches_template').html()}).render({data: data.result});
+        $('#churches_list').html(rendered);
+        $('#churches_list').oipLoading('hide');
+        
+        clearMarkers(hours_details_markers);
+        hours_details_markers = setupMarkers(hours_details_map, '', data.result);
     });
     
-    
-    
-    if(church_details_marker != undefined)
-    {
-        church_details_marker.setMap(null);
-    }
-        */
-    $('.city_hours_details').fadeIn();
     /*
-    if (church_details_map == undefined)
-    {
-        church_details_map = initialize("church_map");
-    }
     if (opt.lat != null && opt.lng != null)
     {
         church_details_marker = setupMarker(church_details_map, opt);
@@ -604,12 +674,12 @@ $(document).ready(function() {
     var map = initialize("map-canvas", true),
         markers = [];
     
-    churches_render('');
-    markers = setupMarkers(map, '');
+    churches_render($('input[name=church_search]').val());
+    markers = setupMarkers(map, '', churchDistrict);
     $('input[name=church_search]').keyup(function() {
         churches_render($(this).val());
         clearMarkers(markers);
-        markers = setupMarkers(map, $(this).val());
+        markers = setupMarkers(map, $(this).val(), churchDistrict);
     });
     
     var cnt_prev = 0, orig_left = parseFloat($('#city_hours').position().left);
@@ -624,7 +694,8 @@ $(document).ready(function() {
         } else {
             $('#city_hours').css('left', orig_left - 100*cnt_prev);
         }*/
-        $('#city_hours').css('left', orig_left - 100*cnt_prev);
+        $('#city_hours').css('left', orig_left - 100*cnt_prev*0.7);
+        $('#city_hours').css('top', '50px');
     }).on('mouseleave', '.city_days_masses', function() {
         showDay(cnt_prev);
         $('#city_hours').removeClass('city_hours_over');
@@ -641,10 +712,11 @@ $(document).ready(function() {
     });
     
     
-    $('#churches_destination').on('click', '.ch_church_elem', function() {
+    $('#churches_destination, #churches_list').on('click', '.ch_church_elem', function() {
         var id = parseInt($.trim($(this).find('.ch_id').text())),
             name = $.trim($(this).find('.ch_name').text()),
             desc = $.trim($(this).find('.ch_desc').text()),
+            did = $.trim($(this).closest('.ch_district').find('.d_id').text()),
             address = $.trim($(this).find('.ch_address').text()),
             lat = parseFloat($.trim($(this).find('.ch_lat').text())),
             lng = parseFloat($.trim($(this).find('.ch_lng').text()));
@@ -652,6 +724,7 @@ $(document).ready(function() {
             name: name,
             address: address,
             id: id,
+            did: did,
             lat: lat,
             lng: lng
         });
@@ -662,7 +735,8 @@ $(document).ready(function() {
             hour = $.trim($(this).find('.mass_hour').text());
             
         showHoursDetails({
-            day: days[day],
+            day: day,
+            day_str: days[day],
             hour: hour
         });
     });

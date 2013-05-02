@@ -81,4 +81,14 @@ fast_church_masses:
     options:
       expose: true
       
+fast_church_in_city_and_mass:
+    pattern:  /fast/churchInCityAndMass/{city_id}/{day}/{hour}
+    defaults: { _controller: "OipMszeBundle:Fast:churchInCityAndMass" }
+    requirements:
+      city_id: \d+
+      day: \d+
+      hour: \d+
+    options:
+      expose: true      
+      
       

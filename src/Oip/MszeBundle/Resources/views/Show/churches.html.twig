@@ -132,6 +132,7 @@ div.ch_district:nth-of-type(2n) { background-color: #dede9d; }
                     <br/>
                     (<a href=<%= dst %>>+ Dodaj parafię/Edytuj dzielnicę</a>)
                 <% } %>
+                <span class="d_id hidden"><%= dkey %></span>
         </div>
         <ul class="ch_churches">
                 <% for (var ckey in data[dkey]['churches']) { %>

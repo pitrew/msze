@@ -155,4 +155,46 @@ class FastController extends Controller
         $serializer = $this->container->get('serializer');
         return new Response($serializer->serialize(array('hours' => $hours ), 'json'));
     }
+    
+    public function churchInCityAndMassAction($city_id, $day, $hour) {
+        $repoCity = $this->getDoctrine()->getRepository('OipMszeBundle:City');
+        $repoChurch = $this->getDoctrine()->getRepository('OipMszeBundle:Church');
+
+        $city = $repoCity->findOneById($city_id);
+        if ($city == null) {
+            throw $this->createNotFoundException("City not found");
+        }
+        $districts = $city->getDistricts();
+        $districtsArray = array();
+        foreach ($districts as $district)
+        {
+            $churchesArray = array();
+            foreach ($district->getChurches() as $church) {
+                
+                //todo hour
+                $ret = $repoChurch->hasMassAtHourAndDay($church->getId(), $day, $hour);
+                
+                if ($ret)
+                {        
+                    $churchesArray[$church->getId()] = array( 
+                        'name' => $church->getName(),
+                        'address' => $church->getAddress(),
+                        'lat' => $church->getLatitude(),
+                        'lng' => $church->getLongitude(),
+                        'desc' => $church->getDescription(),
+                    );
+                }
+                
+                
+            }
+            if (sizeof($churchesArray) > 0) {
+                $districtsArray[$district->getId()] = 
+                        array('id' => $district->getId(), 
+                            'name' => $district->getName(), 
+                            'churches' => $churchesArray);
+            }
+        }
+        $serializer = $this->container->get('serializer');
+        return new Response($serializer->serialize(array('result' => $districtsArray ), 'json'));
+    }
 }
