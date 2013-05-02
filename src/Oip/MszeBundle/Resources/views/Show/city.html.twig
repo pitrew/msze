@@ -172,7 +172,8 @@ ul.city_churches_hours li:hover
     border-width: 0px;
 }
 
-.city_church_details
+.city_church_details,
+.city_hours_details
 {
     position: absolute;
     top: 112px;
@@ -191,7 +192,8 @@ ul.city_churches_hours li:hover
     
     display: none;
 }
-#church_title
+#church_title,
+#churches_day
 {
     margin: 0 auto;
     text-align: center;
@@ -206,12 +208,21 @@ ul.city_churches_hours li:hover
     color: #6b6b6b;
     margin-bottom: 10px;
 }
+#churches_hour
+{
+    margin: 0 auto;
+    text-align: center;
+    font-size: 16px;
+    color: #6b6b6b;
+    margin-bottom: 10px;
+}
 #church_hours
 {
     text-align: center;
     float: left;
 }
-#church_map
+#church_map,
+#churches_map
 {
     float: right;
     width: 450px;
@@ -253,14 +264,15 @@ ul.city_churches_hours li:hover
 </table>
 
 <script id="hours_template" type="text/template">
-    <% var dTab = [6,0,1,2,3,4,5]; %>
+    <% var dTab = [0,1,2,3,4,5,6]; %>
     <table class="city_days_masses">
         <thead>
             <% for (var i in dTab) { %>
-                <th <% if (dTab[i] == 6) { %>
+                <th <% if (dTab[i] == 0) { %>
                     class="sunday"
                     <% } %>
-                    ><%= days[dTab[i]] %>
+                    >
+                    <div class="city_days_day"><%= days[dTab[i]] %></div>
                     <div class="filler"></div>
                     <div class="hidden cnt_elem"><%= i %></div>
                     </th>
@@ -268,14 +280,16 @@ ul.city_churches_hours li:hover
         </thead>
         <tbody>
             <% for (var i in dTab) { %>
-            <td <% if (dTab[i] == 6) { %>
+            <td <% if (dTab[i] == 0) { %>
                 class="sunday"
                 <% } %>
                 >
                 <ul class="city_churches_hours">        
                 <% for (var hour in hours[dTab[i]]) { %>
                     <li class="block_city_mass_time">
+                        <span class="mass_hour">
                         <%= sprintf("%d:%02d", (hours[dTab[i]][hour].st / 100), (hours[dTab[i]][hour].st % 100)) %>
+                        </span>
                         <br/>
                         <span class="mass_details"><%= hours[dTab[i]][hour]['dt'] %></span>
                     </li>
@@ -290,6 +304,13 @@ ul.city_churches_hours li:hover
 {% endblock %}
 
 {% block lastBlock %}
+<div class="city_hours_details details_window">
+    <div id="churches_day">Niedziela</div>
+    <div id="churches_hour">8:00</div>
+    <div id="churches_list"></div>
+    <div id="churches_map"></div>
+    <div class="city_church_close"></div>
+</div>
 <div class="city_church_details details_window">
     <div id="church_title">Nazwa kościoła</div>
     <div id="church_address">ul. adres</div>
@@ -297,7 +318,7 @@ ul.city_churches_hours li:hover
     <div id="church_map"></div>
     <div class="city_church_close"></div>
 </div>
-<div class="city_hours_details"></div>
+
 {% endblock %}
 
 {% block javascripts %}
@@ -307,6 +328,8 @@ ul.city_churches_hours li:hover
 <script type="text/javascript">   
     
 var church_details_map, church_details_marker;
+
+var days = {{ days | json_encode | raw }};
     
 function massesRender()
 {
@@ -516,6 +539,59 @@ function showChurchDetails(opt)
      
 }
 
+
+function showHoursDetails(opt)
+{
+    $("#churches_day").text(opt.day);
+    $("#churches_hour").text(opt.hour);
+    
+    /*$('#church_hours').oipLoading('hide');
+    $('#church_hours').oipLoading('show');
+    $.oip.ajax.getJSON('fast_church_masses_hour', { id: opt.id }, null, function(data) {
+        var rendered = new EJS({text: $('#hours_template').html()}).render(
+        {
+         days: {{ days | json_encode | raw }}, 
+         hours: data.hours
+        });
+
+        $('#church_hours').html(rendered);
+        $('#church_hours').oipLoading('hide');
+    });
+    
+    
+    
+    if(church_details_marker != undefined)
+    {
+        church_details_marker.setMap(null);
+    }
+        */
+    $('.city_hours_details').fadeIn();
+    /*
+    if (church_details_map == undefined)
+    {
+        church_details_map = initialize("church_map");
+    }
+    if (opt.lat != null && opt.lng != null)
+    {
+        church_details_marker = setupMarker(church_details_map, opt);
+    }
+    else if (opt.address != null)
+    {
+        geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ 'address': '{{city.name}} ' +  opt.address }, function(results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+              church_details_map.setCenter(results[0].geometry.location);
+              church_details_marker = setupMarker(church_details_map, 
+                {lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng()});
+          }
+        });
+     }
+     church_details_map.setZoom(14);
+     */
+     
+}
+
+
 $(document).ready(function() {
     resizeView();
     resizeMap();
@@ -578,6 +654,16 @@ $(document).ready(function() {
             id: id,
             lat: lat,
             lng: lng
+        });
+    });
+    
+    $('#city_hours').on('click', '.block_city_mass_time', function() {
+        var day = parseInt($(this).closest('td').find('.cnt_elem').text()),
+            hour = $.trim($(this).find('.mass_hour').text());
+            
+        showHoursDetails({
+            day: days[day],
+            hour: hour
         });
     });
     

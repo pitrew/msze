@@ -144,13 +144,13 @@ class FastController extends Controller
 
         //$days = array('Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela');
         $hours = array();
-        $hours[0] = $repo->findAllHours($id, 'mon');
-        $hours[1] = $repo->findAllHours($id, 'tue');
-        $hours[2] = $repo->findAllHours($id, 'wed');
-        $hours[3] = $repo->findAllHours($id, 'thu');
-        $hours[4] = $repo->findAllHours($id, 'fri');
-        $hours[5] = $repo->findAllHours($id, 'sat');
-        $hours[6] = $repo->findAllHours($id, 'sun');
+        $hours[0] = $repo->findAllHours($id, 'sun');
+        $hours[1] = $repo->findAllHours($id, 'mon');
+        $hours[2] = $repo->findAllHours($id, 'tue');
+        $hours[3] = $repo->findAllHours($id, 'wed');
+        $hours[4] = $repo->findAllHours($id, 'thu');
+        $hours[5] = $repo->findAllHours($id, 'fri');
+        $hours[6] = $repo->findAllHours($id, 'sat');
         
         $serializer = $this->container->get('serializer');
         return new Response($serializer->serialize(array('hours' => $hours ), 'json'));
