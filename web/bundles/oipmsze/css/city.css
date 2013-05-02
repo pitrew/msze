@@ -67,6 +67,7 @@ table td { outline: 1px solid green; }
     background: linear-gradient(to bottom, #cdeb8e 0%,#a5c956 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cdeb8e', endColorstr='#a5c956',GradientType=0 ); /* IE6-9 */
 
+    font: normal 10px Verdana, Sans-Serif;
 }
 
 .block_district, .block_church, .block_mass
@@ -88,6 +89,8 @@ table td { outline: 1px solid green; }
 {
     font-size: 20px;
     font-weight: bold;
+    max-width: 450px;
+    overflow: auto;
 }
 .block_city_selected_name .subname, .block_district_selected_name .subname, .block_church_selected_name .subname
 {
@@ -98,13 +101,14 @@ table td { outline: 1px solid green; }
 .block_city_selected_name_edit, .block_city_selected_change,
 .block_district_selected_name_edit, .block_district_selected_change,
 .block_church_selected_name_edit, .block_church_selected_change,
-.block_church_district_select_another 
+.block_church_district_select_another
 {
     height: 20px;
-    width: 160px;
+    width: auto;
     margin: 0 auto;
     padding-top: 5px;
     cursor: pointer;
+    font: normal 11px Verdana, Sans-Serif;
 }
 .block_city_selected_name_edit:hover, .block_city_selected_change:hover,
 .block_district_selected_name_edit:hover, .block_district_selected_change:hover,
@@ -361,7 +365,7 @@ sup.small
 }
 
 .block_name_edit_win {
-    background-color: red;
+    background-color: #ffffdd;
     top: 50%;
     left: 50%;
     margin-left: -125px;
@@ -372,6 +376,9 @@ sup.small
 {
     font-size: 15px;
     font-weight: bold;
+    max-width: 210px;
+    overflow: auto;
+    margin-left: 20px;
 }
 
 .block_name_edit_box
@@ -404,7 +411,7 @@ sup.small
 
     position: fixed;
     
-    background-color: red;
+    background-color: #ffffdd;
     top: 50%;
     left: 50%;
     margin-left: -300px;
@@ -496,10 +503,10 @@ sup.small
 {
     position: absolute;
     top: 137px;
-    left: 708px;
-    width: 288px;
+    left: 508px;
+    width: 300px;
     height: 38px;
-    background-color: red;
+    background-color: #ffffdd;
     display: none;
 }
 
@@ -541,7 +548,7 @@ sup.small
     padding: 6px 10px;
     color: white;
     border-radius: 20px;
-    font: bold 12px "Helvetica Neue", Sans-Serif;
+    font: normal 10px Verdana, Sans-Serif;
     
     box-shadow: 0 0 7px black;
   }
