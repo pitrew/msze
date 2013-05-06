@@ -58,8 +58,30 @@
                     }
                 });
             })
+        },
+     
+        isLoading: function() {
+            return this.each(function () {
+                var $this = $(this),
+                data = $this.data('oipLoading');
+                
+                if (data != undefined) {
+                    return data.isLoading;
+                }
+                return false;
+            });
         }
      };
+     
+    jQuery.fn.oipLoadingActive = function() {
+        var $this = $(this),
+        data = $this.data('oipLoading');
+
+        if (data != undefined) {
+            return data.isLoading;
+        }
+        return false;
+    };
     
     jQuery.fn.oipLoading = function (method) {
         if (methods[method]) {

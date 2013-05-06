@@ -29,10 +29,12 @@ body
     text-align: center;
     min-height: 600px;
     background: url(../images/edit_back.png) #ffffdd no-repeat top left;
+    -moz-box-shadow:  0px 0px 10px 5px rgba(0, 0, 0, .5);
     -webkit-box-shadow:  0px 0px 10px 5px rgba(0, 0, 0, .5);
     box-shadow:  0px 0px 10px 5px rgba(0, 0, 0, .5);
     padding-bottom: 1px;
     position: relative;
+    border: 1px solid #787878;
 }
 
 .pointer
