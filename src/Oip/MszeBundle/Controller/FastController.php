@@ -171,10 +171,9 @@ class FastController extends Controller
             $churchesArray = array();
             foreach ($district->getChurches() as $church) {
                 
-                //todo hour
-                $ret = $repoChurch->hasMassAtHourAndDay($church->getId(), $day, $hour);
+                $ret = $repoChurch->descMassAtHourAndDay($church->getId(), $day, $hour);
                 
-                if ($ret)
+                if ($ret != null)
                 {        
                     $churchesArray[$church->getId()] = array( 
                         'name' => $church->getName(),
@@ -182,6 +181,7 @@ class FastController extends Controller
                         'lat' => $church->getLatitude(),
                         'lng' => $church->getLongitude(),
                         'desc' => $church->getDescription(),
+                        'mdesc' => $ret['details']
                     );
                 }
                 

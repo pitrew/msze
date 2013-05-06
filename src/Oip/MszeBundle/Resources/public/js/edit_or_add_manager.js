@@ -357,7 +357,10 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         }
         else if (id != -1)
         {
-            $('.main_add_division_table').oipLoading('show');
+            var isLoading = $('.main_add_division_table').oipLoadingActive();
+            if (isLoading == false) {
+                $('.main_add_division_table').oipLoading('show');
+            }
             $.oip.ajax.getJSON(('fast_city'), { id: id }, null, function(data) {
                 _city.cur_name = data.name;
                 _city.new_name = data.name;
@@ -372,7 +375,9 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 if (afterFun != undefined) { afterFun(); }
                 fun_city_show_edit();
                 
-                $('.main_add_division_table').oipLoading('hide');
+                if (isLoading == false) {
+                    $('.main_add_division_table').oipLoading('hide');
+                }
                 _local_show_hide_save();
             });
         }
@@ -429,7 +434,10 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         }
         else if (id != -1)
         {
-            $('.main_add_division_table').oipLoading('show');
+            var isLoading = $('.main_add_division_table').oipLoadingActive();
+            if (isLoading == false) {
+                $('.main_add_division_table').oipLoading('show');
+            }
             $.oip.ajax.getJSON(('fast_district'), { id: id }, null, function(data) {
                 _district.cur_name = data.name;
                 _district.new_name = data.name;
@@ -444,7 +452,9 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                     fun_district_show_edit();
                 }
                 
-                $('.main_add_division_table').oipLoading('hide');
+                if (isLoading == false) {
+                    $('.main_add_division_table').oipLoading('hide');
+                }
                 _local_show_hide_save();
             });
         }
@@ -484,7 +494,10 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         }
         else if (id != -1)
         {
-            $('.main_add_division_table').oipLoading('show');
+            var isLoading = $('.main_add_division_table').oipLoadingActive();
+            if (isLoading == false) {
+                $('.main_add_division_table').oipLoading('show');
+            }
             $.oip.ajax.getJSON(('fast_church'), { id: id }, null, function(data) {
                 
                 _church.cur_name = data.name;
@@ -513,7 +526,9 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 if (afterFun != undefined) { afterFun(); }
                 fun_church_show_edit();
                 
-                $('.main_add_division_table').oipLoading('hide');
+                if (isLoading == false) {
+                    $('.main_add_division_table').oipLoading('hide');
+                }
                 _local_show_hide_save();
             });
         }

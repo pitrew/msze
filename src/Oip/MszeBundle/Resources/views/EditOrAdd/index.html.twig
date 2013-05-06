@@ -473,7 +473,7 @@
           showEditWindowOther(data);
         });
         
-        $('.block_mass_edit_box').keydown(function() {
+        $('.block_mass_edit_box').keydown(function(event) {
             if (event.which == 13) { //enter
                 var win = $(this).closest('.block_mass_edit_win');
                 var mid = $.trim(win.find('.mass_id').html());            

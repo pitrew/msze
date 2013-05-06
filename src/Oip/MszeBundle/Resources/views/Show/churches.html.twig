@@ -52,6 +52,12 @@ div.ch_district:nth-of-type(2n) { background-color: #dede9d; }
     color: #555;
     padding-left: 5px;
 }
+.ch_mdesc
+{
+    font-size: 10px;
+    color: #b22;
+    padding-left: 10px;
+}
 #churches_destination
 {
     overflow: hidden;
@@ -145,6 +151,11 @@ div.ch_district:nth-of-type(2n) { background-color: #dede9d; }
                         <% if (data[dkey]['churches'][ckey]['address'] != '') { %>
                             <br/>
                             <span class="ch_address"><%= data[dkey]['churches'][ckey]['address'] %></span> 
+                        <% } %>
+                        <% if ( data[dkey]['churches'][ckey]['mdesc'] != undefined &&
+                                data[dkey]['churches'][ckey]['mdesc'] != '') { %>
+                            <br/>
+                            <span class="ch_mdesc"><%= data[dkey]['churches'][ckey]['mdesc'] %></span> 
                         <% } %>
                         <br/>
                         <a class="ch_church_elem_place">&nbsp;</a>
