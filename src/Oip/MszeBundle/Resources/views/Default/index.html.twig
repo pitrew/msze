@@ -3,14 +3,27 @@
 {% block stylesheets %}
 <link href="{{ asset('bundles/oipmsze/css/city.css') }}" rel="stylesheet"/>
 <style type="text/css">
+ul, menu, dir {
+    display: block;
+    list-style-type: disc;
+    -webkit-margin-before: 0px;
+    -webkit-margin-after: 0px;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    -webkit-padding-start: 0px;
+    
+    padding: 0px;
+}
 .main_search_result
 {
     width: 850px;
     outline: 0px solid red;
-    padding: 10px 45px;
+    padding: 10px 10px 10px 45px;
     overflow: hidden;
     margin: 20px 0px;
     
+    border: 1px solid #787878;
+    -moz-box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, 0.3);
     -webkit-box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, 0.3);
     box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, 0.3);
     
@@ -62,6 +75,8 @@
     var allCities = {% render url('show_cities', {'_format': 'json' }) %};
           
     function render_cities(filter) {
+        $('.main_search_result').oipLoading('show');
+        
         filter = filter.toLowerCase();
         var filteredData = jQuery.extend(true, {}, allCities);
         
@@ -74,13 +89,14 @@
                 }       
             }
         }
+        
         var rendered = undefined;
         if ($.isEmptyObject(filteredData)) {
             rendered = new EJS({text: $('#main_city_template_empty').html()}).render({});
         } else {
             rendered = new EJS({text: $('#main_city_template').html()}).render({data: filteredData});
         }
-        $('.main_search_result').html(rendered);   
+        $('.main_search_result').html(rendered).oipLoading('hide');
     }
     
     function resizeView()
@@ -109,6 +125,7 @@
             city_id = parseInt($.trim(city_id));
             location.href = Routing.generate('show_city', {id: city_id });
         });
+        
     });
 </script>
 {% endblock %}

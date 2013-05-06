@@ -53,7 +53,7 @@ class ChurchRepository extends EntityRepository
                 ->getResult();
     }
     
-    public function hasMassAtHourAndDay($church_id, $day, $hour)
+    public function descMassAtHourAndDay($church_id, $day, $hour)
     {
         $str = '1=1';
         switch ($day)
@@ -82,14 +82,15 @@ class ChurchRepository extends EntityRepository
             
         }
         
-        return $this->getEntityManager()
-                ->createQuery('select count(m.id) from OipMszeBundle:Mass m where '
+        $desc = $this->getEntityManager()
+                ->createQuery('select m.details from OipMszeBundle:Mass m where '
                         . 'm.church = :church_id '
                         . ' and (' .
                         $str
                         . ') and m.start_time = '. 
                         $hour)
                 ->setParameters(array('church_id' => $church_id))
-                ->getSingleScalarResult() > 0;
+                ->getOneOrNullResult();
+        return $desc;
     }
 }
