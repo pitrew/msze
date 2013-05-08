@@ -11,9 +11,15 @@ class ShowController extends Controller
     public function citiesAction($_format)
     {   
         $pattern = '';
+        $small = false;
         if ($this->getRequest()->query->has('s'))
         {
             $pattern = $this->getRequest()->query->get('s');
+        }
+        
+        if ($this->getRequest()->query->has('small'))
+        {
+            $small = $this->getRequest()->query->get('small');
         }
         
         $repo = $this->getDoctrine()->getRepository('OipMszeBundle:City');        
@@ -21,9 +27,22 @@ class ShowController extends Controller
         $cities = $repo->findByAny($pattern);
         
         $result = array();
-        for ($x = 0; $x < sizeof($cities); $x++)
+        if ($small == true)
         {
-            $result[$x] = array('id' => $cities[$x]->getId(), 'name' => $cities[$x]->getName());
+            for ($x = 0; $x < sizeof($cities); $x++)
+            {
+                $result[$x] = array();
+                //'id' => $cities[$x]->getId(), 'name' => $cities[$x]->getName()
+                $result[$x][] = $cities[$x]->getId();
+                $result[$x][] = $cities[$x]->getName();
+            }
+        }
+        else
+        {
+            for ($x = 0; $x < sizeof($cities); $x++)
+            {
+                $result[$x] = array('id' => $cities[$x]->getId(), 'name' => $cities[$x]->getName());
+            }
         }
         
         if ($_format == 'json' || $_format == 'xml')

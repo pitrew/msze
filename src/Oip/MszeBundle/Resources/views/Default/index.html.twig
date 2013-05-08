@@ -54,14 +54,20 @@ ul, menu, dir {
 
 
 <script id="main_city_template" type="text/template">
-    <ul class="block_city_list block_list">
+     <% var cnt = 0, brk = false %>
     <% for (var key in data) { %>
-        <li class="block_city_list_element">
-            <span class="common_border"><%= data[key].name %></span>
-            <span class="hidden city_id"><%= data[key].id %></span>
-        </li>
+        <div class="block_city_list_element">
+            <span class="common_border"><%= $.oip.escape(data[key][1]) %></span>
+            <span class="hidden city_id"><%= data[key][0] %></span>
+        </div>
+        <% 
+            if (cnt >= max) { brk = true; break; }
+            cnt = cnt + 1
+        %>
     <% } %>
-    </ul>
+    <% if (brk == true) { %>
+        <div class="render_more main_add_button">Więcej...</div>
+    <% } %>
 </script>
 
 <script id="main_city_template_empty" type="text/template">
@@ -72,8 +78,17 @@ ul, menu, dir {
 
 {% block javascripts %}
 <script type="text/javascript">
-    var allCities = {% render url('show_cities', {'_format': 'json' }) %};
-          
+    var allCities = {% render url('show_cities', {'_format': 'json', 'small': true }) %};
+    var showMax = 100;
+    
+    function render_more()
+    {
+        showMax += 100;
+        //save pos
+        render_cities($('input[name=cityName]').val());
+        //scroll
+    }
+    
     function render_cities(filter) {
         $('.main_search_result').oipLoading('show');
         
@@ -83,7 +98,7 @@ ul, menu, dir {
         if (filter != '') {
             for (var key in filteredData)
             {
-                if (!filteredData[key].name.toLowerCase().contains(filter))
+                if (!filteredData[key][1].toLowerCase().contains(filter))
                 {
                     delete filteredData[key];
                 }       
@@ -94,7 +109,7 @@ ul, menu, dir {
         if ($.isEmptyObject(filteredData)) {
             rendered = new EJS({text: $('#main_city_template_empty').html()}).render({});
         } else {
-            rendered = new EJS({text: $('#main_city_template').html()}).render({data: filteredData});
+            rendered = new EJS({text: $('#main_city_template').html()}).render({data: filteredData, max: showMax});
         }
         $('.main_search_result').html(rendered).oipLoading('hide');
     }
@@ -117,6 +132,7 @@ ul, menu, dir {
         
         render_cities($('input[name=cityName]').val());
         $('input[name=cityName]').keyup(function() {
+            showMax = 100;
             render_cities($(this).val());
         });
         
@@ -124,6 +140,10 @@ ul, menu, dir {
             var city_id = $(this).find('.city_id').html();
             city_id = parseInt($.trim(city_id));
             location.href = Routing.generate('show_city', {id: city_id });
+        });
+        
+        $('.main_search_result').on('click', '.render_more', function() {
+            render_more();
         });
         
     });

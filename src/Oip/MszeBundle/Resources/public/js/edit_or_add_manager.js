@@ -262,7 +262,8 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         if (_church.new_address != undefined && _church.new_address != '') {
             _ret += ', ' + _church.new_address;
         }
-        return _ret == '' ? undefined : _ret;
+        _ret += ", Polska";
+        return _ret;
     }
     
     self.renderMasses = function() {
