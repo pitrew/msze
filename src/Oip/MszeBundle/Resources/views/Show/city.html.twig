@@ -412,7 +412,7 @@ function initialize(map_id, auto_address) {
           zoom: 8,
           mapTypeId: google.maps.MapTypeId.ROADMAP
         };
-        var map = new google.maps.Map(document.getElementById(map_id),
+        var mapLocal = new google.maps.Map(document.getElementById(map_id),
             mapOptions);
 
         if (auto_address != undefined && auto_address === true)
@@ -420,19 +420,19 @@ function initialize(map_id, auto_address) {
             geocoder = new google.maps.Geocoder();
             geocoder.geocode({ 'address': '{{city.name}}' }, function(results, status) {
               if (status == google.maps.GeocoderStatus.OK) {
-                  map.setCenter(results[0].geometry.location);
-                  map.setZoom(12);
+                  mapLocal.setCenter(results[0].geometry.location);
+                  mapLocal.setZoom(12);
               }
             });
         }
-        /*google.maps.event.addListener(map, 'click', function(event) {
+        /*google.maps.event.addListener(mapLocal, 'click', function(event) {
               hideGpsConfirm(); 
               $.oip.manager.setupPosition(event.latLng.lat(), event.latLng.lng());
               setupMarker(event.latLng, null, false); //remove center
               $.oip.manager.showHideSave();
         });*/
 
-        return map;
+        return mapLocal;
     }
     catch(e)
     {
@@ -492,7 +492,7 @@ function setupMarkers(mapLocal, filter, data)
                                 });
                               
                                 google.maps.event.addListener(marker, 'mouseover', function() {
-                                    infowindow.open(map, this);
+                                    infowindow.open(mapLocal, this);
                                 });
 
                                 // assuming you also want to hide the infowindow when user mouses-out
@@ -519,7 +519,7 @@ function setupMarker(mapLocal, opt)
         position: pos,
         draggable:false
     }); 
-    map.setCenter(pos);
+    mapLocal.setCenter(pos);
     
     return marker;
 }
@@ -672,15 +672,15 @@ $(document).ready(function() {
     }); 
     
     massesRender();
-    var map = initialize("map-canvas", true),
+    var mapLocal = initialize("map-canvas", true),
         markers = [];
     
     churches_render($('input[name=church_search]').val());
-    markers = setupMarkers(map, '', churchDistrict);
+    markers = setupMarkers(mapLocal, '', churchDistrict);
     $('input[name=church_search]').keyup(function() {
         churches_render($(this).val());
         clearMarkers(markers);
-        markers = setupMarkers(map, $(this).val(), churchDistrict);
+        markers = setupMarkers(mapLocal, $(this).val(), churchDistrict);
     });
     
     var cnt_prev = 0, orig_left = parseFloat($('#city_hours').position().left);
