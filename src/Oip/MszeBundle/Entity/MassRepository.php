@@ -25,7 +25,7 @@ class MassRepository extends EntityRepository
             return $this->getEntityManager()
                 ->createQuery("select m from OipMszeBundle:Mass m where m.church = :church_id and " . 
                         "(m.day_mon = 1 or m.day_tue = 1 or m.day_wed = 1 or " .
-                         "m.day_thu = 1 or m.day_fri = 1) order by m.start_time")
+                         "m.day_thu = 1 or m.day_fri = 1 or m.day_sat = 1) order by m.start_time")
                 ->setParameter('church_id', $churchId)
                 ->getResult();
         }
