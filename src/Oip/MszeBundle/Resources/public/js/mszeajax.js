@@ -7,7 +7,7 @@ $.oip.ajax.getCities = function(pattern, callback) {
     if (pattern != '')
     {
         $.oip.ajax.get(('show_cities'), { _format: 'json' }, 
-            { s: pattern }, callback);
+            { s: pattern, small: true }, callback);
     }
 }
 

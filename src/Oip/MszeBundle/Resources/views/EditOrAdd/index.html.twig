@@ -167,11 +167,25 @@
 </div>
 
 
+<script id="city_template" type="text/template">
+     <% var cnt = 0, brk = false %>
+    <% for (var key in data) { %>
+        <div class="block_city_list_element">
+            <span class="sim_c_name common_border" title="Kliknij aby wybrać"><%= data[key][1] %></span>
+            <span class="hidden city_id"><%= data[key][0] %></span>
+        </div>
+        <% 
+            if (cnt >= max) { brk = true; break; }
+            cnt = cnt + 1
+        %>
+    <% } %>
+    <% if (brk == true) { %>
+        <div class="render_more block_mass_button">Więcej...</div>
+    <% } %>
+</script>
 
 
-
-
-<script id="city_template" type="text/template"> 
+<script id="city_template_x" type="text/template"> 
     <ul class="block_city_list block_list">
         <% for(var x = 0; x < data.length && x < max_city_search; x++) { %>
             <li class="block_city_list_element">
@@ -890,21 +904,37 @@ $(document).ready(function() {
     organiazeHours();
     organiazeMinutes();
     
+    var max_city_search = 20;
+    
+    function render_more()
+    {
+        max_city_search += 20;
+        render_cities();
+    }
+    
+    function render_cities()
+    {
+        var data = $('.block_city_name').data('tmp_data');
+        var found = new EJS({text: $('#city_template').html()}).render({data: data, max: max_city_search});
+
+        if (data.length == 0) {
+            $('.block_city_use').hide();
+        } else {
+            $('.block_city_use').show();
+        }
+        $('.block_city_more').html(found);
+        $('.main_add_division_table_left_td').oipLoading('hide');
+    }
+    
     function search_fun()
     {
-        var max_city_search = 10;
+        
         $('.main_add_division_table_left_td').oipLoading('show');
         $.oip.ajax.getCities($('.block_city_name').val(), function(data) {
+                $('.block_city_name').data('tmp_data', data);
+                
                 //found_data = data;
-                var found = new EJS({text: $('#city_template').html()}).render({data: data, max_city_search: max_city_search});
-
-                if (data.length == 0) {
-                    $('.block_city_use').hide();
-                } else {
-                    $('.block_city_use').show();
-                }
-                $('.block_city_more').html(found);
-                $('.main_add_division_table_left_td').oipLoading('hide');
+                render_cities();
         });
     }
     
@@ -924,6 +954,7 @@ $(document).ready(function() {
     
     //city search
     $('.block_city_name').keyup(function() {
+        max_city_search = 20;
         if ($(this).val() == '')
         {
             tim.stop();
@@ -948,6 +979,11 @@ $(document).ready(function() {
     $('.block_city_form').on('click', '.block_city_list_element', function() {
         $.oip.manager.setupCityId($.trim($(this).find('.city_id').html()));
     });
+    
+    $('.block_city_form').on('click', '.render_more', function() {
+        render_more();
+    });
+    
     
     $('.block_city_selected_change').click(function() {
         $.oip.manager.setupCityId(-1);
