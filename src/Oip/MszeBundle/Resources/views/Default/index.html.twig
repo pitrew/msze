@@ -33,6 +33,15 @@ ul, menu, dir {
 {
     overflow: auto;
 }
+.geonames
+{
+    padding-bottom: 10px;
+    color: #252525;
+}
+.geonames a, .geonames a:hover, .geonames a:link, .geonames a:visited
+{
+    color: #252525;
+}
 </style>
 {% endblock %}
 
@@ -49,6 +58,8 @@ ul, menu, dir {
         
     </div>
 </div>
+
+<div class="geonames">Nazwy miejscowości pochodzą z portalu <a href="http://www.geonames.org">www.geonames.org</a></div>
 
 </center>
 
@@ -116,7 +127,7 @@ ul, menu, dir {
     
     function resizeView()
     {
-        var minVal = 450, diff = 200;
+        var minVal = 440, diff = 210;
         if ($(window).height() - diff < minVal) {
             $('.main_search_result').height(minVal);
         } else {
