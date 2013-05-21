@@ -92,3 +92,23 @@ fast_church_in_city_and_mass:
       expose: true      
       
       
+mobile_version:
+    pattern:  /mobile/version
+    defaults: { _controller: "OipMszeBundle:Mobile:version" }
+    #requirements:
+    #  _method: POST
+
+mobile_count:
+    pattern:  /mobile/count
+    defaults: { _controller: "OipMszeBundle:Mobile:count" }
+    #requirements:
+    #  _method: POST
+
+mobile_update:
+    pattern:  /mobile/update/{from}/{to}.{_format}
+    defaults: { _controller: "OipMszeBundle:Mobile:update", _format: html }
+    requirements:
+      from: \d+
+      to: -?\d+
+    #requirements:
+    #  _method: POST

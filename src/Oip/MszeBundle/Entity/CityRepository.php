@@ -11,7 +11,14 @@ use Doctrine\ORM\EntityRepository;
  * repository methods below.
  */
 class CityRepository extends EntityRepository
-{
+{    
+    public function countAll()
+    {
+        return $this->getEntityManager()
+            ->createQuery('SELECT COUNT(c) FROM OipMszeBundle:City c')
+            ->getSingleScalarResult();
+    }
+    
     public function findByAny($pattern)
     {
         $pattern = str_replace('\\', '\\\\\\', $pattern);
@@ -73,4 +80,27 @@ class CityRepository extends EntityRepository
                 ->setParameters(array('city_id' => $city_id))
                 ->getResult();
     }
+    
+    public function getAll()
+    {
+        $q = $this->getEntityManager()->getConnection();
+        $results = $q->fetchAll("select " 
+                . "ci.id, ci.name," // ci.slug, "
+                . "d.id as did, d.name as dname, "// d.slug as dslug, "
+                . "c.id as cid, c.name as cname, c.address as caddress, "
+                . "c.latitude as clat, c.longitude as clgt, c.description as cdesc, "//c.slug as cslug,"
+                . "m.start_time as mst, m.details as mdetails, m.day_mon as day_mon, "
+                . "m.day_tue as day_tue, m.day_wed as day_wed, m.day_thu as day_thu, "
+                . "m.day_fri as day_fri, m.day_sat as day_sat, m.day_sun as day_sun "
+                . "from City ci " 
+                . "inner join District d on d.city_id = ci.id "
+                . "left outer join Church c on c.district_id = d.id "
+                . "left outer join Mass m on m.church_id = c.id "
+                . "order by ci.id asc, d.id asc, c.id asc, m.id asc"
+                );
+//        var_dump($results);  
+        return $results;
+    }
+    
+
 }

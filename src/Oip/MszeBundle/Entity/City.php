@@ -73,7 +73,7 @@ class City
      */
     public function setName($name)
     {
-        $this->name = $name;
+        $this->name = trim($name);
         $this->slug = \Oip\MszeBundle\OipHelpers::makeSlug($this->name);
     
         return $this;
