@@ -12,6 +12,13 @@ use Doctrine\ORM\EntityRepository;
  */
 class MassRepository extends EntityRepository
 {
+    public function countAll()
+    {
+        return $this->getEntityManager()
+            ->createQuery('SELECT COUNT(m) FROM OipMszeBundle:Mass m')
+            ->getSingleScalarResult();
+    }
+    
     public function findMassesOrderByHour($churchId, $sunday)
     {
         if ($sunday == true) {
