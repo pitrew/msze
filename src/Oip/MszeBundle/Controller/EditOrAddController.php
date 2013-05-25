@@ -38,6 +38,7 @@ class EditOrAddController extends Controller
     //only post
     public function saveAction()
     {
+        $updateVersion = false;
         $serializer = $this->container->get('serializer');
         $data_ret = array();
          
@@ -96,6 +97,7 @@ class EditOrAddController extends Controller
             }
             $city->setName($cname);
             $em->flush();
+            $updateVersion = true;
         } else {
             if ($cname == null) {
                 return new Response($serializer->serialize(array('error' => '0002.Podaj nazwę miasta!'), 'json'));
@@ -111,6 +113,7 @@ class EditOrAddController extends Controller
             $defDist->setCity($city);
             $em->persist($defDist);
             $em->flush();
+            $updateVersion = true;
             
         }
         
@@ -133,6 +136,7 @@ class EditOrAddController extends Controller
                     $district->setName($dname);
                 }
                 $em->flush();
+                $updateVersion = true;
             }
         } else {
             if ($dname != null && $city != null) {
@@ -143,6 +147,7 @@ class EditOrAddController extends Controller
                 $district->setCity($city);
                 $em->persist($district);
                 $em->flush();
+                $updateVersion = true;
             }
         }
         
@@ -159,6 +164,7 @@ class EditOrAddController extends Controller
             $church->setLatitude($clat);
             $church->setLongitude($clng);
             $em->flush();
+            $updateVersion = true;
         } else {
             if ($chname != null && $district != null) {
                 //return new Response($serializer->serialize(array('error' => '0006.Podaj nazwę kościoła!'), 'json'));
@@ -176,6 +182,7 @@ class EditOrAddController extends Controller
 
                 $em->persist($church);
                 $em->flush();
+                $updateVersion = true;
             }
         }
         
@@ -188,6 +195,7 @@ class EditOrAddController extends Controller
                 {
                     $em->remove($mass);
                     $em->flush();
+                    $updateVersion = true;
                 }
             }
         }
@@ -213,6 +221,7 @@ class EditOrAddController extends Controller
                         $mass->setDaySun(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_sun']));
                         $em->persist($mass);
                         $em->flush();
+                        $updateVersion = true;
                     }
                     else
                     {
@@ -229,6 +238,7 @@ class EditOrAddController extends Controller
                             $mass->setDaySat(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_sat']));
                             $mass->setDaySun(\Oip\MszeBundle\OipHelpers::stringToBool($mpar['day_sun']));
                             $em->flush();
+                            $updateVersion = true;
                         }
                     }
                 }
@@ -238,6 +248,18 @@ class EditOrAddController extends Controller
         $data_ret['city_id'] = ($city != null?$city->getId():-1);
         $data_ret['district_id'] = ($district != null?$district->getId():-1);
         $data_ret['church_id'] = ($church != null?$church->getId():-1);
+        
+        if ($updateVersion == true)
+        {
+            $vrepo = $this->getDoctrine()->getRepository('OipMszeBundle:Version');
+            $newVersion = new \Oip\MszeBundle\Entity\Version();
+            $newVersion->setVal('www');
+            $em->persist($newVersion);
+            $em->flush();
+            
+            $vrepo->updateLast($newVersion->getId());
+            $em->flush();
+        }
         
         return new Response($serializer->serialize($data_ret, 'json'));
     }

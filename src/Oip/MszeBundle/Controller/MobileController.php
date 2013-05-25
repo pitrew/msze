@@ -8,8 +8,10 @@ use Symfony\Component\HttpFoundation\Response;
 class MobileController extends Controller
 {
     public function versionAction() {
+        $vrepo = $this->getDoctrine()->getRepository('OipMszeBundle:Version');
+        $v = $vrepo->getLast();
         $serializer = $this->container->get('serializer');
-        return new Response($serializer->serialize(array( 'v' => 999), 'json'));
+        return new Response($serializer->serialize(array( 'v' => $v->getId()), 'json'));
     }   
     
     public function countAction() {
