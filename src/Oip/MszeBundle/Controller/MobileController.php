@@ -10,8 +10,16 @@ class MobileController extends Controller
     public function versionAction() {
         $vrepo = $this->getDoctrine()->getRepository('OipMszeBundle:Version');
         $v = $vrepo->getLast();
+        if ($v == null)
+        {
+            $vout = 1;
+        }
+        else
+        {
+            $vout = $v->getId();
+        }
         $serializer = $this->container->get('serializer');
-        return new Response($serializer->serialize(array( 'v' => $v->getId()), 'json'));
+        return new Response($serializer->serialize(array( 'v' => $vout), 'json'));
     }   
     
     public function countAction() {
