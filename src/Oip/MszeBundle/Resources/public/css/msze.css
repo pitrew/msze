@@ -118,7 +118,10 @@ input, textarea
     -webkit-box-shadow: none;
 }
 
-.block_city_list_element
+.block_city_list_element,
+.block_church_list_element,
+.block_district_list_element,
+.block_district_choose_list_element
 {
     display: block;
     float: left;

@@ -77,18 +77,20 @@ class MobileController extends Controller
                         array_push($data[$id][1][$cid], $all_cities[$x]['cdesc']);
                         array_push($data[$id][1][$cid], $all_cities[$x]['clat']);
                         array_push($data[$id][1][$cid], $all_cities[$x]['clgt']);
-                        array_push($data[$id][1][$cid], array()); //5
+                        array_push($data[$id][1][$cid], 1);
+                        array_push($data[$id][1][$cid], array()); //6
+                        
                     }
                     if (isset($all_cities[$x]['mst'])) {                        
-                        array_push($data[$id][1][$cid][5], intval($all_cities[$x]['mst']));
-                        array_push($data[$id][1][$cid][5], $all_cities[$x]['mdetails']);                 
-                        array_push($data[$id][1][$cid][5], intval($all_cities[$x]['day_mon']));
-                        array_push($data[$id][1][$cid][5], intval($all_cities[$x]['day_tue']));
-                        array_push($data[$id][1][$cid][5], intval($all_cities[$x]['day_wed']));
-                        array_push($data[$id][1][$cid][5], intval($all_cities[$x]['day_thu']));
-                        array_push($data[$id][1][$cid][5], intval($all_cities[$x]['day_fri']));
-                        array_push($data[$id][1][$cid][5], intval($all_cities[$x]['day_sat']));
-                        array_push($data[$id][1][$cid][5], intval($all_cities[$x]['day_sun']));
+                        array_push($data[$id][1][$cid][6], intval($all_cities[$x]['mst']));
+                        array_push($data[$id][1][$cid][6], $all_cities[$x]['mdetails']);                 
+                        array_push($data[$id][1][$cid][6], intval($all_cities[$x]['day_mon']));
+                        array_push($data[$id][1][$cid][6], intval($all_cities[$x]['day_tue']));
+                        array_push($data[$id][1][$cid][6], intval($all_cities[$x]['day_wed']));
+                        array_push($data[$id][1][$cid][6], intval($all_cities[$x]['day_thu']));
+                        array_push($data[$id][1][$cid][6], intval($all_cities[$x]['day_fri']));
+                        array_push($data[$id][1][$cid][6], intval($all_cities[$x]['day_sat']));
+                        array_push($data[$id][1][$cid][6], intval($all_cities[$x]['day_sun']));
                     }
                 }
             }
@@ -112,18 +114,19 @@ class MobileController extends Controller
                         array_push($data[$id][1][$cid], $all_cities[$x]['cdesc']);
                         array_push($data[$id][1][$cid], $all_cities[$x]['clat']);
                         array_push($data[$id][1][$cid], $all_cities[$x]['clgt']);
-                        array_push($data[$id][1][$cid], array()); //5
+                        array_push($data[$id][1][$cid], 1);
+                        array_push($data[$id][1][$cid], array()); //6
                     }
                     if (isset($all_cities[$x]['mst'])) {                        
-                        array_push($data[$id][1][$cid][5], intval($all_cities[$x]['mst']));
-                        array_push($data[$id][1][$cid][5], $all_cities[$x]['mdetails']);
-                        array_push($data[$id][1][$cid][5], intval($all_cities[$x]['day_mon']));
-                        array_push($data[$id][1][$cid][5], intval($all_cities[$x]['day_tue']));
-                        array_push($data[$id][1][$cid][5], intval($all_cities[$x]['day_wed']));
-                        array_push($data[$id][1][$cid][5], intval($all_cities[$x]['day_thu']));
-                        array_push($data[$id][1][$cid][5], intval($all_cities[$x]['day_fri']));
-                        array_push($data[$id][1][$cid][5], intval($all_cities[$x]['day_sat']));
-                        array_push($data[$id][1][$cid][5], intval($all_cities[$x]['day_sun']));
+                        array_push($data[$id][1][$cid][6], intval($all_cities[$x]['mst']));
+                        array_push($data[$id][1][$cid][6], $all_cities[$x]['mdetails']);
+                        array_push($data[$id][1][$cid][6], intval($all_cities[$x]['day_mon']));
+                        array_push($data[$id][1][$cid][6], intval($all_cities[$x]['day_tue']));
+                        array_push($data[$id][1][$cid][6], intval($all_cities[$x]['day_wed']));
+                        array_push($data[$id][1][$cid][6], intval($all_cities[$x]['day_thu']));
+                        array_push($data[$id][1][$cid][6], intval($all_cities[$x]['day_fri']));
+                        array_push($data[$id][1][$cid][6], intval($all_cities[$x]['day_sat']));
+                        array_push($data[$id][1][$cid][6], intval($all_cities[$x]['day_sun']));
                     }
                 }
                 
@@ -139,18 +142,19 @@ class MobileController extends Controller
                         array_push($data[$def_dist_id][1][$cid], $all_cities[$x]['cdesc']);
                         array_push($data[$def_dist_id][1][$cid], $all_cities[$x]['clat']);
                         array_push($data[$def_dist_id][1][$cid], $all_cities[$x]['clgt']);
-                        array_push($data[$def_dist_id][1][$cid], array()); //5
+                        array_push($data[$def_dist_id][1][$cid], 0);
+                        array_push($data[$def_dist_id][1][$cid], array()); //6
                     }
                     if (isset($all_cities[$x]['mst'])) {                        
-                        array_push($data[$def_dist_id][1][$cid][5], intval($all_cities[$x]['mst']));
-                        array_push($data[$def_dist_id][1][$cid][5], $all_cities[$x]['mdetails']);
-                        array_push($data[$def_dist_id][1][$cid][5], intval($all_cities[$x]['day_mon']));
-                        array_push($data[$def_dist_id][1][$cid][5], intval($all_cities[$x]['day_tue']));
-                        array_push($data[$def_dist_id][1][$cid][5], intval($all_cities[$x]['day_wed']));
-                        array_push($data[$def_dist_id][1][$cid][5], intval($all_cities[$x]['day_thu']));
-                        array_push($data[$def_dist_id][1][$cid][5], intval($all_cities[$x]['day_fri']));
-                        array_push($data[$def_dist_id][1][$cid][5], intval($all_cities[$x]['day_sat']));
-                        array_push($data[$def_dist_id][1][$cid][5], intval($all_cities[$x]['day_sun']));
+                        array_push($data[$def_dist_id][1][$cid][6], intval($all_cities[$x]['mst']));
+                        array_push($data[$def_dist_id][1][$cid][6], $all_cities[$x]['mdetails']);
+                        array_push($data[$def_dist_id][1][$cid][6], intval($all_cities[$x]['day_mon']));
+                        array_push($data[$def_dist_id][1][$cid][6], intval($all_cities[$x]['day_tue']));
+                        array_push($data[$def_dist_id][1][$cid][6], intval($all_cities[$x]['day_wed']));
+                        array_push($data[$def_dist_id][1][$cid][6], intval($all_cities[$x]['day_thu']));
+                        array_push($data[$def_dist_id][1][$cid][6], intval($all_cities[$x]['day_fri']));
+                        array_push($data[$def_dist_id][1][$cid][6], intval($all_cities[$x]['day_sat']));
+                        array_push($data[$def_dist_id][1][$cid][6], intval($all_cities[$x]['day_sun']));
                     }
                 }
             }
