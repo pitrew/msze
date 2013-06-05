@@ -493,7 +493,7 @@ sup.small
 	font-family:Verdana;
 	font-size:12px;
 	font-weight:normal;
-	padding:10px 14px;
+	padding:10px 0px;
 	text-decoration:none;
 	text-shadow:1px 1px 2px #000000;
 }
@@ -505,7 +505,7 @@ sup.small
     position: absolute;
     top: 137px;
     left: 508px;
-    width: 300px;
+    width: 336px;
     height: 38px;
     background-color: #ffffdd;
     display: none;
