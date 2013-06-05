@@ -186,66 +186,58 @@
 
 
 <script id="city_template_x" type="text/template"> 
-    <ul class="block_city_list block_list">
+    <div class="block_city_list block_list">
         <% for(var x = 0; x < data.length && x < max_city_search; x++) { %>
-            <li class="block_city_list_element">
+            <div class="block_city_list_element">
                 <span class="sim_c_name common_border" title="Kliknij aby wybrać">
                     <%= $.oip.escape(data[x].name) %>
                 </span>
-                <span class="hidden city_id">
-                    <%= data[x].id %>
-                </span>
-            </li>
+                <span class="hidden city_id"><%= data[x].id %></span>
+            </div>
          <% } %>
          <% if (data.length > max_city_search) { %>
             <li>Oraz <%= (data.length - max_city_search) %> innych</li>
          <% } %>
-    </ul>
+    </div>
 </script>
 
 <script id="district_template" type="text/template"> 
-    <ul class="block_district_list block_list">
+    <div class="block_district_list block_list">
         <% for (var x = 1; x < data.length; x++) { %>
-            <li class="block_district_list_element">
-                <span class="sim_d_name common_border" title="Kliknij aby wybrać">
+            <div class="block_district_list_element">
+                <span class="im_dc_name common_border" title="Kliknij aby wybrać">
                     <%= $.oip.escape(data[x].name) %>
                 </span>
-                <span class="hidden district_id">
-                    <%= data[x].id %>
-                </span>
-            </li>
+                <span class="hidden district_id"><%= data[x].id %></span>
+            </div>
         <% } %>
-    </ul>
+    </div>
 </script>
 
 <script id="district_choose_template" type="text/template"> 
-    <ul class="block_district_choose_list block_list">
+    <div class="block_district_choose_list block_list">
         <% for (var x = 1; x < data.length; x++) { %>
-            <li class="block_district_choose_list_element">
+            <div class="block_district_choose_list_element">
                 <span class="sim_dc_name common_border" title="Kliknij aby zmienić na tą dzielnicę">
                     <%= $.oip.escape(data[x].name) %>
                 </span>
-                <span class="hidden district_id">
-                    <%= data[x].id %>
-                </span>
-            </li>
+                <span class="hidden district_id"><%= data[x].id %></span>
+            </div>
         <% } %>
-    </ul>
+    </div>
 </script>
 
 <script id="church_template" type="text/template"> 
-    <ul class="block_church_list block_list">
+    <div class="block_church_list block_list">
         <% for (var x = 0; x < data.length; x++) { %>
-            <li class="block_church_list_element">
-                <div class="sim_ch_name common_border" title="Kliknij aby wybrać">
+            <div class="block_church_list_element">
+                <span class="common_border" title="Kliknij aby wybrać">
                     <%= $.oip.escape(data[x].name) %>
-                </div>
-                <span class="hidden church_id">
-                    <%= data[x].id %>
                 </span>
-             </li>
+                <span class="hidden church_id"><%= data[x].id %></span>
+            </div>
          <% } %>
-    </ul>
+    </div>
 </script>
 
 <script id="mass_template" type="text/template"> 
