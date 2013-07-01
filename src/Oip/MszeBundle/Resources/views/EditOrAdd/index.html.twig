@@ -251,6 +251,10 @@
     <tr>
         <td class="block_mass_sun">
             <div class="block_mass_day_title">Niedziela</div>
+            <div class="block_mass_batch_sun">
+                <input placeholder="np.: 8:00, 9:00..." type="text" class="block_mass_batch_sun_txt"></input>
+                <span class="block_mass_button block_mass_batch_sun_ok">Dodaj</span>
+            </div>
             <span class="block_mass_button block_mass_button_new_sun">+ Dodaj</span>
             
             <table class="block_mass_inner_table">
@@ -278,6 +282,10 @@
         <td class="block_mass_separator"></td>
         <td class="block_mass_other">
             <div class="block_mass_day_title">Dni powszednie</div>
+            <div class="block_mass_batch_other">
+                <input placeholder="np.: 8:00, 9:00..." type="text" class="block_mass_batch_other_txt" ></input>
+                <span class="block_mass_button block_mass_batch_other_ok">Zapisz</span>
+            </div>
             <span class="block_mass_button block_mass_button_new_other">+ Dodaj</span>
             
             <table class="block_mass_inner_table">
@@ -445,11 +453,56 @@
     var map;
     var marker;
     
+    function splitStringAndAdd(str, sunday)
+    {
+       var spl = str.split(' ').join(',').split(';').join(',').split(',');
+       var hor = [];
+       for (var _sp in spl)
+       {
+           if (spl[_sp] != '') {
+               var hm = spl[_sp].split(':');
+               if (hm.length >= 2) {
+                   var h = parseInt(hm[0], 10),
+                       m = parseInt(hm[1], 10);
+                   if (h >= 0 && h <= 24 && m >=0 && m <= 59) {
+                       var id = $.oip.manager.getNewMassId();
+                       $.oip.manager.markMassForChange(id, _generate_mass_object(id, h, m < 10 ? '0' + m : m, sunday));
+                   }
+               } else {
+                   var val = parseInt(spl[_sp], 10)
+                   if (val >= 0 && val <= 2359) 
+                   {
+                       var h = parseInt(val / 100),
+                           m = parseInt(val % 100);
+                       if (h >= 0 && h <= 24 && m >=0 && m <= 59) {
+                            var id = $.oip.manager.getNewMassId();
+                            $.oip.manager.markMassForChange(id, _generate_mass_object(id, h, m < 10 ? '0' + m : m, sunday));
+                       }
+                   }
+               }
+               
+           }
+       }
+      
+       return hor;
+    }
+    
     function initEdits()
     {
         $('.main_content').on('click', '.block_mass_sun .block_mass_button_new_sun', function() {
           showEditWindowSun(undefined);
         });
+        
+        $('.main_content').on('click', '.block_mass_sun .block_mass_batch_sun_ok', function() {
+            var txt = $('.block_mass_batch_sun_txt').val();
+            splitStringAndAdd(txt, true);
+        });
+        
+        $('.main_content').on('click', '.block_mass_other .block_mass_batch_other_ok', function() {
+            var txt = $('.block_mass_batch_other_txt').val();
+            splitStringAndAdd(txt, false);
+        });
+        
         $('.main_content').on('click', '.block_mass_sun .block_mass_entry', function() {
           var data = {};
           data['hours'] = $(this).find('.block_mass_hour').html();
@@ -789,6 +842,37 @@
                        .fadeIn('fast');
     }
     
+    function _generate_mass_object(id, hour, minute, sunday)
+    {
+        var ret = {};
+        ret['hours'] = hour;
+        ret['minutes'] = minute;
+        ret['details'] = '';
+        ret['id'] = id;
+        
+        if (sunday === true)
+        {
+            ret['day_mon'] = false;
+            ret['day_tue'] = false;
+            ret['day_wed'] = false;
+            ret['day_thu'] = false;
+            ret['day_fri'] = false;
+            ret['day_sat'] = false;
+            ret['day_sun'] = true;
+        }
+        else
+        {
+            ret['day_mon'] = true;
+            ret['day_tue'] = true;
+            ret['day_wed'] = true;
+            ret['day_thu'] = true;
+            ret['day_fri'] = true;
+            ret['day_sat'] = true;
+            ret['day_sun'] = false;
+        }
+        return ret;
+    }
+    
     function _get_mass_object_from_entry(elem)
     {
         var ret = {};
@@ -1083,7 +1167,7 @@ $(document).ready(function() {
        showDistrictChooseWindow($.oip.manager.getCityId(), $.oip.manager.getChurchName(), $.oip.manager.getDistrictName());
     });
     
-    
+
     
     var _local_zoom = 16;
     function _local_addr()
