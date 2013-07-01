@@ -162,8 +162,13 @@
 </div>
 
 <div id="save_all" class="hidden pointer">
-    Zapisz zmiany
-    <div class="save_all_info hidden">Kliknij aby zapisać wprowadzone zmiany.</div>
+    <div class="save_ok">
+        Zapisz zmiany
+        <div class="save_all_info hidden">Kliknij aby zapisać wprowadzone zmiany.</div>
+    </div>
+    <div class="save_wait hidden">
+        Proszę czekać
+    </div>
 </div>
 
 
@@ -1341,26 +1346,56 @@ $(document).ready(function() {
           },
           
           
-          fun_hide_save: function() {
+          fun_hide_save: function(_after_fun) {
             var save_all = $('#save_all'),
                 cancel_all = $('#cancel_all');
             //save_all.stop();
             //cancel_all.stop()
             
             cancel_all.fadeOut('fast', function() {
-                save_all.slideUp();
+                save_all.slideUp('fast', function() {
+                    if (_after_fun != undefined)
+                    {
+                        _after_fun();
+                    }
+                });
+                
             })
           },
-          fun_show_save: function() {
+          fun_show_save: function(_after_fun) {
                 var save_all = $('#save_all'),
                     cancel_all = $('#cancel_all');
                // save_all.stop();
                // cancel_all.stop();
                 
                 save_all.slideDown('fast', function() {
-                  cancel_all.fadeIn();
+                  cancel_all.fadeIn('fast', function() {
+                    if (_after_fun != undefined)
+                    {
+                        _after_fun();
+                    }
+                  });
                 });
-          }
+          },
+          fun_wait_save: function() {
+              var save_all = $('#save_all'),
+                  cancel_all = $('#cancel_all');
+                  
+              save_all.find('.save_ok').hide();
+              save_all.find('.save_wait').show();
+              cancel_all.hide();
+          },
+          fun_unwait_save: function(hiding) {
+              var save_all = $('#save_all'),
+                  cancel_all = $('#cancel_all');
+              
+              if (hiding ==! true)
+              {
+                cancel_all.show();
+              }
+              save_all.find('.save_wait').hide();
+              save_all.find('.save_ok').show();              
+          },
         }
     );   
 

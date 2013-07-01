@@ -36,8 +36,11 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
         
         fun_hide_save = fn["fun_hide_save"],
         fun_show_save = fn["fun_show_save"],
+        fun_wait_save = fn["fun_wait_save"],
+        fun_unwait_save = fn["fun_unwait_save"],
 
         self = this,
+        _saving = false,
         _city = {},
         _district = {},
         _church = { },
@@ -136,12 +139,16 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                     false
                 )
             {
-                fun_show_save();
+                fun_show_save(function() {
+                    fun_unwait_save();
+                });
             }
             else
             {
-                fun_hide_save();
-            }
+                fun_hide_save(function() {
+                    fun_unwait_save(true);
+                });
+            }            
         }
         ;
     
@@ -631,16 +638,23 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 'mmod': _mass.mod_list,
                 'mdel': _mass.del_list
               };
-        $.oip.ajax.postJSON('save_all', null, {'all_data': str, 're_c': re_c, 're_r': re_r}, function(data) {
-            if (data['error'] != undefined) {
-                alert('Error' + data.error);
-                Recaptcha.reload();
-            } else {
-                self.Reset();
-                self.SetupAll(data.city_id, data.district_id, data.church_id);
-                //location.href = Routing.generate('edit_or_add', {city_id: data.city_id, district_id: data.district_id, church_id: data.church_id});
-            }
-        });
+        if (_saving === false)
+        {
+            _saving = true;
+            fun_wait_save();
+            $.oip.ajax.postJSON('save_all', null, {'all_data': str, 're_c': re_c, 're_r': re_r}, function(data) {
+                if (data['error'] != undefined) {
+                    alert('Error' + data.error);
+                    Recaptcha.reload();
+                    fun_unwait_save();
+                } else {
+                    self.Reset();
+                    self.SetupAll(data.city_id, data.district_id, data.church_id);
+                    //location.href = Routing.generate('edit_or_add', {city_id: data.city_id, district_id: data.district_id, church_id: data.church_id});
+                }
+                _saving = false;
+            });
+        }
     }
     
     self.SetupAll = function(city_id, district_id, church_id) {
