@@ -3,6 +3,24 @@
 {% block stylesheets %}
 <link href="{{ asset('bundles/oipmsze/css/city.css') }}" rel="stylesheet"/>
 <style type="text/css">
+       
+#cookies {
+    text-decoration: underline;
+    cursor: pointer;
+}
+.cookies {
+    position: absolute;
+    border: 3px solid black;
+    background-color: #EFEFEF;
+    color: #252525;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    cursor: pointer;
+    padding: 20px;
+    overflow: auto;
+}
 ul, menu, dir {
     display: block;
     list-style-type: disc;
@@ -59,9 +77,65 @@ ul, menu, dir {
     </div>
 </div>
 
-<div class="geonames">Nazwy miejscowości pochodzą z portalu <a href="http://www.geonames.org">www.geonames.org</a></div>
+        <div class="geonames">Nazwy miejscowości pochodzą z portalu <a href="http://www.geonames.org">www.geonames.org</a> | <span id="cookies">Informacja o cookies</span></div>
 
 </center>
+
+<div class="hidden cookies" title="Kliknij aby zamknąć">
+    <p>Nasza strona stotsuje "cookies" (tzw. ciasteczka), czyli pliki, zawierające 
+    dane informatyczne, w postaci plików tekstowych, które serwer zapisuje na 
+    urządzeniu końcowym użytkownika danego Serwisu internetowego, 
+    tak by odczytać je ponownie przy każdorazowym połączeniu się z Serwisem, z tego urządzenia końcowego.</p>
+
+<p>Pliki cookies nie są wykorzystywane do identyfikacji czy ustalania tożsamości
+poszczególnych użytkowników. Co ważne, pliki cookies nie niszczą systemu 
+na danym urządzeniu końcowym, ani nie wpływają na sposób działania 
+urządzenia końcowego. Pliki cookies nie powodują zmian konfiguracyjnych 
+w urządzeniach końcowych użytkowników oraz nie mają żadnego wpływu na działanie 
+oprogramowania zainstalowanego na tych urządzeniach.</p>
+ 
+<p>Pliki cookies mogą być wykorzystywane w celu:</p>
+<ul>
+<li>dostosowania zawartości stron internetowych Serwisu do preferencji użytkownika 
+    oraz optymalizacji korzystania ze stron internetowych</li>
+<li>tworzenia statystyk, które pomagają zrozumieć, w jaki sposób użytkownicy 
+    Serwisu korzystają ze stron internetowych, co umożliwia ulepszanie ich struktury i zawartości</li>
+<li>utrzymania sesji użytkownika</li>
+</ul>
+<p>W ramach Serwisów stosowane są trzy zasadnicze rodzaje plików cookies: "sesyjne", "stałe" oraz "zewnętrzne".</p>
+<p>Cookies "sesyjne" są plikami tymczasowymi, które przechowywane są w urządzeniu 
+    końcowym użytkownika do czasu wyłączenia oprogramowania (przeglądarki internetowej)</p>
+<p>"Stałe" pliki cookies przechowywane są w urządzeniu końcowym Użytkownika przez 
+    czas określony w parametrach plików cookies lub do czasu ich usunięcia
+    przez użytkownika i służą do zapamiętania wybranych przez użytkownika 
+    Serwisu ustawień i personalizacji interfejsu użytkownika.</p>
+<p>"Zewnętrzne" pliki cookies (tzw. third parties cookies) umożliwiają 
+    zbieranie informacji o sposobie korzystania z Serwisów</p>
+
+<p>Pliki cookies zamieszczane w urządzeniu końcowym Użytkownika Serwisu i 
+wykorzystywane mogą być również przez współpracujących z operatorem Serwisu reklamodawców oraz partnerów.</p>
+
+<br/>
+<p>Zarządzanie plikami cookies:</p>
+
+<p>Dostępne przeglądarki internetowe w ustawieniach początkowych 
+    akceptują pliki cookies. Każdy użytkownik może jednak sprzeciwić
+    się umieszczaniu plików cookies na jego urządzeniu końcowym.
+    Co do zasady, by zmienić te ustawienia, należy skorzystać z opcji 
+    wyłączenia mechanizmu plików cookies w danej przeglądarce internetowej, 
+    zarówno na komputerach, smartfonach, jak i innych urządzeniach. 
+    Ustawienia te mogą zostać zmienione w szczególności w taki sposób, 
+    aby blokować automatyczną obsługę plików cookies w ustawieniach
+    przeglądarki internetowej bądź informować o ich każdorazowym zamieszczeniu 
+    w urządzeniu użytkownika Serwisu. Szczegółowe informacje o możliwości i 
+    sposobach obsługi plików cookies dostępne są w ustawieniach oprogramowania 
+    (przeglądarki internetowej). Warto jednak wspomnieć, że usunięcie plików 
+    cookies może doprowadzić do utraty możliwości korzystania z istotnych funkcjonalności Serwisu.</p>
+<p>Więcej informacji na temat cookies dostępnych jest pod adresem 
+    <a href="http://www.aboutcookies.org/">http://www.aboutcookies.org/</a> 
+    oraz <a href="http://wszystkoociasteczkach.pl">http://wszystkoociasteczkach.pl</a></p>
+
+</div>
 
 
 <script id="main_city_template" type="text/template">
@@ -135,6 +209,39 @@ ul, menu, dir {
         }   
     }
     
+    function setCookie(c_name,value,exdays)
+    {
+        var exdate=new Date();
+        exdate.setDate(exdate.getDate() + exdays);
+        var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
+        document.cookie=c_name + "=" + c_value;
+    }
+    
+    function getCookie(c_name)
+    {
+        var c_value = document.cookie;
+        var c_start = c_value.indexOf(" " + c_name + "=");
+        if (c_start == -1)
+          {
+          c_start = c_value.indexOf(c_name + "=");
+          }
+        if (c_start == -1)
+          {
+          c_value = null;
+          }
+        else
+          {
+          c_start = c_value.indexOf("=", c_start) + 1;
+          var c_end = c_value.indexOf(";", c_start);
+          if (c_end == -1)
+          {
+        c_end = c_value.length;
+        }
+        c_value = unescape(c_value.substring(c_start,c_end));
+        }
+        return c_value;
+    }
+    
     $(document).ready(function() {    
         resizeView();
         $(window).resize(function() {
@@ -157,6 +264,19 @@ ul, menu, dir {
             render_more();
         });
         
+        if (getCookie('first_time') == null)
+        {
+            $('.cookies').show();
+        }
+        
+        $('.cookies').click(function() {
+            setCookie('first_time', true, 60);
+            $(this).hide();
+        });
+        
+        $('#cookies').click(function() {
+            $('.cookies').show();
+        });
     });
 </script>
 {% endblock %}
