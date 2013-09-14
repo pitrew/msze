@@ -497,6 +497,7 @@ function setupMarkers(mapLocal, filter, data)
                                       map: mapLocal,
                                       marker: marker
                                 });
+                                infowindow.close();
                               
                                 google.maps.event.addListener(marker, 'mouseover', function() {
                                     infowindow.open(mapLocal, this);
