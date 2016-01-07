@@ -52,7 +52,7 @@ class MobileController extends Controller
         //var_dump($all_cities);
         for ($x = $from; $x < sizeof($all_cities) && ($to > 0 ? $x < $to : true); $x++, $total_cnt++)
         {
-            $id = intval(($all_cities[$x]['id'] << 10) + $all_cities[$x]['did']);
+            $id = intval(($all_cities[$x]['id'] << 18) | $all_cities[$x]['did']);
             $city_name = '';
             
             if ($all_cities[$x]['dname'] == '')
