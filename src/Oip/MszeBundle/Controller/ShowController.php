@@ -123,6 +123,7 @@ class ShowController extends Controller
                     'lat' => $church->getLatitude(),
                     'lng' => $church->getLongitude(),
                     'desc' => $church->getDescription(),
+                    'www' => $church->getWWW(),
                 );
             }
             if (sizeof($churchesArray) > 0) {

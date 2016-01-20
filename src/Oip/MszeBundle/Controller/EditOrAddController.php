@@ -82,6 +82,7 @@ class EditOrAddController extends Controller
         
         $caddrress = $this->getArrayElement('caddr', $data, '');
         $cdetails = $this->getArrayElement('cdesc', $data, '');
+        $cwww = $this->getArrayElement('cwww', $data, '');
         
         $clat = $this->getArrayElement('clat', $data);
         $clng = $this->getArrayElement('clng', $data);
@@ -161,6 +162,7 @@ class EditOrAddController extends Controller
             $church->setName($chname);
             $church->setAddress($caddrress);
             $church->setDescription($cdetails);
+            $church->setWWW($cwww);
             $church->setLatitude($clat);
             $church->setLongitude($clng);
             $em->flush();
@@ -175,6 +177,7 @@ class EditOrAddController extends Controller
 
                 $church->setAddress($caddrress);
                 $church->setDescription($cdetails);
+                $church->setWWW($cwww);
                 $church->setFoto('');
                 
                 $church->setLatitude($clat);

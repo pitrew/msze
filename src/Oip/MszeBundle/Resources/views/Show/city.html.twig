@@ -230,6 +230,7 @@ ul.city_churches_hours li:hover
     font-size: 20px;
 }
 #church_address,
+#church_www,
 .mass_details
 {
     margin: 0 auto;
@@ -383,6 +384,7 @@ ul.city_churches_hours li:hover
 <div class="city_church_details details_window">
     <div id="church_title">Nazwa kościoła</div>
     <div id="church_address">ul. adres</div>
+    <div id="church_www"></div>
     <div id="church_hours"></div>
     <div id="church_map"></div>
     <div class="city_church_close"></div>
@@ -583,6 +585,7 @@ function showChurchDetails(opt)
 {
     $("#church_title").text(opt.name);
     $("#church_address").text(opt.address);
+    $("#church_www").html('Strona www: <a target="_blank" href="' + opt.www + '">' + opt.www + '</a>');
     
     $('#church_hours').oipLoading('hide');
     $('#church_hours').oipLoading('show');
@@ -743,11 +746,13 @@ $(document).ready(function() {
             desc = $.trim($(this).find('.ch_desc').text()),
             did = $.trim($(this).closest('.ch_district').find('.d_id').text()),
             address = $.trim($(this).find('.ch_address').text()),
+            www = $.trim($(this).find('.ch_www').text()),
             lat = parseFloat($.trim($(this).find('.ch_lat').text())),
             lng = parseFloat($.trim($(this).find('.ch_lng').text()));
         showChurchDetails({
             name: name,
             address: address,
+            www: www,
             id: id,
             did: did,
             lat: lat,

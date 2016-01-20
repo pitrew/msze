@@ -79,6 +79,7 @@ class MobileController extends Controller
                         array_push($data[$id][1][$cid], $all_cities[$x]['clgt']);
                         array_push($data[$id][1][$cid], 1);
                         array_push($data[$id][1][$cid], array()); //6
+                        array_push($data[$id][1][$cid], $all_cities[$x]['cwww']);
                         
                     }
                     if (isset($all_cities[$x]['mst'])) {                        
@@ -116,6 +117,7 @@ class MobileController extends Controller
                         array_push($data[$id][1][$cid], $all_cities[$x]['clgt']);
                         array_push($data[$id][1][$cid], 1);
                         array_push($data[$id][1][$cid], array()); //6
+                        array_push($data[$id][1][$cid], $all_cities[$x]['cwww']);
                     }
                     if (isset($all_cities[$x]['mst'])) {                        
                         array_push($data[$id][1][$cid][6], intval($all_cities[$x]['mst']));
@@ -144,6 +146,7 @@ class MobileController extends Controller
                         array_push($data[$def_dist_id][1][$cid], $all_cities[$x]['clgt']);
                         array_push($data[$def_dist_id][1][$cid], 0);
                         array_push($data[$def_dist_id][1][$cid], array()); //6
+                        array_push($data[$def_dist_id][1][$cid], $all_cities[$x]['cwww']);
                     }
                     if (isset($all_cities[$x]['mst'])) {                        
                         array_push($data[$def_dist_id][1][$cid][6], intval($all_cities[$x]['mst']));

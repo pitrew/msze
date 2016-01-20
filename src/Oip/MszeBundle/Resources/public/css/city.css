@@ -216,11 +216,16 @@ table td { outline: 1px solid green; }
     width: 406px;
     height: 32px;
 }
+.block_church_www
+{
+    width: 315px;
+}
 .block_church_address
 {
     width: 410px;
 }
-.block_church_address_td
+.block_church_address_td,
+.block_church_www_td
 {
     text-align: left;
 }

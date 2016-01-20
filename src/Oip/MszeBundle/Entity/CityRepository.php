@@ -88,7 +88,7 @@ class CityRepository extends EntityRepository
                 . "ci.id, ci.name," // ci.slug, "
                 . "d.id as did, d.name as dname, "// d.slug as dslug, "
                 . "c.id as cid, c.name as cname, c.address as caddress, "
-                . "c.latitude as clat, c.longitude as clgt, c.description as cdesc, "//c.slug as cslug,"
+                . "c.latitude as clat, c.longitude as clgt, c.description as cdesc, c.www as cwww, "//c.slug as cslug,"
                 . "m.start_time as mst, m.details as mdetails, m.day_mon as day_mon, "
                 . "m.day_tue as day_tue, m.day_wed as day_wed, m.day_thu as day_thu, "
                 . "m.day_fri as day_fri, m.day_sat as day_sat, m.day_sun as day_sun "

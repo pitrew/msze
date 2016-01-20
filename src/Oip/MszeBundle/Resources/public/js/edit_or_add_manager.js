@@ -129,6 +129,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                         
                     (_church.id >= 0 && _church.cur_address != _church.new_address) || //address change
                     (_church.id >= 0 && _church.cur_desc != _church.new_desc) || //desc change
+                    (_church.id >= 0 && _church.cur_www != _church.new_www) || //www change
                     
                     (_church.id >= 0 && !dlist_empty) || //something to delete
                     (_church.id >= 0 && !mlist_empty) || //something to mod or add
@@ -222,6 +223,10 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
     }
     self.setChurchDescription = function(desc) {
         _church["new_desc"] = desc;
+        _local_show_hide_save();
+    }
+    self.setChurchWWW = function(www) {
+        _church["new_www"] = www;
         _local_show_hide_save();
     }
     self.setupPosition = function(lat, lng) {
@@ -510,6 +515,9 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 
                 _church.cur_name = data.name;
                 _church.new_name = data.name;
+                
+                _church.cur_www = data.www;
+                _church.new_www = data.www;
             
                 _church.cur_address = data.address;
                 _church.new_address = data.address;
@@ -601,6 +609,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
 
                     _church.new_address = _church.cur_address;
                     _church.new_desc = _church.cur_desc;
+                    _church.new_www = _church.cur_www;
 
                     _church.new_pos = _church.cur_pos;
                     _mass.mod_list = {};
@@ -609,7 +618,10 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                     fun_city_select($.oip.escape(_city.new_name));
                     fun_district_select($.oip.escape(_district.new_name));
 
-                    var data = { description: _church.new_desc, address: _church.new_address};
+                    var data = { 
+                        description: _church.new_desc, 
+                        www: _church.new_www,
+                        address: _church.new_address};
                     if (_church.new_pos != undefined) {
                         data.latitude = _church.new_pos.lat;
                         data.longitude = _church.new_pos.lng;
@@ -633,6 +645,7 @@ $.oip.managerDef = function(city_id, district_id, church_id, fn) {
                 'chid': _church.id, 'chname': _church.new_name,
                 'caddr': _church.new_address,
                 'cdesc': _church.new_desc,
+                'cwww': _church.new_www,
                 'clat': (_church.new_pos == undefined ? undefined : _church.new_pos.lat),
                 'clng': (_church.new_pos == undefined ? undefined : _church.new_pos.lng),
                 'mmod': _mass.mod_list,

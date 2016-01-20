@@ -124,6 +124,7 @@ class FastController extends Controller
             'id' => $entity->getId(),
             'name' => $entity->getName(),
             'address' => $entity->getAddress(),
+            'www' => $entity->getWWW(),
             'description' => $entity->getDescription(),
             'latitude' => $entity->getLatitude(),
             'longitude' => $entity->getLongitude(),

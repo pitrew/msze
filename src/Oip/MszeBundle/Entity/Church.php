@@ -70,6 +70,13 @@ class Church
      * @ORM\Column(name="description", type="string", length=255)
      */
     private $description;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="www", type="string", length=512)
+     */
+    private $www;
 
     /**
      * @ORM\ManyToOne(targetEntity="District", inversedBy="churches", fetch="LAZY")
@@ -319,5 +326,28 @@ class Church
     public function getDistrict()
     {
         return $this->district;
+    }
+    
+    /**
+     * Set www
+     *
+     * @param string $www
+     * @return Church
+     */
+    public function setWWW($www)
+    {
+        $this->www = $www;
+    
+        return $this;
+    }
+
+    /**
+     * Get www
+     *
+     * @return string 
+     */
+    public function getWWW()
+    {
+        return $this->www;
     }
 }
