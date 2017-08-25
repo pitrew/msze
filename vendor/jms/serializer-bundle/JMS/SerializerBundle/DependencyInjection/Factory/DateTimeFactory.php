@@ -20,6 +20,7 @@ class DateTimeFactory implements HandlerFactoryInterface
 
     public function addConfiguration(ArrayNodeDefinition $builder)
     {
+		date_default_timezone_set('Europe/Warsaw');
         $builder
             ->addDefaultsIfNotSet()
             ->canBeUnset()
