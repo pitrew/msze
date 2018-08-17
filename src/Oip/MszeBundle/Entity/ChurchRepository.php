@@ -45,7 +45,7 @@ class ChurchRepository extends EntityRepository
                         . 'm.church = :church_id '
                         . ' and (' .
                         $str
-                        . ') group by m.start_time')
+                        . ') group by m.start_time, m.details')
                         //m.day_mon = :d_mon and m.day_tue = :d_tue and m.day_wed = :d_wed '
                         //. ' and m.day_thu = :d_thu and m.day_fri = :d_fri and m.day_sat = :d_sat and m.day_sun = :d_sun)'
                         //. ' group by m.start_time')
