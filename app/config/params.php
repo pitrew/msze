@@ -1,6 +1,6 @@
 <?php
 # app/config/params.php
-if (getEnv("MYSQL_SERVICE_HOST")!='') {
+if (getEnv("DATABASE_URL")!='') {
 	$container->setParameter('database_host', getEnv("MYSQL_SERVICE_HOST"));
 	$container->setParameter('database_port', getEnv("MYSQL_SERVICE_PORT"));
 	// $container->setParameter('database_name', getEnv("MYSQL_DATABASE"));
