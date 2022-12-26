@@ -1,11 +1,12 @@
 <?php
 
 // openshift stuff
-if (getEnv("MYSQL_SERVICE_HOST")!='') {
+/*if (getEnv("MYSQL_SERVICE_HOST")!='') {
     header("HTTP/1.1 301 Moved Permanently"); 
     header("Location: http://msze.herokuapp.com"); 
     exit();
 }
+*/
 
 use Symfony\Component\ClassLoader\ApcClassLoader;
 use Symfony\Component\HttpFoundation\Request;
